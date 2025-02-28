@@ -36,8 +36,14 @@ class AppIcons {
   static const String triangle = 'assets/icons/triangle.svg';
   static const String videoBold = 'assets/icons/video_bold.svg';
   static const String video = 'assets/icons/video.svg';
-  static const String profileInfo = '/assets/icons/profile_info.svg';
-  static const String logout = '/assets/icons/logout.svg';
-  static const String connection = '/assets/icons/connection.svg';
-  static const String subscription = '/assets/icons/subscription.svg';
+  static const String profileInfo = 'assets/icons/profile_info.svg';
+  static const String logout = 'assets/icons/logout.svg';
+  static const String connection = 'assets/icons/connection.svg';
+  static const String subscription = 'assets/icons/subscription.svg';
+  static const String user = 'assets/icons/user.svg';
+  static const String phone = 'assets/icons/phone.svg';
+  static const String lock = 'assets/icons/lock.svg';
+  static const String key = 'assets/icons/key.svg';
+  static const String email = 'assets/icons/email.svg';
+  static const String eyeOff = 'assets/icons/eye_off.svg';
 }

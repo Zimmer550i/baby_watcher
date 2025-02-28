@@ -1,3 +1,5 @@
+import 'package:baby_watcher/views/screen/auth/signin.dart';
+import 'package:baby_watcher/views/screen/auth/signup.dart';
 import 'package:baby_watcher/views/screen/init/role_select.dart';
 import 'package:baby_watcher/views/screen/init/splash.dart';
 import 'package:baby_watcher/views/screen/init/welcome.dart';
@@ -9,10 +11,15 @@ class AppRoutes {
   static String welcome = "/welcome";
   static String roleSelect = "/role_select";
 
+  static String signUp = '/sign_up';
+  static String signIn = '/sign_in';
+
   static Map<String, Widget> routeWidgets = {
     splashScreen: Splash(),
     welcome: Welcome(),
     roleSelect: RoleSelect(),
+    signUp : Signup(),
+    signIn : Signin(),
   };
 
   static List<GetPage> pages = [

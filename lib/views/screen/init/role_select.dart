@@ -130,7 +130,7 @@ class _RoleSelectState extends State<RoleSelect> {
               isDisabled: selected == -1,
               onTap: () {
                 if (selected != -1) {
-                  Get.offAllNamed(AppRoutes.splashScreen);
+                  Get.toNamed(AppRoutes.signUp);
                 }
               },
             ),

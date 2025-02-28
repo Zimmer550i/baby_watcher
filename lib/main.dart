@@ -1,4 +1,4 @@
-import 'package:baby_watcher/themes/dark_theme.dart';
+import 'package:baby_watcher/themes/light_theme.dart';
 import 'package:baby_watcher/utils/app_constants.dart';
 import 'package:baby_watcher/utils/message.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
                   debugShowCheckedModeBanner: false,
                   navigatorKey: Get.key,
                   // theme: themeController.darkTheme ? dark(): light(),
-                  theme: dark(),
-                  defaultTransition: Transition.topLevel,
+                  theme: light(),
+                  defaultTransition: Transition.cupertino,
                   locale: localizeController.locale,
                   translations: Messages(languages: languages),
                   fallbackLocale: Locale(
@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
                   ),
                   transitionDuration: const Duration(milliseconds: 500),
                   getPages: AppRoutes.pages,
+                  initialRoute: AppRoutes.splashScreen,
                 );
               },
             );

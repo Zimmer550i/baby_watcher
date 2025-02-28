@@ -1,3 +1,8 @@
+import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
-ThemeData light({Color color = const Color(0xFF039D55)}) => ThemeData();
+ThemeData light() => ThemeData(
+  fontFamily: "mulish",
+  scaffoldBackgroundColor: AppColors.indigo[25],
+
+);

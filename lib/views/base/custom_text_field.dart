@@ -90,7 +90,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     height: 20,
                     width: 20,
                     colorFilter: ColorFilter.mode(
-                      AppColors.gray[400]!,
+                    isFocused ? AppColors.indigo : AppColors.gray[400]!,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -101,7 +101,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   height: 20,
                   width: 20,
                   colorFilter: ColorFilter.mode(
-                    AppColors.gray[400]!,
+                    isFocused ? AppColors.indigo : AppColors.gray[400]!,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -110,6 +110,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   focusNode: focusNode,
                   controller: widget.controller,
                   obscureText: isObscured,
+                  style: TextStyle(
+                    fontVariations: [FontVariation("wght", 500)],
+                    color: AppColors.gray.shade600,
+                  ),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.zero,
@@ -128,7 +132,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   height: 20,
                   width: 20,
                   colorFilter: ColorFilter.mode(
-                    AppColors.gray[400]!,
+                    isFocused ? AppColors.indigo : AppColors.gray[400]!,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -144,7 +148,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     height: 20,
                     width: 20,
                     colorFilter: ColorFilter.mode(
-                      AppColors.gray[400]!,
+                    isFocused ? AppColors.indigo : AppColors.gray[400]!,
                       BlendMode.srcIn,
                     ),
                   ),

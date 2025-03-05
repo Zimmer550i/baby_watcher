@@ -8,6 +8,7 @@ import 'package:baby_watcher/views/screen/auth/verify_email.dart';
 import 'package:baby_watcher/views/screen/init/role_select.dart';
 import 'package:baby_watcher/views/screen/init/splash.dart';
 import 'package:baby_watcher/views/screen/init/welcome.dart';
+import 'package:baby_watcher/views/screen/parent/parent_app.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,6 +25,10 @@ class AppRoutes {
   static String resetPasword = '/reset_password';
   static String connectMothersAccount = '/connect_mothers_account';
 
+  static String parentApp = '/parent_app';
+
+  static String babysitterApp = "/babysitter_app";
+
   static Map<String, Widget> routeWidgets = {
     splashScreen: Splash(),
     welcome: Welcome(),
@@ -35,6 +40,7 @@ class AppRoutes {
     otpVerification: OtpVerification(),
     resetPasword: ResetPassword(),
     connectMothersAccount: ConnectMothersAccount(),
+    parentApp: ParentApp(),
   };
 
   static List<GetPage> pages = [

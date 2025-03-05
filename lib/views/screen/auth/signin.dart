@@ -47,7 +47,12 @@ class Signin extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 36),
-            CustomButton(text: "Login"),
+            CustomButton(
+              text: "Login",
+              onTap: () {
+                Get.toNamed(AppRoutes.parentApp);
+              },
+            ),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

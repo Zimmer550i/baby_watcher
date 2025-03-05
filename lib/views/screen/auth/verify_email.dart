@@ -84,7 +84,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                   onTap: () {
                     final controller = Get.find<UserController>();
                     if (controller.userRole == Role.parent) {
-                      Get.offAllNamed(AppRoutes.splashScreen);
+                      Get.offAllNamed(AppRoutes.parentApp);
                     } else {
                       Get.toNamed(AppRoutes.connectMothersAccount);
                     }

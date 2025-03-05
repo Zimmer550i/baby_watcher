@@ -2,6 +2,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, prefer_collection_literals
 
 import 'dart:convert';
+import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,7 @@ Future<Map<String, Map<String, String>>>  init() async {
   Get.lazyPut(() => ThemeController(sharedPreferences: Get.find()));
   Get.lazyPut(() => LocalizationController(sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeController());
+  Get.lazyPut(() => UserController(), fenix: true);
 
 
 

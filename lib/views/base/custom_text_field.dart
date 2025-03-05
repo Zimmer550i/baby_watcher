@@ -63,97 +63,103 @@ class _CustomTextFieldState extends State<CustomTextField> {
               color: AppColors.gray[600],
             ),
           ),
-        Container(
-          height: 48,
-          width: widget.isOtp ? 48 : double.infinity,
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          decoration: BoxDecoration(
-            color: isFocused ? AppColors.indigo[50] : Colors.white,
-            borderRadius: BorderRadius.circular(50),
-            border: Border.all(
-              width: isFocused ? 1 : 0.5,
-              color: AppColors.indigo.shade400,
-            ),
-          ),
-          child: Row(
-            spacing: 12,
-            children: [
-              if (widget.isPassword)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isObscured = !isObscured;
-                    });
-                  },
-                  child: SvgPicture.asset(
-                    AppIcons.lock,
-                    height: 20,
-                    width: 20,
-                    colorFilter: ColorFilter.mode(
-                    isFocused ? AppColors.indigo : AppColors.gray[400]!,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-              if (widget.leading != null)
-                SvgPicture.asset(
-                  widget.leading!,
-                  height: 20,
-                  width: 20,
-                  colorFilter: ColorFilter.mode(
-                    isFocused ? AppColors.indigo : AppColors.gray[400]!,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              Expanded(
-                child: TextField(
-                  focusNode: focusNode,
-                  controller: widget.controller,
-                  obscureText: isObscured,
-                  style: TextStyle(
-                    fontVariations: [FontVariation("wght", 500)],
-                    color: AppColors.gray.shade600,
-                  ),
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                    hintText: widget.hintText,
-                    hintStyle: TextStyle(
-                      fontVariations: [FontVariation("wght", 500)],
-                      color: AppColors.gray[400],
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
+        GestureDetector(
+          onTap: () {
+            focusNode.requestFocus();
+          },
+          child: Container(
+            height: 48,
+            width: widget.isOtp ? 48 : double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              color: isFocused ? AppColors.indigo[50] : Colors.white,
+              borderRadius: BorderRadius.circular(50),
+              border: Border.all(
+                width: isFocused ? 1 : 0.5,
+                color: AppColors.indigo.shade400,
               ),
-              if (widget.trailing != null)
-                SvgPicture.asset(
-                  widget.trailing!,
-                  height: 20,
-                  width: 20,
-                  colorFilter: ColorFilter.mode(
-                    isFocused ? AppColors.indigo : AppColors.gray[400]!,
-                    BlendMode.srcIn,
+            ),
+            child: Row(
+              spacing: 12,
+              children: [
+                if (widget.isPassword)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isObscured = !isObscured;
+                      });
+                    },
+                    child: SvgPicture.asset(
+                      AppIcons.lock,
+                      height: 20,
+                      width: 20,
+                      colorFilter: ColorFilter.mode(
+                        isFocused ? AppColors.indigo : AppColors.gray[400]!,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
-                ),
-              if (widget.isPassword)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isObscured = !isObscured;
-                    });
-                  },
-                  child: SvgPicture.asset(
-                    AppIcons.eyeOff,
+                if (widget.leading != null)
+                  SvgPicture.asset(
+                    widget.leading!,
                     height: 20,
                     width: 20,
                     colorFilter: ColorFilter.mode(
-                    isFocused ? AppColors.indigo : AppColors.gray[400]!,
+                      isFocused ? AppColors.indigo : AppColors.gray[400]!,
                       BlendMode.srcIn,
                     ),
                   ),
+                Expanded(
+                  child: TextField(
+                    focusNode: focusNode,
+                    controller: widget.controller,
+                    obscureText: isObscured,
+                    style: TextStyle(
+                      fontVariations: [FontVariation("wght", 500)],
+                      color: AppColors.gray.shade600,
+                      height: 1
+                    ),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                      hintText: widget.hintText,
+                      hintStyle: TextStyle(
+                        fontVariations: [FontVariation("wght", 500)],
+                        color: AppColors.gray[400],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
                 ),
-            ],
+                if (widget.trailing != null)
+                  SvgPicture.asset(
+                    widget.trailing!,
+                    height: 20,
+                    width: 20,
+                    colorFilter: ColorFilter.mode(
+                      isFocused ? AppColors.indigo : AppColors.gray[400]!,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                if (widget.isPassword)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isObscured = !isObscured;
+                      });
+                    },
+                    child: SvgPicture.asset(
+                      AppIcons.eyeOff,
+                      height: 20,
+                      width: 20,
+                      colorFilter: ColorFilter.mode(
+                        isFocused ? AppColors.indigo : AppColors.gray[400]!,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ],

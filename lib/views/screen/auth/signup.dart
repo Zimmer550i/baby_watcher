@@ -36,7 +36,12 @@ class Signup extends StatelessWidget {
             const SizedBox(height: 16),
             CustomTextField(isPassword: true, hintText: "Confirm Password"),
             const SizedBox(height: 36),
-            CustomButton(text: "Signup"),
+            CustomButton(
+              text: "Signup",
+              onTap: () {
+                Get.toNamed(AppRoutes.verifyEmail);
+              },
+            ),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

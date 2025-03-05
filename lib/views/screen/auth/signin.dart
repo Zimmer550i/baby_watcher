@@ -32,12 +32,17 @@ class Signin extends StatelessWidget {
             const SizedBox(height: 8),
             Align(
               alignment: Alignment.centerRight,
-              child: Text(
-                "Forget Password",
-                style: TextStyle(
-                  fontVariations: [FontVariation("wght", 400)],
-                  fontSize: 12,
-                  color: AppColors.indigo,
+              child: GestureDetector(
+                onTap: () {
+                  Get.toNamed(AppRoutes.forgotPassword);
+                },
+                child: Text(
+                  " Forget Password ",
+                  style: TextStyle(
+                    fontVariations: [FontVariation("wght", 400)],
+                    fontSize: 12,
+                    color: AppColors.indigo,
+                  ),
                 ),
               ),
             ),
@@ -58,7 +63,7 @@ class Signin extends StatelessWidget {
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
-                    Get.offNamed(AppRoutes.signUp);
+                    Get.offNamed(AppRoutes.roleSelect);
                   },
                   child: Text(
                     " SignUp ",

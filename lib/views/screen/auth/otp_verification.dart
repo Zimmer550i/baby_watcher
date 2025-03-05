@@ -1,33 +1,26 @@
-import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
-class VerifyEmail extends StatefulWidget {
-  const VerifyEmail({super.key});
-
-  @override
-  State<VerifyEmail> createState() => _VerifyEmailState();
-}
-
-class _VerifyEmailState extends State<VerifyEmail> {
-  TextEditingController otpController = TextEditingController();
+class OtpVerification extends StatelessWidget {
+  const OtpVerification({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppBar("Otp Verification"),
       body: Align(
         alignment: Alignment.center,
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SvgPicture.asset(
                   AppIcons.logo,
@@ -38,7 +31,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  "Verify Your Email",
+                  "OTP Verification",
                   style: TextStyle(
                     fontVariations: [FontVariation("wght", 600)],
                     fontSize: 24,
@@ -82,12 +75,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 CustomButton(
                   text: "Verify",
                   onTap: () {
-                    final controller = Get.find<UserController>();
-                    if (controller.userRole == Role.parent) {
-                      Get.offAllNamed(AppRoutes.splashScreen);
-                    } else {
-                      Get.toNamed(AppRoutes.connectMothersAccount);
-                    }
+                    Get.toNamed(AppRoutes.resetPasword);
                   },
                 ),
                 const SizedBox(height: 8),

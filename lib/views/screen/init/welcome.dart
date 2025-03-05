@@ -79,7 +79,13 @@ class Welcome extends StatelessWidget {
           const SizedBox(height: 28),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: CustomButton(text: "Login", isSecondary: true),
+            child: CustomButton(
+              text: "Login",
+              isSecondary: true,
+              onTap: () {
+                Get.toNamed(AppRoutes.signIn);
+              },
+            ),
           ),
           const SizedBox(height: 8),
           Padding(

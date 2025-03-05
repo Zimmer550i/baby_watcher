@@ -1,3 +1,4 @@
+import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
@@ -129,7 +130,13 @@ class _RoleSelectState extends State<RoleSelect> {
               text: "Continue",
               isDisabled: selected == -1,
               onTap: () {
-                if (selected != -1) {
+                final controller = Get.find<UserController>();
+
+                if (selected == 0) {
+                  controller.userRole = Role.parent;
+                  Get.toNamed(AppRoutes.signUp);
+                }else if(selected == 1){
+                  controller.userRole = Role.babySitter;
                   Get.toNamed(AppRoutes.signUp);
                 }
               },

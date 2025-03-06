@@ -8,6 +8,7 @@ import 'package:baby_watcher/views/screen/auth/verify_email.dart';
 import 'package:baby_watcher/views/screen/init/role_select.dart';
 import 'package:baby_watcher/views/screen/init/splash.dart';
 import 'package:baby_watcher/views/screen/init/welcome.dart';
+import 'package:baby_watcher/views/screen/parent/log/add_log.dart';
 import 'package:baby_watcher/views/screen/parent/parent_app.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,6 +28,8 @@ class AppRoutes {
 
   static String parentApp = '/parent_app';
 
+  static String addLog = '/add_log';
+
   static String babysitterApp = "/babysitter_app";
 
   static Map<String, Widget> routeWidgets = {
@@ -41,6 +44,7 @@ class AppRoutes {
     resetPasword: ResetPassword(),
     connectMothersAccount: ConnectMothersAccount(),
     parentApp: ParentApp(),
+    addLog: AddLog(),
   };
 
   static List<GetPage> pages = [

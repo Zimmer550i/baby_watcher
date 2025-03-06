@@ -10,7 +10,7 @@ class CustomTextField extends StatefulWidget {
   final String? trailing;
   final TextEditingController? controller;
   final bool isPassword;
-  final bool isOtp;
+  final void Function()? onTap;
   const CustomTextField({
     super.key,
     this.title,
@@ -18,8 +18,8 @@ class CustomTextField extends StatefulWidget {
     this.leading,
     this.trailing,
     this.isPassword = false,
-    this.isOtp = false,
     this.controller,
+    this.onTap,
   });
 
   @override
@@ -65,11 +65,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
         GestureDetector(
           onTap: () {
-            focusNode.requestFocus();
+            if (widget.onTap != null) {
+              widget.onTap!();
+            } else {
+              focusNode.requestFocus();
+            }
           },
           child: Container(
             height: 48,
-            width: widget.isOtp ? 48 : double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
               color: isFocused ? AppColors.indigo[50] : Colors.white,
@@ -114,10 +117,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     focusNode: focusNode,
                     controller: widget.controller,
                     obscureText: isObscured,
+                    enabled: widget.onTap == null,
+                    onTapOutside: (event) {
+                      setState(() {
+                        isFocused = false;
+                        focusNode.unfocus();
+                      });
+                    },
                     style: TextStyle(
                       fontVariations: [FontVariation("wght", 500)],
                       color: AppColors.gray.shade600,
-                      height: 1
+                      height: 1,
                     ),
                     decoration: InputDecoration(
                       border: InputBorder.none,

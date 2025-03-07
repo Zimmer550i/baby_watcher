@@ -5,10 +5,12 @@ import 'package:baby_watcher/views/screen/auth/reset_password.dart';
 import 'package:baby_watcher/views/screen/auth/signin.dart';
 import 'package:baby_watcher/views/screen/auth/signup.dart';
 import 'package:baby_watcher/views/screen/auth/verify_email.dart';
+import 'package:baby_watcher/views/screen/babysitter/babysitter_app.dart';
 import 'package:baby_watcher/views/screen/init/role_select.dart';
 import 'package:baby_watcher/views/screen/init/splash.dart';
 import 'package:baby_watcher/views/screen/init/welcome.dart';
 import 'package:baby_watcher/views/screen/parent/log/add_log.dart';
+import 'package:baby_watcher/views/screen/parent/log/parent_notification.dart';
 import 'package:baby_watcher/views/screen/parent/parent_app.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -27,6 +29,7 @@ class AppRoutes {
   static String connectMothersAccount = '/connect_mothers_account';
 
   static String parentApp = '/parent_app';
+  static String parentNotification = '/parent_notification';
 
   static String addLog = '/add_log';
 
@@ -44,7 +47,9 @@ class AppRoutes {
     resetPasword: ResetPassword(),
     connectMothersAccount: ConnectMothersAccount(),
     parentApp: ParentApp(),
+    babysitterApp: BabysitterApp(),
     addLog: AddLog(),
+    parentNotification: ParentNotification(),
   };
 
   static List<GetPage> pages = [

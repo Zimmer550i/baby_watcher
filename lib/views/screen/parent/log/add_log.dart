@@ -1,3 +1,4 @@
+import 'package:baby_watcher/models/log_model.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
@@ -6,7 +7,8 @@ import 'package:baby_watcher/views/base/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 class AddLog extends StatefulWidget {
-  const AddLog({super.key});
+  final LogModel? log;
+  const AddLog({super.key, this.log});
 
   @override
   State<AddLog> createState() => _AddLogState();
@@ -17,11 +19,36 @@ class _AddLogState extends State<AddLog> {
   final timeController = TextEditingController();
   DateTime? date;
   TimeOfDay? time;
+  String? activity;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.log != null) {
+      date = widget.log!.date;
+      time = widget.log!.time;
+      activity = widget.log!.name;
+      if (time != null) {
+        timeController.text =
+            "${(time!.hourOfPeriod).toString().padLeft(2, "0")}:${(time!.minute).toString().padLeft(2, "0")}";
+        if (time!.period == DayPeriod.am) {
+          timeController.text = "${timeController.text} AM";
+        } else {
+          timeController.text = "${timeController.text} PM";
+        }
+      }
+      if (date != null) {
+        dateController.text =
+            "${(date!.day).toString().padLeft(2, "0")}/${(date!.month).toString().padLeft(2, "0")}/${date!.year}";
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar("Add Log"),
+      appBar: customAppBar(widget.log == null ? "Add New Log" : "Edit Log"),
       body: Align(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
@@ -51,6 +78,7 @@ class _AddLogState extends State<AddLog> {
                 ),
                 const SizedBox(height: 24),
                 CustomDropDown(
+                  initialPick: activity,
                   options: [
                     "Meal",
                     "Medicine",
@@ -78,16 +106,34 @@ class _AddLogState extends State<AddLog> {
                           "${(time!.hourOfPeriod).toString().padLeft(2, "0")}:${(time!.minute).toString().padLeft(2, "0")}";
                       if (time!.period == DayPeriod.am) {
                         timeController.text = "${timeController.text} AM";
-                      }else{
+                      } else {
                         timeController.text = "${timeController.text} PM";
                       }
                     }
                   },
                 ),
                 const SizedBox(height: 24),
-                CustomButton(
-                  text: "Save",
-                  width: MediaQuery.of(context).size.width / 2,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (widget.log != null)
+                      Expanded(
+                        flex: 2,
+                        child: CustomButton(
+                          text: "Cancel",
+                          isSecondary: true,
+                        ),
+                      ),
+                    if (widget.log != null) const SizedBox(width: 20,),
+                    if(widget.log == null) const Spacer(),
+                    Expanded(
+                      flex: 2,
+                      child: CustomButton(
+                        text: "Save",
+                      ),
+                    ),
+                    if(widget.log == null) const Spacer(),
+                  ],
                 ),
               ],
             ),

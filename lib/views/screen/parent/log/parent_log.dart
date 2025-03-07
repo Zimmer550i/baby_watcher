@@ -2,6 +2,8 @@ import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/models/log_model.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/views/base/home_app_bar.dart';
+import 'package:baby_watcher/views/screen/parent/log/add_log.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -134,53 +136,6 @@ class _ParentLogState extends State<ParentLog> {
     );
   }
 
-  AppBar homeAppBar() {
-    return AppBar(
-      backgroundColor: AppColors.indigo[25],
-      leading: Padding(
-        padding: const EdgeInsets.only(left: 16),
-        child: Center(
-          child: SvgPicture.asset(
-            AppIcons.logo,
-            height: 32,
-            width: 32,
-            colorFilter: ColorFilter.mode(
-              AppColors.indigo[200]!,
-              BlendMode.srcIn,
-            ),
-          ),
-        ),
-      ),
-      actions: [
-        Stack(
-          alignment: Alignment.topRight,
-          children: [
-            SvgPicture.asset(AppIcons.notification),
-            // if (notifications[pos] != 0)
-            Container(
-              height: 14,
-              width: 14,
-              decoration: BoxDecoration(
-                color: AppColors.indigo,
-                shape: BoxShape.circle,
-              ),
-              child: FittedBox(
-                child: Text(
-                  "1",
-                  style: TextStyle(
-                    fontVariations: [FontVariation("wght", 500)],
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(width: 16),
-      ],
-    );
-  }
-
   Padding dayWidget(int index) {
     return Padding(
       padding: EdgeInsets.only(right: index == days.length - 1 ? 0 : 16),
@@ -252,101 +207,106 @@ class _ParentLogState extends State<ParentLog> {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: Container(
-        height: 74,
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: item.isCompleted ? AppColors.indigo[100] : Colors.white,
-          // ignore: dead_code
-          border:
-              item.isCompleted
-                  ? Border.all(color: AppColors.indigo)
-                  : notConfirmed
-                  ? Border.all(color: Color(0xffC84949))
-                  : null,
-        ),
-        child: Row(
-          children: [
-            Container(
-              height: 48,
-              width: 48,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.indigo[50],
-              ),
-              child: Center(
-                child: SvgPicture.asset(switch (item.type) {
-                  LogType.meal => AppIcons.meal,
-                  LogType.nap => AppIcons.nap,
-                  LogType.medicine => AppIcons.med,
-                  LogType.shower => AppIcons.shower,
-                  LogType.physicalActivity => AppIcons.physical,
-                  LogType.others => AppIcons.motherWithBaby,
-                }),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  item.name,
-                  style: TextStyle(
-                    fontVariations: [FontVariation("wght", 400)],
-                    fontSize: 18,
-                    color: AppColors.gray[600],
-                  ),
-                ),
-                Row(
-                  children: [
-                    SvgPicture.asset(AppIcons.clock),
-                    const SizedBox(width: 4),
-                    Text(
-                      formatTime(item.time),
-                      style: TextStyle(
-                        fontVariations: [FontVariation("wght", 500)],
-                        fontSize: 14,
-                        color: AppColors.gray[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const Spacer(),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color:
-                    item.isCompleted
-                        ? Color(0xff76FF76)
-                        : isPast
-                        ? Color(0xffFE8A8A)
-                        : AppColors.yellow[100],
-
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Text(
+      child: GestureDetector(
+        onTap: () {
+          Get.to(() => AddLog(log: item));
+        },
+        child: Container(
+          height: 74,
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: item.isCompleted ? AppColors.indigo[100] : Colors.white,
+            // ignore: dead_code
+            border:
                 item.isCompleted
-                    ? "Completed"
-                    : isPast
-                    ? "Not Confirmed"
-                    : "Upcomming",
-                style: TextStyle(
+                    ? Border.all(color: AppColors.indigo)
+                    : notConfirmed
+                    ? Border.all(color: Color(0xffC84949))
+                    : null,
+          ),
+          child: Row(
+            children: [
+              Container(
+                height: 48,
+                width: 48,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.indigo[50],
+                ),
+                child: Center(
+                  child: SvgPicture.asset(switch (item.type) {
+                    LogType.meal => AppIcons.meal,
+                    LogType.nap => AppIcons.nap,
+                    LogType.medicine => AppIcons.med,
+                    LogType.shower => AppIcons.shower,
+                    LogType.physicalActivity => AppIcons.physical,
+                    LogType.others => AppIcons.motherWithBaby,
+                  }),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    item.name,
+                    style: TextStyle(
+                      fontVariations: [FontVariation("wght", 400)],
+                      fontSize: 18,
+                      color: AppColors.gray[600],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      SvgPicture.asset(AppIcons.clock),
+                      const SizedBox(width: 4),
+                      Text(
+                        formatTime(item.time),
+                        style: TextStyle(
+                          fontVariations: [FontVariation("wght", 500)],
+                          fontSize: 14,
+                          color: AppColors.gray[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const Spacer(),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
                   color:
                       item.isCompleted
-                          ? Color(0xff095209)
+                          ? Color(0xff76FF76)
                           : isPast
-                          ? Color(0xff6A2626)
-                          : AppColors.yellow.shade700,
-                  fontSize: 12,
-                  fontVariations: [FontVariation("wght", 500)],
+                          ? Color(0xffFE8A8A)
+                          : AppColors.yellow[100],
+
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: Text(
+                  item.isCompleted
+                      ? "Completed"
+                      : isPast
+                      ? "Not Confirmed"
+                      : "Upcomming",
+                  style: TextStyle(
+                    color:
+                        item.isCompleted
+                            ? Color(0xff095209)
+                            : isPast
+                            ? Color(0xff6A2626)
+                            : AppColors.yellow.shade700,
+                    fontSize: 12,
+                    fontVariations: [FontVariation("wght", 500)],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

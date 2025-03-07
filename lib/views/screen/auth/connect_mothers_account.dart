@@ -55,7 +55,7 @@ class ConnectMothersAccount extends StatelessWidget {
                 CustomButton(
                   text: "Connect",
                   onTap: () {
-                    Get.toNamed(AppRoutes.splashScreen);
+                    Get.offAllNamed(AppRoutes.babysitterApp);
                   },
                 ),
               ],

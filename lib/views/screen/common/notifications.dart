@@ -5,8 +5,8 @@ import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class ParentNotification extends StatelessWidget {
-  const ParentNotification({super.key});
+class Notifications extends StatelessWidget {
+  const Notifications({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +53,25 @@ class ParentNotification extends StatelessWidget {
           time: DateTime.now(),
         ),
       ],
+      DateTime.now().subtract(const Duration(days: 2)): [
+        NotificationModel(
+          title: "New Video Recieved",
+          subTitle: "Your babysitter shared a new video update",
+          time: DateTime.now(),
+        ),
+        NotificationModel(
+          title: "Activity Completed: Nap",
+          subTitle:
+              "Your babysitter confirmed that the activity was completd at 2:00 PM",
+          time: DateTime.now(),
+        ),
+        NotificationModel(
+          title: "Activity Completed: Nap",
+          subTitle:
+              "Your babysitter confirmed that the activity was completd at 2:00 PM",
+          time: DateTime.now(),
+        ),
+      ],
     };
 
     return Scaffold(
@@ -62,7 +81,7 @@ class ParentNotification extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Column(children: getNotifications(data)),
+            child: SafeArea(child: Column(children: getNotifications(data))),
           ),
         ),
       ),

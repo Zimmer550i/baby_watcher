@@ -53,6 +53,25 @@ class ParentNotification extends StatelessWidget {
           time: DateTime.now(),
         ),
       ],
+      DateTime.now().subtract(const Duration(days: 2)): [
+        NotificationModel(
+          title: "New Video Recieved",
+          subTitle: "Your babysitter shared a new video update",
+          time: DateTime.now(),
+        ),
+        NotificationModel(
+          title: "Activity Completed: Nap",
+          subTitle:
+              "Your babysitter confirmed that the activity was completd at 2:00 PM",
+          time: DateTime.now(),
+        ),
+        NotificationModel(
+          title: "Activity Completed: Nap",
+          subTitle:
+              "Your babysitter confirmed that the activity was completd at 2:00 PM",
+          time: DateTime.now(),
+        ),
+      ],
     };
 
     return Scaffold(
@@ -62,7 +81,7 @@ class ParentNotification extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Column(children: getNotifications(data)),
+            child: SafeArea(child: Column(children: getNotifications(data))),
           ),
         ),
       ),

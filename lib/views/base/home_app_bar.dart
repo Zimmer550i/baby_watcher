@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 AppBar homeAppBar() {
     return AppBar(
       backgroundColor: AppColors.indigo[25],
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
       leading: Padding(
         padding: const EdgeInsets.only(left: 16),
         child: Center(

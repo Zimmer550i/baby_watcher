@@ -14,9 +14,13 @@ AppBar customAppBar(String title) {
         color: AppColors.gray[800]
       ),),
       backgroundColor: AppColors.indigo[25],
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
       bottom: PreferredSize(
-        preferredSize: Size(double.infinity, 1),
-        child: Divider(color: AppColors.indigo[100]),
+        preferredSize: Size(double.infinity, 0),
+        child: Container(
+          height: 1,
+          color: AppColors.indigo[100]),
       ),
       leading: InkWell(
         borderRadius: BorderRadius.circular(99),

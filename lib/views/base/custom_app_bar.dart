@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-AppBar customAppBar(String title) {
+AppBar customAppBar(String title, {bool showBackButton = true}) {
     return AppBar(
       centerTitle: true,
       title: Text(title,
@@ -22,12 +22,12 @@ AppBar customAppBar(String title) {
           height: 1,
           color: AppColors.indigo[100]),
       ),
-      leading: InkWell(
+      leading: showBackButton ? InkWell(
         borderRadius: BorderRadius.circular(99),
         onTap: () {
           Get.back();
         },
         child: Center(child: SvgPicture.asset(AppIcons.arrowLeft)),
-      ),
+      ): null,
     );
   }

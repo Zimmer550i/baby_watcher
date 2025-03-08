@@ -30,7 +30,7 @@ AppBar homeAppBar() {
           children: [
             InkWell(
               onTap: () {
-                Get.toNamed(AppRoutes.parentNotification);
+                Get.toNamed(AppRoutes.notifications);
               },
               borderRadius: BorderRadius.circular(90),
               child: SvgPicture.asset(AppIcons.notification),

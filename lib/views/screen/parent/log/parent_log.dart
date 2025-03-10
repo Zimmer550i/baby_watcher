@@ -106,7 +106,7 @@ class _ParentLogState extends State<ParentLog> {
                 itemCount: days.length,
                 controller: ScrollController(
                   initialScrollOffset:
-                      (selected / 2).ceil() * 50 + (selected * 16),
+                      ((selected-2) * 50) + (selected * 16),
                 ),
                 itemBuilder: (context, index) {
                   return dayWidget(index);

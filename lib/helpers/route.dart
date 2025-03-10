@@ -6,12 +6,19 @@ import 'package:baby_watcher/views/screen/auth/signin.dart';
 import 'package:baby_watcher/views/screen/auth/signup.dart';
 import 'package:baby_watcher/views/screen/auth/verify_email.dart';
 import 'package:baby_watcher/views/screen/babysitter/babysitter_app.dart';
+import 'package:baby_watcher/views/screen/common/connections.dart';
 import 'package:baby_watcher/views/screen/common/notifications.dart';
+import 'package:baby_watcher/views/screen/common/profile_information.dart';
 import 'package:baby_watcher/views/screen/init/role_select.dart';
 import 'package:baby_watcher/views/screen/init/splash.dart';
 import 'package:baby_watcher/views/screen/init/welcome.dart';
 import 'package:baby_watcher/views/screen/parent/log/add_log.dart';
 import 'package:baby_watcher/views/screen/parent/parent_app.dart';
+import 'package:baby_watcher/views/screen/parent/profile/parent_card_details.dart';
+import 'package:baby_watcher/views/screen/parent/profile/parent_confirmation.dart';
+import 'package:baby_watcher/views/screen/parent/profile/parent_not_connected.dart';
+import 'package:baby_watcher/views/screen/parent/profile/parent_payment_method.dart';
+import 'package:baby_watcher/views/screen/parent/profile/parent_subscription.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -28,8 +35,15 @@ class AppRoutes {
   static String resetPasword = '/reset_password';
   static String connectMothersAccount = '/connect_mothers_account';
   static String notifications = '/notifications';
+  static String profileInformation = '/profile_information';
+  static String connections = '/connections';
 
   static String parentApp = '/parent_app';
+  static String parentSubscription = '/parent_subscription';
+  static String parentPaymentMethod = '/parent_payment_method';
+  static String parentCardDetails = '/parent_card_details';
+  static String parentConfirmation = '/parent_congratulations';
+  static String parentNotConnected = '/parent_not_connected';
 
   static String addLog = '/add_log';
 
@@ -50,6 +64,13 @@ class AppRoutes {
     babysitterApp: BabysitterApp(),
     addLog: AddLog(),
     notifications: Notifications(),
+    profileInformation: ProfileInformation(),
+    parentSubscription: ParentSubscription(),
+    parentPaymentMethod: ParentPaymentMethod(),
+    parentCardDetails: ParentCardDetails(),
+    parentConfirmation: ParentConfirmation(),
+    parentNotConnected: ParentNotConnected(),
+    connections: Connections(),
   };
 
   static List<GetPage> pages = [

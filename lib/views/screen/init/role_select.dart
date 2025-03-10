@@ -135,7 +135,7 @@ class _RoleSelectState extends State<RoleSelect> {
                 if (selected == 0) {
                   controller.userRole = Role.parent;
                   Get.toNamed(AppRoutes.signUp);
-                }else if(selected == 1){
+                } else if (selected == 1) {
                   controller.userRole = Role.babySitter;
                   Get.toNamed(AppRoutes.signUp);
                 }

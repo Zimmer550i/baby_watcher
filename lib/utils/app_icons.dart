@@ -47,4 +47,8 @@ class AppIcons {
   static const String email = 'assets/icons/email.svg';
   static const String eyeOff = 'assets/icons/eye_off.svg';
   static const String clock = 'assets/icons/clock.svg';
+  static const String tickCircle = 'assets/icons/tick_circle.svg';
+  static const String closeCircle = 'assets/icons/close_circle.svg';
+  static const String congrats = 'assets/icons/congrats.svg';
+  static const String mastercard = 'assets/icons/mastercard.svg';
 }

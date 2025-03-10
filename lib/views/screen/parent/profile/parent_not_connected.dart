@@ -1,0 +1,59 @@
+import 'package:baby_watcher/helpers/route.dart';
+import 'package:baby_watcher/utils/app_colors.dart';
+import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/views/base/custom_app_bar.dart';
+import 'package:baby_watcher/views/base/custom_text_field.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+
+class ParentNotConnected extends StatelessWidget {
+  const ParentNotConnected({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: customAppBar("Manage Connections"),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            const Spacer(flex: 18),
+            SvgPicture.asset(AppIcons.logo),
+            const SizedBox(height: 28),
+            Text(
+              "Currently, you are not connected with any babysitter",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontVariations: [FontVariation("wght", 400)],
+                fontSize: 18,
+                color: AppColors.gray,
+              ),
+            ),
+            const SizedBox(height: 28),
+            CustomTextField(
+              trailing: AppIcons.copy,
+              onTap: () => Get.offNamed(AppRoutes.connections),
+              controller: TextEditingController.fromValue(
+                TextEditingValue(text: "MW-9045"),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "**Share this key with your babysitter to connect",
+                style: TextStyle(
+                  fontVariations: [FontVariation("wght", 400)],
+                  fontSize: 12,
+                  color: AppColors.indigo,
+                ),
+              ),
+            ),
+            const Spacer(flex: 29),
+          ],
+        ),
+      ),
+    );
+  }
+}

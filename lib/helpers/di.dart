@@ -23,7 +23,8 @@ Future<Map<String, Map<String, String>>>  init() async {
   Get.lazyPut(() => ThemeController(sharedPreferences: Get.find()));
   Get.lazyPut(() => LocalizationController(sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeController());
-  Get.lazyPut(() => UserController(), fenix: true);
+  // Get.lazyPut(() => UserController(), fenix: true);
+  Get.put(UserController(), permanent: true);
 
 
 

@@ -8,6 +8,7 @@ class CustomTextField extends StatefulWidget {
   final String? hintText;
   final String? leading;
   final String? trailing;
+  final bool isDisabled;
   final TextEditingController? controller;
   final bool isPassword;
   final void Function()? onTap;
@@ -18,6 +19,7 @@ class CustomTextField extends StatefulWidget {
     this.leading,
     this.trailing,
     this.isPassword = false,
+    this.isDisabled = false,
     this.controller,
     this.onTap,
   });
@@ -68,7 +70,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
             if (widget.onTap != null) {
               widget.onTap!();
             } else {
-              focusNode.requestFocus();
+              if(!widget.isDisabled) {
+                focusNode.requestFocus();
+              }
             }
           },
           child: Container(
@@ -117,7 +121,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     focusNode: focusNode,
                     controller: widget.controller,
                     obscureText: isObscured,
-                    enabled: widget.onTap == null,
+                    enabled: !widget.isDisabled && widget.onTap == null,
                     onTapOutside: (event) {
                       setState(() {
                         isFocused = false;

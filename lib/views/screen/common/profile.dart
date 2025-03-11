@@ -89,6 +89,7 @@ class Profile extends StatelessWidget {
                                     Text(
                                       "Are you sure you want to",
                                       style: TextStyle(
+                                        fontVariations: [FontVariation("wght", 400)],
                                         color: Color(0xff4b4b4b),
                                         fontSize: 18,
                                       ),

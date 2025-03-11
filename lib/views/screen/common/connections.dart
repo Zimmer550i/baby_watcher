@@ -2,6 +2,7 @@ import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
+import 'package:baby_watcher/views/base/overlay_confirmation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -72,20 +73,36 @@ class Connections extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  if(user.userRole == Role.parent)
-                   Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.indigo,
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        AppIcons.editProfile,
+                  if (user.userRole == Role.parent)
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return OverlayConfirmation(
+                              title: "Are you sure you want to remove",
+                              highlight: "Jenny Wilson?",
+                              buttonTextLeft: "Cancel",
+                              buttonCallBackLeft: () => Get.back(),
+                              buttonTextRight: "Confirm",
+                              buttonCallBackRight: () => Get.back(),
+                              leftButtonIsSecondary: false,
+                            );
+                          },
+                        );
+                      },
+                      child: Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.indigo,
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(AppIcons.editProfile),
+                        ),
                       ),
                     ),
-                   )
                 ],
               ),
             ),

@@ -51,4 +51,6 @@ class AppIcons {
   static const String closeCircle = 'assets/icons/close_circle.svg';
   static const String congrats = 'assets/icons/congrats.svg';
   static const String mastercard = 'assets/icons/mastercard.svg';
+  static const String add = 'assets/icons/add.svg';
+  static const String close = 'assets/icons/close.svg';
 }

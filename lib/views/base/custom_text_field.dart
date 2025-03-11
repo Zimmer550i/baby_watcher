@@ -9,6 +9,7 @@ class CustomTextField extends StatefulWidget {
   final String? leading;
   final String? trailing;
   final bool isDisabled;
+  final double radius;
   final TextEditingController? controller;
   final bool isPassword;
   final void Function()? onTap;
@@ -20,6 +21,7 @@ class CustomTextField extends StatefulWidget {
     this.trailing,
     this.isPassword = false,
     this.isDisabled = false,
+    this.radius = 50,
     this.controller,
     this.onTap,
   });
@@ -70,7 +72,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             if (widget.onTap != null) {
               widget.onTap!();
             } else {
-              if(!widget.isDisabled) {
+              if (!widget.isDisabled) {
                 focusNode.requestFocus();
               }
             }
@@ -80,7 +82,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             padding: EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
               color: isFocused ? AppColors.indigo[50] : Colors.white,
-              borderRadius: BorderRadius.circular(50),
+              borderRadius: BorderRadius.circular(widget.radius),
               border: Border.all(
                 width: isFocused ? 1 : 0.5,
                 color: AppColors.indigo.shade400,

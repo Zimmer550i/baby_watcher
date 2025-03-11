@@ -27,6 +27,9 @@ class OverlayConfirmation extends StatelessWidget {
     return AlertDialog(
       insetPadding: EdgeInsets.symmetric(horizontal: 16),
       contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 28),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       backgroundColor: AppColors.indigo[25],
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,6 +37,7 @@ class OverlayConfirmation extends StatelessWidget {
         children: [
           Text(
             title,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: Color(0xff4b4b4b),
               fontVariations: [FontVariation("wght", 400)],

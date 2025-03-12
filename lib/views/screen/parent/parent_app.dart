@@ -43,7 +43,11 @@ class _ParentAppState extends State<ParentApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(controller: controller, children: pages),
+      body: PageView(
+        controller: controller,
+        physics: NeverScrollableScrollPhysics(),
+        children: pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
@@ -82,10 +86,15 @@ class _ParentAppState extends State<ParentApp> {
                 color: AppColors.indigo,
                 shape: BoxShape.circle,
               ),
-              child: FittedBox(child: Text(notifications[pos].toString(), style: TextStyle(
-                fontVariations: [FontVariation("wght", 500)],
-                color: Colors.white,
-              ),)),
+              child: FittedBox(
+                child: Text(
+                  notifications[pos].toString(),
+                  style: TextStyle(
+                    fontVariations: [FontVariation("wght", 500)],
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
         ],
       ),
@@ -104,10 +113,15 @@ class _ParentAppState extends State<ParentApp> {
                 color: AppColors.indigo[25],
                 shape: BoxShape.circle,
               ),
-              child: FittedBox(child: Text(notifications[pos].toString(), style: TextStyle(
-                fontVariations: [FontVariation("wght", 500)],
-                color: AppColors.indigo,
-              ),)),
+              child: FittedBox(
+                child: Text(
+                  notifications[pos].toString(),
+                  style: TextStyle(
+                    fontVariations: [FontVariation("wght", 500)],
+                    color: AppColors.indigo,
+                  ),
+                ),
+              ),
             ),
         ],
       ),

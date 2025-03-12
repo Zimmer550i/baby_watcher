@@ -4,6 +4,7 @@ import 'package:baby_watcher/views/screen/common/messages.dart';
 import 'package:baby_watcher/views/screen/common/profile.dart';
 import 'package:baby_watcher/views/screen/parent/emergency/parent_emergency.dart';
 import 'package:baby_watcher/views/screen/parent/log/parent_log.dart';
+import 'package:baby_watcher/views/screen/parent/monitor/parent_monitor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -19,7 +20,7 @@ class _ParentAppState extends State<ParentApp> {
   PageController controller = PageController(initialPage: 0);
   List<Widget> pages = [
     ParentLog(),
-    Center(child: Text("Page 2")),
+    ParentMonitor(),
     ParentEmergency(),
     Messages(),
     Profile(),

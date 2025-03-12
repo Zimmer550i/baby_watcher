@@ -69,34 +69,68 @@ class _VideoWidgetState extends State<VideoWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return Dialog(
-              insetPadding: EdgeInsets.all(16),
-              child: ClipRRect(
+        playVideo(context);
+      },
+      child: LayoutBuilder(
+        builder: (context, constraint) {
+          return Container(
+            constraints: BoxConstraints(minHeight: constraint.maxWidth / 2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              image: DecorationImage(
+                image: AssetImage(widget.thumbnail),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: Center(child: SvgPicture.asset(AppIcons.play)),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<dynamic> playVideo(BuildContext context) {
+    return showDialog(
+      context: context,
+      barrierColor: AppColors.gray[800]!.withAlpha(230),
+      builder: (context) {
+        return Dialog(
+          insetPadding: EdgeInsets.all(16),
+          insetAnimationDuration: Duration(milliseconds: 300),
+          child: Stack(
+            children: [
+              ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: CustomVideoPlayer(
                   customVideoPlayerController: controller,
                 ),
               ),
-            );
-          },
+              Positioned(
+                top: 8,
+                right: 8,
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: AppColors.gray.withAlpha(100),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        AppIcons.download,
+                        height: 24,
+                        width: 24,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       },
-      child: Hero(
-        tag: "video",
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(widget.thumbnail),
-            ),
-            SvgPicture.asset(AppIcons.play),
-          ],
-        ),
-      ),
     );
   }
 }

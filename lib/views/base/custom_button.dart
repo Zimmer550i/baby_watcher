@@ -11,12 +11,14 @@ class CustomButton extends StatefulWidget {
   final double? width;
   final String? leading;
   final double padding;
+  final double radius;
   const CustomButton({
     super.key,
     required this.text,
     this.onTap,
     this.leading,
     this.padding = 40,
+    this.radius = 99,
     this.isSecondary = false,
     this.isDisabled = false,
     this.height = 48,
@@ -44,7 +46,7 @@ class _CustomButtonState extends State<CustomButton> {
                   : widget.isDisabled
                   ? AppColors.indigo.shade300
                   : AppColors.indigo.shade500,
-          borderRadius: BorderRadius.circular(widget.height!),
+          borderRadius: BorderRadius.circular(widget.radius),
           border:
               widget.isSecondary ? Border.all(color: AppColors.indigo) : null,
         ),

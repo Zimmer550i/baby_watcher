@@ -54,4 +54,5 @@ class AppIcons {
   static const String add = 'assets/icons/add.svg';
   static const String close = 'assets/icons/close.svg';
   static const String play = 'assets/icons/play.svg';
+  static const String download = 'assets/icons/download.svg';
 }

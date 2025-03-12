@@ -1,7 +1,9 @@
 import 'package:baby_watcher/themes/light_theme.dart';
+import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_constants.dart';
 import 'package:baby_watcher/utils/message.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'controllers/localization_controller.dart';
@@ -12,6 +14,11 @@ import 'helpers/route.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Map<String, Map<String, String>> languages = await di.init();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: AppColors.indigo[25],
+    statusBarIconBrightness: Brightness.dark,
+  ));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(MyApp(languages: languages));
 }
 

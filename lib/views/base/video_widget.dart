@@ -37,7 +37,7 @@ class _VideoWidgetState extends State<VideoWidget> {
           child: Image.asset(widget.thumbnail),
         ),
         settingsButtonAvailable: false,
-        durationAfterControlsFadeOut: Durations.medium4,
+        durationAfterControlsFadeOut: Duration(seconds: 3),
         customVideoPlayerProgressBarSettings:
             CustomVideoPlayerProgressBarSettings(
               bufferedColor: AppColors.indigo[100]!,
@@ -63,6 +63,13 @@ class _VideoWidgetState extends State<VideoWidget> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    _videoPlayerController.dispose();
   }
 
   @override
@@ -105,27 +112,38 @@ class _VideoWidgetState extends State<VideoWidget> {
                   customVideoPlayerController: controller,
                 ),
               ),
-              Positioned(
-                top: 8,
-                right: 8,
-                child: GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    height: 30,
-                    width: 30,
-                    decoration: BoxDecoration(
-                      color: AppColors.gray.withAlpha(100),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        AppIcons.download,
-                        height: 24,
-                        width: 24,
+
+              ValueListenableBuilder(
+                valueListenable: controller.areControlsVisible,
+                builder: (context, isVisible, child) {
+                  return Positioned(
+                    top: 8,
+                    right: 8,
+                    child: GestureDetector(
+                      onTap: () {
+                      },
+                      child: AnimatedOpacity(
+                        duration: Duration(milliseconds: 300),
+                        opacity: isVisible ? 1 : 0,
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          decoration: BoxDecoration(
+                            color: AppColors.gray.withAlpha(100),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: SvgPicture.asset(
+                              AppIcons.download,
+                              height: 24,
+                              width: 24,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ],
           ),

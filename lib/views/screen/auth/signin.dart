@@ -50,7 +50,7 @@ class Signin extends StatelessWidget {
             CustomButton(
               text: "Login",
               onTap: () {
-                Get.toNamed(AppRoutes.parentApp);
+                Get.offAllNamed(AppRoutes.parentApp);
               },
             ),
             const SizedBox(height: 8),

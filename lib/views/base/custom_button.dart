@@ -35,7 +35,8 @@ class _CustomButtonState extends State<CustomButton> {
     return InkWell(
       borderRadius: BorderRadius.circular(widget.height!),
       onTap: widget.onTap,
-      child: Container(
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 100),
         height: widget.height,
         width: widget.width,
         padding: EdgeInsets.symmetric(horizontal: widget.padding),
@@ -61,7 +62,7 @@ class _CustomButtonState extends State<CustomButton> {
                 height: 24,
                 width: 24,
                 colorFilter: ColorFilter.mode(
-                  AppColors.indigo[25]!,
+                  widget.isSecondary ? AppColors.indigo : AppColors.indigo[25]!,
                   BlendMode.srcIn,
                 ),
               ),

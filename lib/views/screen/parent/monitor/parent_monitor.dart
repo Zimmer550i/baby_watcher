@@ -82,6 +82,7 @@ class _ParentMonitorState extends State<ParentMonitor> {
                   text: reqSent ? "Request Sent" : "Request Instant Video",
                   leading: reqSent ? AppIcons.tickCircle : AppIcons.video,
                   radius: 8,
+                  isSecondary: reqSent,
                   onTap: () {
                     setState(() {
                       reqSent = !reqSent;

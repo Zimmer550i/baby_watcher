@@ -11,6 +11,7 @@ import 'package:baby_watcher/views/base/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:vibration/vibration.dart';
 
 class BabysitterMonitor extends StatefulWidget {
   const BabysitterMonitor({super.key});
@@ -144,7 +145,10 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
                 SleepButton(
                   isAwake: !babySleeping,
                   timeText: "2h 35m",
-                  onChange: (p0) {
+                  onChange: (p0) async {
+                    if (await Vibration.hasVibrator()) {
+                      Vibration.vibrate(duration: 500);
+                    }
                     setState(() {
                       babySleeping = !p0;
                     });

@@ -15,6 +15,7 @@ class ParentMonitor extends StatefulWidget {
 
 class _ParentMonitorState extends State<ParentMonitor> {
   bool babySleeping = true;
+  bool reqSent = false;
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +73,20 @@ class _ParentMonitorState extends State<ParentMonitor> {
                       babySleeping = !babySleeping;
                     });
                   },
-                  child: SvgPicture.asset(babySleeping ? AppIcons.babyAsleep : AppIcons.babyAwake),
+                  child: SvgPicture.asset(
+                    babySleeping ? AppIcons.babyAsleep : AppIcons.babyAwake,
+                  ),
                 ),
                 const SizedBox(height: 32),
                 CustomButton(
-                  text: "Request Instant Video",
-                  leading: AppIcons.video,
+                  text: reqSent ? "Request Sent" : "Request Instant Video",
+                  leading: reqSent ? AppIcons.tickCircle : AppIcons.video,
                   radius: 8,
+                  onTap: () {
+                    setState(() {
+                      reqSent = !reqSent;
+                    });
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 24, bottom: 16),

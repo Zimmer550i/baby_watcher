@@ -34,7 +34,13 @@ class _VideoWidgetState extends State<VideoWidget> {
       customVideoPlayerSettings: CustomVideoPlayerSettings(
         placeholderWidget: Hero(
           tag: "video",
-          child: Image.asset(widget.thumbnail),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.asset(widget.thumbnail),
+              CircularProgressIndicator()
+            ],
+          ),
         ),
         settingsButtonAvailable: false,
         durationAfterControlsFadeOut: Duration(seconds: 3),

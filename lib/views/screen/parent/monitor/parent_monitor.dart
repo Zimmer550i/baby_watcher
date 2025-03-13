@@ -4,9 +4,17 @@ import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:baby_watcher/views/base/home_app_bar.dart';
 import 'package:baby_watcher/views/base/video_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class ParentMonitor extends StatelessWidget {
+class ParentMonitor extends StatefulWidget {
   const ParentMonitor({super.key});
+
+  @override
+  State<ParentMonitor> createState() => _ParentMonitorState();
+}
+
+class _ParentMonitorState extends State<ParentMonitor> {
+  bool babySleeping = true;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +35,7 @@ class ParentMonitor extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Baby is sleeping",
+                          babySleeping ? "Baby is sleeping" : "Baby is awake",
                           style: TextStyle(
                             fontVariations: [FontVariation("wght", 600)],
                             fontSize: 20,
@@ -35,7 +43,9 @@ class ParentMonitor extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "Since 3:10 PM",
+                          babySleeping
+                              ? "Since 3:10 PM"
+                              : "Awake since 3:10 PM",
                           style: TextStyle(
                             fontVariations: [FontVariation("wght", 400)],
                             fontSize: 14,
@@ -56,11 +66,13 @@ class ParentMonitor extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-
-                VideoWidget(
-                  url:
-                      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-                  thumbnail: "assets/images/thumbnail.png",
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      babySleeping = !babySleeping;
+                    });
+                  },
+                  child: SvgPicture.asset(babySleeping ? AppIcons.babyAsleep : AppIcons.babyAwake),
                 ),
                 const SizedBox(height: 32),
                 CustomButton(

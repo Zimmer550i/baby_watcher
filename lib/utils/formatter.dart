@@ -51,4 +51,14 @@ class Formatter {
 
     return "Invalid Month";
   }
+
+  static String countdown(Duration duration) {
+    String rtn = "";
+
+    rtn += duration.inMinutes.toString();
+    rtn += ":";
+    rtn += (duration.inSeconds - (duration.inMinutes * 60)).toString().padLeft(2, "0");
+
+    return rtn;
+  }
 }

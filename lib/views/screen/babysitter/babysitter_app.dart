@@ -2,6 +2,7 @@ import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/views/screen/babysitter/emergency/babysitter_emergency.dart';
 import 'package:baby_watcher/views/screen/babysitter/log/babysitter_log.dart';
+import 'package:baby_watcher/views/screen/babysitter/monitor/babysitter_monitor.dart';
 import 'package:baby_watcher/views/screen/common/messages.dart';
 import 'package:baby_watcher/views/screen/common/profile.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
   PageController controller = PageController(initialPage: 0);
   List<Widget> pages = [
     BabysitterLog(),
-    Center(child: Text("Page 2")),
+    BabysitterMonitor(),
     BabysitterEmergency(),
     Messages(),
     Profile(),

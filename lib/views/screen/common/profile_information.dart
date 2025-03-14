@@ -27,7 +27,7 @@ class _ProfileInformationState extends State<ProfileInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar("Profile Information"),
+      appBar: customAppBar(isEditing ? "Edit Profile" : "Profile Information"),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -63,11 +63,12 @@ class _ProfileInformationState extends State<ProfileInformation> {
                   isDisabled: !isEditing,
                   controller: nameController,
                 ),
-                CustomTextField(
-                  title: "Email",
-                  isDisabled: !isEditing,
-                  controller: emailController,
-                ),
+                if (!isEditing)
+                  CustomTextField(
+                    title: "Email",
+                    isDisabled: !isEditing,
+                    controller: emailController,
+                  ),
                 CustomTextField(
                   title: "Phone Number",
                   isDisabled: !isEditing,

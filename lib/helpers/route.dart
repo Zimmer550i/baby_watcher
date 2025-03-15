@@ -9,7 +9,7 @@ import 'package:baby_watcher/views/screen/babysitter/babysitter_app.dart';
 import 'package:baby_watcher/views/screen/common/connections.dart';
 import 'package:baby_watcher/views/screen/common/notifications.dart';
 import 'package:baby_watcher/views/screen/common/profile_information.dart';
-import 'package:baby_watcher/views/screen/init/role_select.dart';
+import 'package:baby_watcher/views/screen/auth/role_select.dart';
 import 'package:baby_watcher/views/screen/init/splash.dart';
 import 'package:baby_watcher/views/screen/init/welcome.dart';
 import 'package:baby_watcher/views/screen/parent/emergency/parent_add_contact.dart';

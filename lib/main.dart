@@ -11,6 +11,8 @@ import 'controllers/theme_controller.dart';
 import 'helpers/di.dart' as di;
 import 'helpers/route.dart';
 
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Map<String, Map<String, String>> languages = await di.init();
@@ -40,6 +42,7 @@ class MyApp extends StatelessWidget {
                 return GetMaterialApp(
                   title: AppConstants.APP_NAME,
                   debugShowCheckedModeBanner: false,
+                  scaffoldMessengerKey: rootScaffoldMessengerKey,
                   navigatorKey: Get.key,
                   // theme: themeController.darkTheme ? dark(): light(),
                   theme: light(),
@@ -52,7 +55,7 @@ class MyApp extends StatelessWidget {
                   ),
                   transitionDuration: const Duration(milliseconds: 500),
                   getPages: AppRoutes.pages,
-                  initialRoute: AppRoutes.splashScreen,
+                  initialRoute: AppRoutes.verifyEmail,
                 );
               },
             );

@@ -28,7 +28,7 @@ class AppColors {
     800: Color(0xff713f12),
     900: Color(0xff422006),
   });
-  
+
   static MaterialColor gray = MaterialColor(0xff4b5563, {
     25: Color(0xff_f9fafb),
     50: Color(0xff_f3f4f6),
@@ -42,4 +42,6 @@ class AppColors {
     800: Color(0xff_111827),
     900: Color(0xff_030712),
   });
+
+  static Color red = Color(0xffE65347);
 }

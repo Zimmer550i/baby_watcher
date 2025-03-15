@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 class CustomTextField extends StatefulWidget {
   final String? title;
   final String? hintText;
+  final String? errorText;
   final String? leading;
   final String? trailing;
   final bool isDisabled;
@@ -24,6 +25,7 @@ class CustomTextField extends StatefulWidget {
     this.radius = 50,
     this.controller,
     this.onTap,
+    this.errorText,
   });
 
   @override
@@ -56,15 +58,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8,
       children: [
         if (widget.title != null)
-          Text(
-            widget.title!,
-            style: TextStyle(
-              fontVariations: [FontVariation("wght", 600)],
-              fontSize: 16,
-              color: AppColors.gray[600],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(
+              widget.title!,
+              style: TextStyle(
+                fontVariations: [FontVariation("wght", 600)],
+                fontSize: 16,
+                color: AppColors.gray[600],
+              ),
             ),
           ),
         GestureDetector(
@@ -85,7 +89,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               borderRadius: BorderRadius.circular(widget.radius),
               border: Border.all(
                 width: isFocused ? 1 : 0.5,
-                color: AppColors.indigo.shade400,
+                color: widget.errorText != null ? AppColors.red : AppColors.indigo.shade400,
               ),
             ),
             child: Row(
@@ -178,6 +182,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
           ),
         ),
+        if (widget.errorText != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              widget.errorText!,
+              style: TextStyle(
+                fontVariations: [FontVariation("wght", 400)],
+                fontSize: 12,
+                color: AppColors.red,
+              ),
+            ),
+          ),
       ],
     );
   }

@@ -2,6 +2,8 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, prefer_collection_literals
 
 import 'dart:convert';
+import 'package:baby_watcher/controllers/api_service.dart';
+import 'package:baby_watcher/controllers/auth_controller.dart';
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -25,6 +27,8 @@ Future<Map<String, Map<String, String>>>  init() async {
   Get.lazyPut(() => HomeController());
   // Get.lazyPut(() => UserController(), fenix: true);
   Get.put(UserController(), permanent: true);
+  Get.put(ApiService(), permanent: true);
+  Get.put(AuthController(), permanent: true);
 
 
 

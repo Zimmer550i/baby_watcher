@@ -89,7 +89,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
               borderRadius: BorderRadius.circular(widget.radius),
               border: Border.all(
                 width: isFocused ? 1 : 0.5,
-                color: widget.errorText != null ? AppColors.red : AppColors.indigo.shade400,
+                color:
+                    widget.errorText != null
+                        ? AppColors.red
+                        : AppColors.indigo.shade400,
               ),
             ),
             child: Row(
@@ -169,7 +172,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       });
                     },
                     child: SvgPicture.asset(
-                      AppIcons.eyeOff,
+                      isObscured ? AppIcons.eye : AppIcons.eyeOff,
                       height: 20,
                       width: 20,
                       colorFilter: ColorFilter.mode(

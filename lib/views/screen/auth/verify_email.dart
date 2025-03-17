@@ -85,7 +85,11 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 const SizedBox(height: 24),
                 CustomButton(
                   text: "Verify",
+                  isLoading: isLoading,
                   onTap: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
                     final user = Get.find<UserController>();
                     user.userEmail = "wasiul0491@gmail.com";
                     try {
@@ -105,6 +109,9 @@ class _VerifyEmailState extends State<VerifyEmail> {
                     } catch (e) {
                       showSnackBar(e.toString());
                     }
+                    setState(() {
+                      isLoading = false;
+                    });
                   },
                 ),
                 const SizedBox(height: 8),

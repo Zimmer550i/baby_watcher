@@ -1,3 +1,5 @@
+import 'package:baby_watcher/controllers/user_controller.dart';
+import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/views/screen/babysitter/emergency/babysitter_emergency.dart';
@@ -7,6 +9,7 @@ import 'package:baby_watcher/views/screen/common/messages.dart';
 import 'package:baby_watcher/views/screen/common/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 class BabysitterApp extends StatefulWidget {
   const BabysitterApp({super.key});
@@ -40,6 +43,17 @@ class _BabysitterAppState extends State<BabysitterApp> {
     AppIcons.profile,
   ];
   List<int> notifications = [0, 0, 1, 2, 0];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((context) async {
+      if (Get.find<UserController>().connectionId == null) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        Get.offNamed(AppRoutes.connectMothersAccount);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

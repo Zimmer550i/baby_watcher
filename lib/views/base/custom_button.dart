@@ -9,6 +9,7 @@ class CustomButton extends StatefulWidget {
   final bool isDisabled;
   final double? height;
   final double? width;
+  final bool isLoading;
   final String? leading;
   final double padding;
   final double radius;
@@ -20,6 +21,7 @@ class CustomButton extends StatefulWidget {
     this.padding = 40,
     this.radius = 99,
     this.isSecondary = false,
+    this.isLoading = false,
     this.isDisabled = false,
     this.height = 48,
     this.width = double.infinity,
@@ -51,35 +53,45 @@ class _CustomButtonState extends State<CustomButton> {
           border:
               widget.isSecondary ? Border.all(color: AppColors.indigo) : null,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          spacing: 8,
-          children: [
-            if (widget.leading != null)
-              SvgPicture.asset(
-                widget.leading!,
-                height: 24,
-                width: 24,
-                colorFilter: ColorFilter.mode(
-                  widget.isSecondary ? AppColors.indigo : AppColors.indigo[25]!,
-                  BlendMode.srcIn,
+        child:
+            widget.isLoading
+                ? Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.indigo[25],
+                    strokeWidth: 4,
+                  ),
+                )
+                : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 8,
+                  children: [
+                    if (widget.leading != null)
+                      SvgPicture.asset(
+                        widget.leading!,
+                        height: 24,
+                        width: 24,
+                        colorFilter: ColorFilter.mode(
+                          widget.isSecondary
+                              ? AppColors.indigo
+                              : AppColors.indigo[25]!,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    Text(
+                      widget.text,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color:
+                            widget.isSecondary
+                                ? AppColors.indigo
+                                : AppColors.indigo[25],
+                        fontVariations: [FontVariation('wght', 600)],
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            Text(
-              widget.text,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
-                color:
-                    widget.isSecondary
-                        ? AppColors.indigo
-                        : AppColors.indigo[25],
-                fontVariations: [FontVariation('wght', 600)],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

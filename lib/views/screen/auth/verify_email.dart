@@ -1,7 +1,9 @@
+import 'package:baby_watcher/controllers/auth_controller.dart';
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,6 +19,7 @@ class VerifyEmail extends StatefulWidget {
 
 class _VerifyEmailState extends State<VerifyEmail> {
   TextEditingController otpController = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +60,8 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 ),
                 const SizedBox(height: 28),
                 Pinput(
-                  length: 5,
+                  length: 6,
+                  controller: otpController,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   onCompleted: (value) {},
                   defaultPinTheme: PinTheme(
@@ -81,12 +85,25 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 const SizedBox(height: 24),
                 CustomButton(
                   text: "Verify",
-                  onTap: () {
-                    final controller = Get.find<UserController>();
-                    if (controller.userRole == Role.parent) {
-                      Get.offAllNamed(AppRoutes.parentApp);
-                    } else {
-                      Get.toNamed(AppRoutes.connectMothersAccount);
+                  onTap: () async {
+                    final user = Get.find<UserController>();
+                    user.userEmail = "wasiul0491@gmail.com";
+                    try {
+                      final auth = Get.find<AuthController>();
+                      var message = await auth.verifyEmail(
+                        otpController.text.trim(),
+                      );
+                      if (message == "Success") {
+                        if (user.userRole == Role.parent) {
+                          Get.offAllNamed(AppRoutes.parentApp);
+                        } else if (user.userRole == Role.babySitter) {
+                          Get.offAllNamed(AppRoutes.babysitterApp);
+                        }
+                      } else {
+                        showSnackBar(message);
+                      }
+                    } catch (e) {
+                      showSnackBar(e.toString());
                     }
                   },
                 ),
@@ -104,7 +121,26 @@ class _VerifyEmailState extends State<VerifyEmail> {
                     ),
                     GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: () {},
+                      onTap: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        try {
+                          final auth = Get.find<AuthController>();
+
+                          if (await auth.sendOtp()) {
+                            showSnackBar(
+                              "Verification email sent",
+                              isError: false,
+                            );
+                          }
+                        } catch (e) {
+                          showSnackBar(e.toString());
+                        }
+                        setState(() {
+                          isLoading = false;
+                        });
+                      },
                       child: Text(
                         " Resend ",
                         style: TextStyle(

@@ -1,6 +1,8 @@
+import 'package:baby_watcher/controllers/auth_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +10,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
-class OtpVerification extends StatelessWidget {
+class OtpVerification extends StatefulWidget {
   const OtpVerification({super.key});
+
+  @override
+  State<OtpVerification> createState() => _OtpVerificationState();
+}
+
+class _OtpVerificationState extends State<OtpVerification> {
+  bool isLoading = false;
+  TextEditingController otpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +60,9 @@ class OtpVerification extends StatelessWidget {
                 ),
                 const SizedBox(height: 28),
                 Pinput(
-                  length: 5,
+                  length: 6,
+                  controller: otpController,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  onCompleted: (value) {},
                   defaultPinTheme: PinTheme(
                     height: 48,
                     width: 48,
@@ -74,8 +84,36 @@ class OtpVerification extends StatelessWidget {
                 const SizedBox(height: 24),
                 CustomButton(
                   text: "Verify",
-                  onTap: () {
-                    Get.toNamed(AppRoutes.resetPasword);
+                  isLoading: isLoading,
+                  onTap: () async {
+                    if (otpController.text.isEmpty) {
+                      showSnackBar("Enter an OTP Code");
+                      return;
+                    }
+                    setState(() {
+                      isLoading = true;
+                    });
+
+                    try {
+                      final auth = Get.find<AuthController>();
+
+                      final message = await auth.verifyEmail(
+                        otpController.text.trim(),
+                        isResetingPassword: true
+                      );
+
+                      if (message.contains("Success")) {
+                        Get.toNamed(AppRoutes.resetPasword, parameters: {"Authorization": message.substring(8)});
+                      } else {
+                        showSnackBar(message);
+                      }
+                    } catch (e) {
+                      showSnackBar(e.toString());
+                    }
+
+                    setState(() {
+                      isLoading = false;
+                    });
                   },
                 ),
                 const SizedBox(height: 8),
@@ -92,7 +130,20 @@ class OtpVerification extends StatelessWidget {
                     ),
                     GestureDetector(
                       behavior: HitTestBehavior.translucent,
-                      onTap: () {},
+                      onTap: () async {
+                        try {
+                          final auth = Get.find<AuthController>();
+
+                          if (await auth.sendOtp()) {
+                            showSnackBar(
+                              "Verification email sent",
+                              isError: false,
+                            );
+                          }
+                        } catch (e) {
+                          showSnackBar(e.toString());
+                        }
+                      },
                       child: Text(
                         " Resend ",
                         style: TextStyle(

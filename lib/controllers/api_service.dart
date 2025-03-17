@@ -7,14 +7,15 @@ import 'token_service.dart';
 class ApiService extends GetxService {
   final String baseUrl = 'http://192.168.10.199:5002/api/v1';
 
-  Future<Map<String, dynamic>?> getRequest(String endpoint, {bool authRequired = false}) async {
+  Future<Map<String, dynamic>?> getRequest(String endpoint, {bool authRequired = false, Map<String, String>? customHeaders}) async {
     try {
-      final headers = await _getHeaders(authRequired);
+      final headers = await _getHeaders(authRequired, customHeaders: customHeaders);
       final response = await http.get(Uri.parse('$baseUrl$endpoint'), headers: headers);
 
       if (response.statusCode == 401) {
-        bool refreshed = await _refreshToken();
-        if (refreshed) return getRequest(endpoint, authRequired: authRequired);
+        
+        // bool refreshed = await _refreshToken();
+        // if (refreshed) return getRequest(endpoint, authRequired: authRequired);
       }
 
       return _handleResponse(response);
@@ -23,9 +24,9 @@ class ApiService extends GetxService {
       return null;
     }
   }
-  Future<Map<String, dynamic>?> postRequest(String endpoint, dynamic data, {bool authRequired = false}) async {
+  Future<Map<String, dynamic>?> postRequest(String endpoint, dynamic data, {bool authRequired = false, Map<String, String>? customHeaders}) async {
     try {
-      final headers = await _getHeaders(authRequired);
+      final headers = await _getHeaders(authRequired, customHeaders: customHeaders);
       final response = await http.post(Uri.parse('$baseUrl$endpoint'), headers: headers, body: jsonEncode(data));
 
       if (response.statusCode == 401) {
@@ -68,23 +69,26 @@ class ApiService extends GetxService {
     }
   }
 
-  Map<String, dynamic>? _handleResponse(http.Response response) {
+  Map<String, dynamic> _handleResponse(http.Response response) {
     if (response.statusCode == 200 || response.statusCode == 201) {
+      debugPrint('API Called [${response.statusCode}]: ${response.body}');
       return jsonDecode(response.body);
     } else {
       debugPrint('API Error [${response.statusCode}]: ${response.body}');
-      return null;
+      return jsonDecode(response.body);
     }
   }
 
-  // Retrieve Headers with Token
-  Future<Map<String, String>> _getHeaders(bool authRequired) async {
+  Future<Map<String, String>> _getHeaders(bool authRequired, {Map<String, String>? customHeaders}) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     if (authRequired) {
       String? token = await TokenService.getAccessToken();
       if (token != null) {
         headers['Authorization'] = 'Bearer $token';
       }
+    }
+    if (customHeaders != null) {
+      headers.addAll(customHeaders);
     }
     return headers;
   }

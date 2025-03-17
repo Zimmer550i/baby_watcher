@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
                   ),
                   transitionDuration: const Duration(milliseconds: 500),
                   getPages: AppRoutes.pages,
-                  initialRoute: AppRoutes.verifyEmail,
+                  initialRoute: AppRoutes.splashScreen,
                 );
               },
             );

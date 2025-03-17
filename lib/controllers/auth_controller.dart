@@ -11,12 +11,6 @@ class AuthController extends GetxController {
   var isLoggedIn = false.obs;
   var userInfo = {}.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    checkLoginStatus();
-  }
-
   Future<String> login(String email, String password) async {
     final response = await apiService.postRequest('/auth/login', {
       'email': email,
@@ -45,17 +39,22 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>?> getUserInfo() async {
+  Future<String> getUserInfo() async {
     final response = await apiService.getRequest(
       '/user/profile',
       authRequired: true,
     );
-    if (response != null) {
-      userInfo.value = response;
+
+    if (response != null && response['success'] == true) {
+      Map<String, dynamic> user = response['data'];
+
+      userInfo.value = user;
+      userController.setUserData(user);
       isLoggedIn.value = true;
-      return response;
+
+      return "Success";
     } else {
-      return null;
+      return response?['message'] ?? "Unknown error";
     }
   }
 
@@ -153,13 +152,15 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> checkLoginStatus() async {
+  Future<bool> checkLoginStatus() async {
     String? token = await TokenService.getAccessToken();
     if (token != null) {
       debugPrint('🔍 Token found. Fetching user info...');
       await getUserInfo();
+      return true;
     } else {
       isLoggedIn.value = false;
+      return false;
     }
   }
 

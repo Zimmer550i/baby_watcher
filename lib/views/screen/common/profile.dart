@@ -1,3 +1,4 @@
+import 'package:baby_watcher/controllers/auth_controller.dart';
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
@@ -58,13 +59,15 @@ class Profile extends StatelessWidget {
                         profileOptions(
                           iconPath: AppIcons.subscription,
                           title: "Subscription",
-                          onTap: () => Get.toNamed(AppRoutes.parentSubscription),
+                          onTap:
+                              () => Get.toNamed(AppRoutes.parentSubscription),
                         ),
                       if (user.userRole == Role.parent)
                         profileOptions(
                           iconPath: AppIcons.connection,
                           title: "Manage Connection",
-                          onTap: () => Get.toNamed(AppRoutes.parentNotConnected),
+                          onTap:
+                              () => Get.toNamed(AppRoutes.parentNotConnected),
                         ),
                       if (user.userRole == Role.babySitter)
                         profileOptions(
@@ -89,7 +92,9 @@ class Profile extends StatelessWidget {
                                     Text(
                                       "Are you sure you want to",
                                       style: TextStyle(
-                                        fontVariations: [FontVariation("wght", 400)],
+                                        fontVariations: [
+                                          FontVariation("wght", 400),
+                                        ],
                                         color: Color(0xff4b4b4b),
                                         fontSize: 18,
                                       ),
@@ -113,7 +118,10 @@ class Profile extends StatelessWidget {
                                           child: CustomButton(
                                             text: "Logout",
                                             isSecondary: true,
-                                            onTap: () {
+                                            onTap: () async {
+                                              final auth =
+                                                  Get.find<AuthController>();
+                                              auth.logout();
                                               Get.offAllNamed(
                                                 AppRoutes.splashScreen,
                                               );

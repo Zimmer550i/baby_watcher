@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-AppBar customAppBar(String title, {bool showBackButton = true}) {
+AppBar customAppBar(String title, {bool showBackButton = true, List<Widget> actions = const []}) {
     return AppBar(
       centerTitle: true,
       title: Text(title,
@@ -29,5 +29,6 @@ AppBar customAppBar(String title, {bool showBackButton = true}) {
         },
         child: Center(child: SvgPicture.asset(AppIcons.arrowLeft)),
       ): null,
+      actions: actions,
     );
   }

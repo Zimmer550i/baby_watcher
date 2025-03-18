@@ -20,7 +20,9 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   bool isLoading = false;
-  TextEditingController emailController = TextEditingController();
+  TextEditingController emailController = TextEditingController(
+    text: Get.find<UserController>().userEmail,
+  );
 
   @override
   Widget build(BuildContext context) {

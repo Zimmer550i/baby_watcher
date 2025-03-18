@@ -1,6 +1,8 @@
+import 'package:baby_watcher/controllers/auth_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:baby_watcher/views/base/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,69 @@ class ConnectMothersAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppBar(
+        "",
+        showBackButton: false,
+        actions: [
+          TextButton(
+            onPressed: () async {
+              bool? confirmLogout = await showDialog(
+                context: context,
+                builder:
+                    (context) => AlertDialog(
+                      contentPadding: EdgeInsets.all(16),
+                      title: Text(
+                        "Confirm Logout",
+                        style: TextStyle(
+                          fontVariations: [FontVariation("wght", 600)],
+                          fontSize: 24,
+                          color: AppColors.indigo,
+                        ),
+                      ),
+                      content: Text(
+                        "Are you sure you want to log out?",
+                        style: TextStyle(
+                          fontVariations: [FontVariation("wght", 400)],
+                          fontSize: 16,
+                          color: AppColors.gray,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(
+                              fontVariations: [FontVariation("wght", 400)],
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: Text(
+                            "Logout",
+                            style: TextStyle(
+                              fontVariations: [FontVariation("wght", 400)],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+              );
+
+              if (confirmLogout == true) {
+                final auth = Get.find<AuthController>();
+                await auth.logout();
+                Get.offAllNamed(AppRoutes.welcome);
+              }
+            },
+            child: Text(
+              "Logout",
+              style: TextStyle(fontVariations: [FontVariation("wght", 400)]),
+            ),
+          ),
+        ],
+      ),
       body: Align(
         alignment: Alignment.center,
         child: SingleChildScrollView(
@@ -58,6 +123,7 @@ class ConnectMothersAccount extends StatelessWidget {
                     Get.offAllNamed(AppRoutes.babysitterApp);
                   },
                 ),
+                const SizedBox(height: 80),
               ],
             ),
           ),

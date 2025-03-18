@@ -91,7 +91,6 @@ class _VerifyEmailState extends State<VerifyEmail> {
                       isLoading = true;
                     });
                     final user = Get.find<UserController>();
-                    user.userEmail = "wasiul0491@gmail.com";
                     try {
                       final auth = Get.find<AuthController>();
                       var message = await auth.verifyEmail(

@@ -54,6 +54,8 @@ class _SigninState extends State<Signin> {
               alignment: Alignment.centerRight,
               child: GestureDetector(
                 onTap: () {
+                  final user = Get.find<UserController>();
+                  user.userEmail = emailController.text.trim();
                   Get.toNamed(AppRoutes.forgotPassword);
                 },
                 child: Text(
@@ -82,15 +84,16 @@ class _SigninState extends State<Signin> {
                     passController.text.trim(),
                   );
 
-                  if (message == "Success") {
-                    if (userController.isVerified) {
-                      if (userController.userRole == Role.parent) {
-                        Get.offAllNamed(AppRoutes.parentApp);
-                      } else {
-                        Get.offAllNamed(AppRoutes.babysitterApp);
-                      }
+                  if (message ==
+                      "Please verify your account, then try to login again") {
+                    userController.userEmail = emailController.text.trim();
+                    authController.sendOtp();
+                    Get.toNamed(AppRoutes.verifyEmail);
+                  } else if (message == "Success") {
+                    if (userController.userRole == Role.parent) {
+                      Get.offAllNamed(AppRoutes.parentApp);
                     } else {
-                      Get.toNamed(AppRoutes.verifyEmail);
+                      Get.offAllNamed(AppRoutes.babysitterApp);
                     }
                   } else {
                     showSnackBar(message);

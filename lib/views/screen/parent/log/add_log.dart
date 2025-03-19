@@ -1,10 +1,16 @@
+import 'package:baby_watcher/controllers/log_controller.dart';
 import 'package:baby_watcher/models/log_model.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/formatter.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:baby_watcher/views/base/custom_drop_down.dart';
 import 'package:baby_watcher/views/base/custom_text_field.dart';
+import 'package:baby_watcher/views/base/overlay_confirmation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/instance_manager.dart';
 
 class AddLog extends StatefulWidget {
   final LogModel? log;
@@ -17,6 +23,8 @@ class AddLog extends StatefulWidget {
 class _AddLogState extends State<AddLog> {
   final dateController = TextEditingController();
   final timeController = TextEditingController();
+  final nameController = TextEditingController();
+  final logController = Get.find<LogController>();
   DateTime? date;
   TimeOfDay? time;
   String? activity;
@@ -28,7 +36,10 @@ class _AddLogState extends State<AddLog> {
     if (widget.log != null) {
       date = widget.log!.date;
       time = widget.log!.time;
-      activity = widget.log!.name;
+      nameController.text = widget.log!.name;
+      activity =
+          widget.log!.activity![0].toUpperCase() +
+          widget.log!.activity!.substring(1);
       if (time != null) {
         timeController.text =
             "${(time!.hourOfPeriod).toString().padLeft(2, "0")}:${(time!.minute).toString().padLeft(2, "0")}";
@@ -85,11 +96,25 @@ class _AddLogState extends State<AddLog> {
                     "Nap",
                     "Physical Activity",
                     "Shower",
+                    "Others",
                   ],
+                  onChanged:
+                      (p0) => setState(() {
+                        activity = p0;
+                      }),
                   title: "Select Activity",
                   hintText: "Select One",
                 ),
                 const SizedBox(height: 24),
+                if (activity == "Others")
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: CustomTextField(
+                      title: "Activity Name",
+                      hintText: "Enter a Name",
+                      controller: nameController,
+                    ),
+                  ),
                 CustomTextField(
                   title: "Set Time",
                   hintText: "Pick a Time",
@@ -112,7 +137,7 @@ class _AddLogState extends State<AddLog> {
                     }
                   },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -120,19 +145,60 @@ class _AddLogState extends State<AddLog> {
                       Expanded(
                         flex: 2,
                         child: CustomButton(
-                          text: "Cancel",
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => OverlayConfirmation(
+                                    title: "Are you sure you want to delete",
+                                    highlight: "${widget.log!.name}?",
+                                    buttonTextLeft: "No",
+                                    leftButtonIsSecondary: false,
+                                    buttonCallBackLeft: () => Get.back(),
+                                    buttonTextRight: "Yes",
+                                    buttonCallBackRight: () async {
+                                      final response = await logController
+                                          .deleteLog(widget.log!.id.toString());
+
+                                      if (response == "Success") {
+                                        Get.back();
+                                        Get.back();
+                                        showSnackBar(
+                                          "Log Deleted",
+                                          isError: false,
+                                        );
+                                        Future.delayed(
+                                          const Duration(seconds: 1),
+                                          () => logController.getLogs(
+                                            widget.log!.date,
+                                          ),
+                                        );
+                                      } else {
+                                        Get.back();
+                                        showSnackBar(response);
+                                      }
+                                    },
+                                  ),
+                            );
+                          },
+                          text: "Delete",
                           isSecondary: true,
                         ),
                       ),
-                    if (widget.log != null) const SizedBox(width: 20,),
-                    if(widget.log == null) const Spacer(),
-                    Expanded(
-                      flex: 2,
-                      child: CustomButton(
-                        text: "Save",
+                    if (widget.log != null) const SizedBox(width: 20),
+                    if (widget.log == null) const Spacer(),
+                    if (widget.log != null)
+                      Expanded(
+                        flex: 2,
+                        child: CustomButton(text: "Update", onTap: updateLog),
                       ),
-                    ),
-                    if(widget.log == null) const Spacer(),
+                    if (widget.log == null)
+                      Expanded(
+                        flex: 2,
+                        child: CustomButton(text: "Save", onTap: createLog),
+                      ),
+
+                    if (widget.log == null) const Spacer(),
                   ],
                 ),
               ],
@@ -141,5 +207,62 @@ class _AddLogState extends State<AddLog> {
         ),
       ),
     );
+  }
+
+  updateLog() async {
+    widget.log!.activity = activity;
+    widget.log!.date = date ?? DateTime.now();
+    widget.log!.time = time ?? TimeOfDay.now();
+    widget.log!.name = nameController.text;
+    final response = await logController.updateLog(widget.log!);
+    if (response == "Success") {
+      Get.back();
+      Get.back();
+      showSnackBar("Log Updated", isError: false);
+      Future.delayed(
+        const Duration(seconds: 1),
+        () => logController.getLogs(widget.log!.date),
+      );
+    } else {
+      Get.back();
+      showSnackBar(response);
+    }
+  }
+
+  createLog() async {
+    String formatedTime = Formatter.timeFormatter(
+      time: time ?? TimeOfDay.now(),
+    );
+    String formatedDate = Formatter.dateFormatter(date ?? DateTime.now());
+    // String formatedActivity = switch (activity) {
+    //   "Meal" => "meal",
+    //   "Nap" => "nap",
+    //   "Medicine" => "medicine",
+    //   "Physical Activity" => "physicalActivity",
+    //   "Shower" => "shower",
+    //   "Others" => "others",
+    //   String() => throw UnimplementedError(),
+    //   null => throw UnimplementedError(),
+    // };
+
+    final data = {
+      "activity": activity,
+      "name": nameController.text,
+      "time": formatedTime,
+      "date": formatedDate,
+    };
+
+    final response = await logController.createLog(data);
+    if (response == "Success") {
+      Get.back();
+      showSnackBar("Log Created", isError: false);
+      Future.delayed(
+        const Duration(seconds: 1),
+        () => logController.getLogs(date ?? DateTime.now()),
+      );
+    } else {
+      Get.back();
+      showSnackBar(response);
+    }
   }
 }

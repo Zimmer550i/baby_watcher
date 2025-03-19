@@ -3,7 +3,6 @@ import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/views/screen/babysitter/emergency/babysitter_emergency.dart';
-import 'package:baby_watcher/views/screen/babysitter/log/babysitter_log.dart';
 import 'package:baby_watcher/views/screen/babysitter/monitor/babysitter_monitor.dart';
 import 'package:baby_watcher/views/screen/common/messages.dart';
 import 'package:baby_watcher/views/screen/common/profile.dart';
@@ -22,7 +21,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
   int index = 0;
   PageController controller = PageController(initialPage: 0);
   List<Widget> pages = [
-    BabysitterLog(),
+    // BabysitterLog(),
     BabysitterMonitor(),
     BabysitterEmergency(),
     Messages(),

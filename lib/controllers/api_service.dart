@@ -7,16 +7,21 @@ import 'token_service.dart';
 class ApiService extends GetxService {
   final String baseUrl = 'http://192.168.10.199:5002/api/v1';
 
-  Future<Map<String, dynamic>?> getRequest(String endpoint, {bool authRequired = false, Map<String, String>? customHeaders}) async {
+  Future<Map<String, dynamic>?> getRequest(
+    String endpoint, {
+    bool authRequired = false,  
+    Map<String, String>? customHeaders,
+    Map<String, String>? params,
+  }) async {
     try {
-      final headers = await _getHeaders(authRequired, customHeaders: customHeaders);
-      final response = await http.get(Uri.parse('$baseUrl$endpoint'), headers: headers);
-
-      if (response.statusCode == 401) {
-        
-        // bool refreshed = await _refreshToken();
-        // if (refreshed) return getRequest(endpoint, authRequired: authRequired);
-      }
+      final headers = await _getHeaders(
+        authRequired,
+        customHeaders: customHeaders,
+      );
+      final uri = Uri.parse(
+        '$baseUrl$endpoint',
+      ).replace(queryParameters: params);
+      final response = await http.get(uri, headers: headers);
 
       return _handleResponse(response);
     } catch (e) {
@@ -24,15 +29,27 @@ class ApiService extends GetxService {
       return null;
     }
   }
-  Future<Map<String, dynamic>?> postRequest(String endpoint, dynamic data, {bool authRequired = false, Map<String, String>? customHeaders}) async {
-    try {
-      final headers = await _getHeaders(authRequired, customHeaders: customHeaders);
-      final response = await http.post(Uri.parse('$baseUrl$endpoint'), headers: headers, body: jsonEncode(data));
 
-      if (response.statusCode == 401) {
-        bool refreshed = await _refreshToken();
-        if (refreshed) return postRequest(endpoint, data, authRequired: authRequired);
-      }
+  Future<Map<String, dynamic>?> postRequest(
+    String endpoint,
+    dynamic data, {
+    bool authRequired = false,
+    Map<String, String>? customHeaders,
+    Map<String, String>? params,
+  }) async {
+    try {
+      final headers = await _getHeaders(
+        authRequired,
+        customHeaders: customHeaders,
+      );
+      final uri = Uri.parse(
+        '$baseUrl$endpoint',
+      ).replace(queryParameters: params);
+      final response = await http.post(
+        uri,
+        headers: headers,
+        body: jsonEncode(data),
+      );
 
       return _handleResponse(response);
     } catch (e) {
@@ -41,31 +58,54 @@ class ApiService extends GetxService {
     }
   }
 
-  // No use for now 
-  Future<bool> _refreshToken() async {
+  Future<Map<String, dynamic>?> deleteRequest(
+    String endpoint, {
+    bool authRequired = false,
+    Map<String, String>? customHeaders,
+    Map<String, String>? params,
+  }) async {
     try {
-      String? refreshToken = await TokenService.getRefreshToken();
-      if (refreshToken == null) return false;
+      final headers = await _getHeaders(
+        authRequired,
+        customHeaders: customHeaders,
+      );
+      final uri = Uri.parse(
+        '$baseUrl$endpoint',
+      ).replace(queryParameters: params);
+      final response = await http.delete(uri, headers: headers);
 
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/refresh'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'refresh_token': refreshToken}),
+      return _handleResponse(response);
+    } catch (e) {
+      debugPrint('Error in DELETE: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> updateRequest(
+    String endpoint,
+    dynamic data, {
+    bool authRequired = false,
+    Map<String, String>? customHeaders,
+    Map<String, String>? params,
+  }) async {
+    try {
+      final headers = await _getHeaders(
+        authRequired,
+        customHeaders: customHeaders,
+      );
+      final uri = Uri.parse(
+        '$baseUrl$endpoint',
+      ).replace(queryParameters: params);
+      final response = await http.patch(
+        uri,
+        headers: headers,
+        body: jsonEncode(data),
       );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        await TokenService.saveTokens(data['access_token'], data['refresh_token']);
-        debugPrint('🔄 Token refreshed!');
-        return true;
-      } else {
-        await TokenService.clearTokens();
-        debugPrint('❌ Refresh token expired. User must log in again.');
-        return false;
-      }
+      return _handleResponse(response);
     } catch (e) {
-      debugPrint('Error refreshing token: $e');
-      return false;
+      debugPrint('Error in PUT: $e');
+      return null;
     }
   }
 
@@ -79,7 +119,10 @@ class ApiService extends GetxService {
     }
   }
 
-  Future<Map<String, String>> _getHeaders(bool authRequired, {Map<String, String>? customHeaders}) async {
+  Future<Map<String, String>> _getHeaders(
+    bool authRequired, {
+    Map<String, String>? customHeaders,
+  }) async {
     Map<String, String> headers = {'Content-Type': 'application/json'};
     if (authRequired) {
       String? token = await TokenService.getAccessToken();

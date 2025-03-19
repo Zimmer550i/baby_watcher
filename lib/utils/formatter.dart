@@ -57,7 +57,24 @@ class Formatter {
 
     rtn += duration.inMinutes.toString();
     rtn += ":";
-    rtn += (duration.inSeconds - (duration.inMinutes * 60)).toString().padLeft(2, "0");
+    rtn += (duration.inSeconds - (duration.inMinutes * 60)).toString().padLeft(
+      2,
+      "0",
+    );
+
+    return rtn;
+  }
+
+  static String dateFormatter(DateTime date) {
+    String rtn = "";
+
+    rtn += date.year.toString();
+    rtn += "-";
+
+    rtn += date.month.toString();
+    rtn += "-";
+
+    rtn += date.day.toString();
 
     return rtn;
   }

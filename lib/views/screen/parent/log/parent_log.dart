@@ -1,3 +1,4 @@
+import 'package:baby_watcher/controllers/log_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/models/log_model.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
@@ -17,26 +18,8 @@ class ParentLog extends StatefulWidget {
 
 class _ParentLogState extends State<ParentLog> {
   List<DateTime> days = [];
-  List<LogModel> logs = [
-    LogModel(
-      type: LogType.meal,
-      time: TimeOfDay(hour: 13, minute: 30),
-      isCompleted: true,
-    ),
-    LogModel(
-      type: LogType.nap,
-      time: TimeOfDay(hour: 14, minute: 00),
-      isCompleted: true,
-    ),
-    LogModel(type: LogType.medicine, time: TimeOfDay(hour: 15, minute: 00)),
-    LogModel(type: LogType.shower, time: TimeOfDay(hour: 16, minute: 00)),
-    LogModel(
-      type: LogType.physicalActivity,
-      time: TimeOfDay(hour: 16, minute: 30),
-    ),
-    LogModel(type: LogType.meal, time: TimeOfDay(hour: 20, minute: 00)),
-  ];
   int selected = 0;
+  final logController = Get.find<LogController>();
 
   @override
   void initState() {
@@ -53,6 +36,7 @@ class _ParentLogState extends State<ParentLog> {
         count++;
       }
     }
+    logController.getLogs(DateTime.now());
   }
 
   @override
@@ -105,8 +89,7 @@ class _ParentLogState extends State<ParentLog> {
                 clipBehavior: Clip.none,
                 itemCount: days.length,
                 controller: ScrollController(
-                  initialScrollOffset:
-                      ((selected-2) * 50) + (selected * 16),
+                  initialScrollOffset: ((selected - 2) * 50) + (selected * 16),
                 ),
                 itemBuilder: (context, index) {
                   return dayWidget(index);
@@ -123,12 +106,21 @@ class _ParentLogState extends State<ParentLog> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: logs.length,
-                itemBuilder: (context, index) {
-                  return logWidget(logs[index]);
-                },
-              ),
+              child: Obx(() {
+                if (logController.isLoading.value) {
+                  return Align(
+                    alignment: Alignment.topCenter,
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return ListView.builder(
+                    itemCount: logController.logs.length,
+                    itemBuilder: (context, index) {
+                      return logWidget(logController.logs[index]);
+                    },
+                  );
+                }
+              }),
             ),
           ],
         ),
@@ -144,6 +136,7 @@ class _ParentLogState extends State<ParentLog> {
           setState(() {
             selected = index;
           });
+          logController.getLogs(days[index]);
         },
         child: Container(
           height: 58,
@@ -201,9 +194,9 @@ class _ParentLogState extends State<ParentLog> {
   }
 
   Widget logWidget(LogModel item) {
+    // return Text(item.id);
     bool isPast = item.time.isBefore(TimeOfDay.now());
     bool notConfirmed = !item.isCompleted && isPast;
-    // notConfirmed = true;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
@@ -235,13 +228,15 @@ class _ParentLogState extends State<ParentLog> {
                   color: AppColors.indigo[50],
                 ),
                 child: Center(
-                  child: SvgPicture.asset(switch (item.type) {
-                    LogType.meal => AppIcons.meal,
-                    LogType.nap => AppIcons.nap,
-                    LogType.medicine => AppIcons.med,
-                    LogType.shower => AppIcons.shower,
-                    LogType.physicalActivity => AppIcons.physical,
-                    LogType.others => AppIcons.motherWithBaby,
+                  child: SvgPicture.asset(switch (item.activity) {
+                    "Meal" => AppIcons.meal,
+                    "Nap" => AppIcons.nap,
+                    "Medicine" => AppIcons.med,
+                    "Shower" => AppIcons.shower,
+                    "Physical Activity" => AppIcons.physical,
+                    "Others" => AppIcons.motherWithBaby,
+                    String() => AppIcons.motherWithBaby,
+                    null => throw UnimplementedError(),
                   }),
                 ),
               ),

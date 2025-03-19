@@ -110,7 +110,9 @@ class _CustomDropDownState extends State<CustomDropDown> {
                                     setState(() {
                                       isExpanded = false;
                                       currentVal = e;
-                                      widget.onChanged ?? (e);
+                                      if (widget.onChanged != null) {
+                                        widget.onChanged!(e);
+                                      }
                                     });
                                   },
                                   child: Container(

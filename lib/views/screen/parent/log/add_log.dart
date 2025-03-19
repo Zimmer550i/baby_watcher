@@ -76,7 +76,7 @@ class _AddLogState extends State<AddLog> {
                   onTap: () async {
                     date = await showDatePicker(
                       context: context,
-                      initialDate: date,
+                      initialDate: date ?? DateTime.now(),
                       firstDate: DateTime(2000),
                       lastDate: DateTime(2050),
                     );
@@ -123,7 +123,7 @@ class _AddLogState extends State<AddLog> {
                   onTap: () async {
                     time = await showTimePicker(
                       context: context,
-                      initialTime: TimeOfDay.now(),
+                      initialTime: time ?? TimeOfDay.now(),
                     );
 
                     if (time != null) {
@@ -234,20 +234,10 @@ class _AddLogState extends State<AddLog> {
       time: time ?? TimeOfDay.now(),
     );
     String formatedDate = Formatter.dateFormatter(date ?? DateTime.now());
-    // String formatedActivity = switch (activity) {
-    //   "Meal" => "meal",
-    //   "Nap" => "nap",
-    //   "Medicine" => "medicine",
-    //   "Physical Activity" => "physicalActivity",
-    //   "Shower" => "shower",
-    //   "Others" => "others",
-    //   String() => throw UnimplementedError(),
-    //   null => throw UnimplementedError(),
-    // };
 
     final data = {
       "activity": activity,
-      "name": nameController.text,
+      "otherAct": nameController.text,
       "time": formatedTime,
       "date": formatedDate,
     };

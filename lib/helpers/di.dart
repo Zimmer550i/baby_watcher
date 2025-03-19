@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:baby_watcher/controllers/api_service.dart';
 import 'package:baby_watcher/controllers/auth_controller.dart';
 import 'package:baby_watcher/controllers/log_controller.dart';
+import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -31,6 +32,7 @@ Future<Map<String, Map<String, String>>>  init() async {
   Get.put(ApiService(), permanent: true);
   Get.put(AuthController(), permanent: true);
   Get.put(LogController(), permanent: true);
+  Get.put(MonitorController(), permanent: true);
 
 
 

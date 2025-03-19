@@ -1,10 +1,13 @@
+import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:baby_watcher/views/base/home_app_bar.dart';
 import 'package:baby_watcher/views/base/video_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class ParentMonitor extends StatefulWidget {
   const ParentMonitor({super.key});
@@ -14,6 +17,7 @@ class ParentMonitor extends StatefulWidget {
 }
 
 class _ParentMonitorState extends State<ParentMonitor> {
+  final monitorController = Get.find<MonitorController>();
   bool babySleeping = true;
   bool reqSent = false;
 
@@ -83,10 +87,16 @@ class _ParentMonitorState extends State<ParentMonitor> {
                   leading: reqSent ? AppIcons.tickCircle : AppIcons.video,
                   radius: 8,
                   isSecondary: reqSent,
-                  onTap: () {
-                    setState(() {
-                      reqSent = !reqSent;
-                    });
+                  onTap: () async {
+                    final response = await monitorController.sendRequest();
+
+                    if (response == "Success") {
+                      setState(() {
+                        reqSent = !reqSent;
+                      });
+                    } else {
+                      showSnackBar(response);
+                    }
                   },
                 ),
                 Padding(

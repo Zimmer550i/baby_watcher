@@ -17,7 +17,10 @@ class AuthController extends GetxController {
       'password': password,
     });
 
-    if (response != null && response['success'] == true) {
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response['success'] == true) {
       final data = response['data'];
 
       String accessToken = data['accessToken'];
@@ -35,7 +38,7 @@ class AuthController extends GetxController {
 
       return "Success";
     } else {
-      return response?['message'] ?? "Unknown error";
+      return response['message'] ?? "Unknown error";
     }
   }
 
@@ -45,7 +48,10 @@ class AuthController extends GetxController {
       authRequired: true,
     );
 
-    if (response != null && response['success'] == true) {
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response['success'] == true) {
       Map<String, dynamic> user = response['data'];
 
       userInfo.value = user;
@@ -54,7 +60,7 @@ class AuthController extends GetxController {
 
       return "Success";
     } else {
-      return response?['message'] ?? "Unknown error";
+      return response['message'] ?? "Unknown error";
     }
   }
 
@@ -63,10 +69,13 @@ class AuthController extends GetxController {
       'email': email,
     });
 
-    if (response != null && response['success'] == true) {
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response['success'] == true) {
       return "Success";
     } else {
-      return response?["message"] ?? "Unknown error";
+      return response["message"] ?? "Unknown error";
     }
   }
 
@@ -77,10 +86,13 @@ class AuthController extends GetxController {
       customHeaders: {"Authorization": data},
     );
 
-    if (response != null && response['success'] == true) {
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response['success'] == true) {
       return "Success";
     } else {
-      return response?["message"] ?? "Unknown error";
+      return response["message"] ?? "Unknown error";
     }
   }
 
@@ -96,10 +108,13 @@ class AuthController extends GetxController {
       return "Role selection process did not work";
     }
 
-    if (response != null && response['success'] == true) {
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response['success'] == true) {
       return "Success";
     } else {
-      return response?['message'] ?? 'Unknown error';
+      return response['message'] ?? 'Unknown error';
     }
   }
 
@@ -109,7 +124,10 @@ class AuthController extends GetxController {
       "email": email,
     });
 
-    if (response != null && response['success'] == true) {
+    if (response == null) {
+      return false;
+    }
+    if (response['success'] == true) {
       return true;
     } else {
       return false;
@@ -126,7 +144,10 @@ class AuthController extends GetxController {
       "oneTimeCode": int.parse(code),
     });
 
-    if (response != null && response['success'] == true) {
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response['success'] == true) {
       final data = response['data'];
 
       String accessToken = data['accessToken'];
@@ -148,7 +169,7 @@ class AuthController extends GetxController {
 
       return "Success";
     } else {
-      return response?["message"] ?? "Unknown error";
+      return response["message"] ?? "Unknown error";
     }
   }
 

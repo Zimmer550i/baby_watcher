@@ -28,8 +28,8 @@ Future<Map<String, Map<String, String>>>  init() async {
   Get.lazyPut(() => LocalizationController(sharedPreferences: Get.find()));
   Get.lazyPut(() => HomeController());
   // Get.lazyPut(() => UserController(), fenix: true);
-  Get.put(UserController(), permanent: true);
   Get.put(ApiService(), permanent: true);
+  Get.put(UserController(), permanent: true);
   Get.put(AuthController(), permanent: true);
   Get.put(LogController(), permanent: true);
   Get.put(MonitorController(), permanent: true);

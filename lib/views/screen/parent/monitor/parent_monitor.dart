@@ -89,7 +89,6 @@ class _ParentMonitorState extends State<ParentMonitor> {
                   isSecondary: reqSent,
                   onTap: () async {
                     final response = await monitorController.sendRequest();
-
                     if (response == "Success") {
                       setState(() {
                         reqSent = !reqSent;

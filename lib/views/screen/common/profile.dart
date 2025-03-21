@@ -8,13 +8,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final user = Get.find<UserController>();
+  State<Profile> createState() => _ProfileState();
+}
 
+class _ProfileState extends State<Profile> {
+  final user = Get.find<UserController>();
+
+  @override
+  void initState() {
+    super.initState();
+    user.getInfo();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -23,18 +34,10 @@ class Profile extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 44),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(100),
-                  child: Image.asset(
-                    "assets/images/user.png",
-                    width: 140,
-                    height: 140,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(height: 29),
+                ProfilePicture(image: user.getImageUrl()),
+                SizedBox(height: 29),
                 Text(
-                  "Arlene Flores",
+                  user.userName,
                   style: TextStyle(
                     fontSize: 24,
                     color: Color(0xff3a3a3a),
@@ -203,6 +206,44 @@ class Profile extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ProfilePicture extends StatelessWidget {
+  const ProfilePicture({super.key, this.image, this.size = 140});
+
+  final double size;
+  final String? image;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(100),
+      child:
+          image != null
+              ? Image.network(
+                image!,
+                width: size,
+                height: size,
+                fit: BoxFit.cover,
+              )
+              : Container(
+                width: size,
+                height: size,
+                padding: EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.indigo[50],
+                ),
+                child: SvgPicture.asset(
+                  AppIcons.profile,
+                  colorFilter: ColorFilter.mode(
+                    AppColors.indigo,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
     );
   }
 }

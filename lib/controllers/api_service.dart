@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +10,7 @@ class ApiService extends GetxService {
 
   Future<Map<String, dynamic>?> getRequest(
     String endpoint, {
-    bool authRequired = false,  
+    bool authRequired = false,
     Map<String, String>? customHeaders,
     Map<String, String>? params,
   }) async {
@@ -83,8 +84,9 @@ class ApiService extends GetxService {
 
   Future<Map<String, dynamic>?> updateRequest(
     String endpoint,
-    dynamic data, {
+    Map<String, dynamic> data, {
     bool authRequired = false,
+    bool isMultiPart = false,
     Map<String, String>? customHeaders,
     Map<String, String>? params,
   }) async {
@@ -96,15 +98,57 @@ class ApiService extends GetxService {
       final uri = Uri.parse(
         '$baseUrl$endpoint',
       ).replace(queryParameters: params);
-      final response = await http.patch(
-        uri,
-        headers: headers,
-        body: jsonEncode(data),
-      );
+
+      http.Response response;
+
+      if (isMultiPart) {
+        var request = http.MultipartRequest('PATCH', uri);
+        final newHeaders = await _getHeaders(
+          true,
+          customHeaders: {'Content-Type': 'application/x-www-form-urlencoded'},
+        );
+        request.headers.addAll(newHeaders);
+
+        for (var entry in data.entries) {
+          if (entry.value is File) {
+            request.files.add(
+              await http.MultipartFile.fromPath(
+                entry.key,
+                (entry.value as File).path,
+              ),
+            );
+          } else {
+            request.fields[entry.key] = entry.value.toString();
+          }
+        }
+
+        var streamedResponse = await request.send();
+        
+        int totalBytes = request.files.fold(0, (prev, file) => prev + file.length);
+        int uploadedBytes = 0;
+
+        streamedResponse.stream.listen(
+          (chunk) {
+            uploadedBytes += chunk.length;
+            double progress = (uploadedBytes / totalBytes) * 100;
+            debugPrint('Upload progress: ${progress.toStringAsFixed(2)}%');
+          },
+          onDone: () => debugPrint('Upload complete'),
+          onError: (error) => debugPrint('Upload error: $error'),
+        );
+
+        response = await http.Response.fromStream(streamedResponse);
+      } else {
+        response = await http.patch(
+          uri,
+          headers: headers,
+          body: jsonEncode(data),
+        );
+      }
 
       return _handleResponse(response);
     } catch (e) {
-      debugPrint('Error in PUT: $e');
+      debugPrint('Error in PATCH: $e');
       return null;
     }
   }
@@ -123,7 +167,9 @@ class ApiService extends GetxService {
     bool authRequired, {
     Map<String, String>? customHeaders,
   }) async {
-    Map<String, String> headers = {'Content-Type': 'application/json'};
+    Map<String, String> headers = {};
+    headers.addAll({'Content-Type': 'application/json'});
+
     if (authRequired) {
       String? token = await TokenService.getAccessToken();
       if (token != null) {

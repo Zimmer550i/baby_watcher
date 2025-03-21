@@ -17,7 +17,11 @@ class LogController extends GetxController {
       authRequired: true,
     );
 
-    if (response!["success"] == true) {
+    if (response == null) {
+      isLoading.value = false;
+      return "No response from API";
+    }
+    if (response["success"] == true) {
       var result = response['data']['result'];
 
       logs.clear();
@@ -44,9 +48,12 @@ class LogController extends GetxController {
       data,
       authRequired: true,
     );
-    // return "";
 
-    if (response!["success"] == true) {
+    if (response == null) {
+      isLoading.value = false;
+      return "No response from API";
+    }
+    if (response["success"] == true) {
       isLoading.value = false;
       return "Success";
     } else {
@@ -60,7 +67,10 @@ class LogController extends GetxController {
       "/log/delete/$logId/",
       authRequired: true,
     );
-    if (response!["success"] == true) {
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response["success"] == true) {
       return "Success";
     } else {
       return response["message"] ?? "Unknown Error";
@@ -73,7 +83,10 @@ class LogController extends GetxController {
       log.toJson(),
       authRequired: true,
     );
-    if (response!["success"] == true) {
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response["success"] == true) {
       return "Success";
     } else {
       return response["message"] ?? "Unknown Error";

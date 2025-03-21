@@ -19,11 +19,11 @@ class _ParentAppState extends State<ParentApp> {
   int index = 0;
   PageController controller = PageController(initialPage: 0);
   List<Widget> pages = [
-    ParentLog(),
-    ParentMonitor(),
-    ParentEmergency(),
-    Messages(),
-    Profile(),
+    ParentLog(key: PageStorageKey("parentLog")),
+    ParentMonitor(key: PageStorageKey("parentMonitor")),
+    ParentEmergency(key: PageStorageKey("parentEmergency")),
+    Messages(key: PageStorageKey("parentMessages")),
+    Profile(key: PageStorageKey("parentProfile")),
   ];
   List<String> pageNames = [
     "Log",

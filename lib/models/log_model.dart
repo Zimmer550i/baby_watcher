@@ -38,7 +38,7 @@ class LogModel {
     date: DateTime.parse(json["date"]),
     time: _parseTime(json["time"]),
     activity: json["activity"],
-    name: getName(json["activity"], json["otherAct"]),
+    name: json["activity"] == "Others" ? json["otherAct"] : json["activity"],
     user: json["user"],
     babySitter: json["babySitter"],
     status: json["status"],
@@ -83,21 +83,5 @@ class LogModel {
     final minute = time.minute.toString().padLeft(2, '0');
     final period = time.period == DayPeriod.am ? "AM" : "PM";
     return "$hour:$minute $period";
-  }
-
-  static String getName(String? activity, String? name) {
-    if (activity == "meal") {
-      return "Meal";
-    } else if (activity == "nap") {
-      return "Nap";
-    } else if (activity == "medicine") {
-      return "Medicine";
-    } else if (activity == "shower") {
-      return "Shower";
-    } else if (activity == "physicalActivity") {
-      return "Physical Activity";
-    } else {
-      return name ?? activity ?? "";
-    }
   }
 }

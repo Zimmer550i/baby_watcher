@@ -237,7 +237,7 @@ class _AddLogState extends State<AddLog> {
 
     final data = {
       "activity": activity,
-      "otherAct": nameController.text,
+      "otherAct": activity == "Others" ? nameController.text: activity,
       "time": formatedTime,
       "date": formatedDate,
     };

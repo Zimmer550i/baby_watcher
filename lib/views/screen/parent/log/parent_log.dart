@@ -112,6 +112,36 @@ class _ParentLogState extends State<ParentLog> {
                     alignment: Alignment.topCenter,
                     child: CircularProgressIndicator(),
                   );
+                } else if (logController.logs.isEmpty) {
+                  return Column(
+                    children: [
+                      const Spacer(),
+                      Text(
+                        "No logs added yet",
+                        style: TextStyle(
+                          fontVariations: [FontVariation("wght", 500)],
+                          fontSize: 30,
+                          color: AppColors.indigo,
+                        ),
+                      ),
+                      Text(
+                        "Click this button to add one",
+                        style: TextStyle(
+                          fontVariations: [FontVariation("wght", 400)],
+                          fontSize: 20,
+                          color: AppColors.indigo[400],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10, top: 20, bottom: 4),
+                          child: SvgPicture.asset(AppIcons.arrowCurve),
+                        ),
+                      ),
+                      const SizedBox(height: 50 + 20),
+                    ],
+                  );
                 } else {
                   return ListView.builder(
                     itemCount: logController.logs.length,

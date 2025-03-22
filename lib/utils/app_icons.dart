@@ -60,4 +60,5 @@ class AppIcons {
   static const String asleep = 'assets/icons/asleep.svg';
   static const String babyAwake = 'assets/icons/baby_awake.svg';
   static const String babyAsleep = 'assets/icons/baby_asleep.svg';
+  static const String arrowCurve = 'assets/icons/arrow_curve.svg';
 }

@@ -170,7 +170,9 @@ class _AddLogState extends State<AddLog> {
                                         Future.delayed(
                                           const Duration(seconds: 1),
                                           () => logController.getLogs(
-                                            widget.log!.date,
+                                            widget.log!.date.add(
+                                              const Duration(days: 1),
+                                            ),
                                           ),
                                         );
                                       } else {
@@ -237,7 +239,7 @@ class _AddLogState extends State<AddLog> {
 
     final data = {
       "activity": activity,
-      "otherAct": activity == "Others" ? nameController.text: activity,
+      "otherAct": activity == "Others" ? nameController.text : activity,
       "time": formatedTime,
       "date": formatedDate,
     };

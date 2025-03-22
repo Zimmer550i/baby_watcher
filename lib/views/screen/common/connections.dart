@@ -3,6 +3,7 @@ import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/overlay_confirmation.dart';
+import 'package:baby_watcher/views/screen/common/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -41,25 +42,13 @@ class Connections extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  ClipOval(
-                    child: Image.network(
-                      "https://www.thispersondoesnotexist.com",
-                      height: 52,
-                      width: 52,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                      },
-                    ),
+                  ProfilePicture(
+                    size: 52,
+                    image: user.connectionImage,
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    "Jenny Wilson",
+                    user.connectionName ?? "Unnamed",
                     style: TextStyle(
                       fontVariations: [FontVariation("wght", 400)],
                       fontSize: 18,

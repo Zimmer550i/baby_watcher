@@ -69,8 +69,13 @@ class _ProfileState extends State<Profile> {
                         profileOptions(
                           iconPath: AppIcons.connection,
                           title: "Manage Connection",
-                          onTap:
-                              () => Get.toNamed(AppRoutes.parentNotConnected),
+                          onTap: () async {
+                            if (user.connectionId == null) {
+                              Get.toNamed(AppRoutes.parentNotConnected);
+                            } else {
+                              Get.toNamed(AppRoutes.connections);
+                            }
+                          },
                         ),
                       if (user.userRole == Role.babySitter)
                         profileOptions(
@@ -224,6 +229,13 @@ class ProfilePicture extends StatelessWidget {
           image != null
               ? Image.network(
                 image!,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
                 width: size,
                 height: size,
                 fit: BoxFit.cover,
@@ -231,7 +243,7 @@ class ProfilePicture extends StatelessWidget {
               : Container(
                 width: size,
                 height: size,
-                padding: EdgeInsets.all(24),
+                padding: EdgeInsets.all(size * 0.17),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.indigo[50],

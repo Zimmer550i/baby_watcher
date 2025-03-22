@@ -1,4 +1,5 @@
 import 'package:baby_watcher/controllers/api_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 enum Role { notSelected, parent, babySitter }
@@ -12,21 +13,23 @@ class UserController extends GetxController {
   String? image;
   String? connectionId;
   String? connectionName;
-  String? connectionRole;
+  String? connectionImage;
   String? connectionPhone;
   String? connectionEmail;
+  String? uniqueKey;
+  String? packageName;
   bool isVerified = false;
 
   Role userRole = Role.notSelected;
 
   void setUserData(Map<String, dynamic> responseData) {
-    userId = responseData['_id'];
-    userName = responseData['name'];
-    userEmail = responseData['email'];
-    userPhone = responseData['phone'];
-    isVerified = responseData['verified'];
+    userId = responseData['user']['_id'];
+    userName = responseData['user']['name'];
+    userEmail = responseData['user']['email'];
+    userPhone = responseData['user']['phone'];
+    isVerified = responseData['user']['verified'];
 
-    switch (responseData['role']) {
+    switch (responseData['user']['role']) {
       case 'PARENT':
         userRole = Role.parent;
         break;
@@ -40,29 +43,31 @@ class UserController extends GetxController {
     if (responseData['connection'] != null) {
       if (userRole == Role.parent &&
           responseData['connection']['babySitterId'] != null) {
-        connectionId = responseData['connection']['babySitterId']['id'];
+        connectionId = responseData['connection']['babySitterId']['_id'];
         connectionName = responseData['connection']['babySitterId']['name'];
-        connectionRole = responseData['connection']['babySitterId']['role'];
         connectionEmail = responseData['connection']['babySitterId']['email'];
         connectionPhone = responseData['connection']['babySitterId']['phone'];
+        connectionImage = responseData['connection']['babySitterId']['image'];
       } else if (userRole == Role.babySitter &&
           responseData['connection']['parentId'] != null) {
-        connectionId = responseData['connection']['parentId']['id'];
+        connectionId = responseData['connection']['parentId']['_id'];
         connectionName = responseData['connection']['parentId']['name'];
-        connectionRole = responseData['connection']['parentId']['role'];
         connectionEmail = responseData['connection']['parentId']['email'];
         connectionPhone = responseData['connection']['parentId']['phone'];
+        connectionImage = responseData['connection']['babySitterId']['image'];
       }
-      print("""ID: $connectionId
+      debugPrint("""
+      Connection Info =>
+      ID: $connectionId
       Name: $connectionName
       Phone: $connectionPhone
-      Role: $connectionRole
+      Image: $connectionImage
       Email: $connectionEmail
 """);
     }
-    if (responseData['image'] != null) {
-      image = responseData['image'];
-    }
+    image = responseData['user']['image'];
+    uniqueKey = responseData['connection']['uniqueKey'];
+    getSub();
   }
 
   void setConnectionId(String id) {
@@ -112,6 +117,20 @@ class UserController extends GetxController {
       return "Success";
     } else {
       return response['message'] ?? "Unknown error";
+    }
+  }
+
+  Future<void> getSub() async {
+    final response = await api.getRequest(
+      "/subscription/get-subscription",
+      authRequired: true,
+    );
+
+    if (response == null) {
+      return;
+    }
+    if (response['success'] == true) {
+      packageName = response['data']['isSubscription']['packageName'];
     }
   }
 }

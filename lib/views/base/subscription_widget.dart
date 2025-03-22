@@ -10,7 +10,7 @@ class SubscriptionWidget extends StatelessWidget {
   final String subTitle;
   final List<String> pros;
   final List<String> cons;
-  final bool coloredButton;
+  final bool isPurchased;
   final Function()? onTap;
   const SubscriptionWidget({
     super.key,
@@ -19,9 +19,29 @@ class SubscriptionWidget extends StatelessWidget {
     required this.subTitle,
     this.pros = const [],
     this.cons = const [],
-    this.coloredButton = false,
+    this.isPurchased = false,
     this.onTap,
   });
+
+  SubscriptionWidget copyWith({
+    String? icon,
+    String? title,
+    String? subTitle,
+    List<String>? pros,
+    List<String>? cons,
+    bool? isPurchased,
+    Function()? onTap,
+  }) {
+    return SubscriptionWidget(
+      icon: icon ?? this.icon,
+      title: title ?? this.title,
+      subTitle: subTitle ?? this.subTitle,
+      pros: pros ?? this.pros,
+      cons: cons ?? this.cons,
+      isPurchased: isPurchased ?? this.isPurchased,
+      onTap: onTap ?? this.onTap,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +49,7 @@ class SubscriptionWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: isPurchased ? Border.all(color: AppColors.indigo) : null,
       ),
       child: Column(
         children: [
@@ -73,7 +94,7 @@ class SubscriptionWidget extends StatelessWidget {
           Container(
             height: 1,
             width: double.infinity,
-            color: AppColors.indigo[200],
+            color: isPurchased ? AppColors.indigo : AppColors.indigo[200],
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 28),
@@ -127,8 +148,9 @@ class SubscriptionWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: CustomButton(
-              text: "Choose Plan",
-              isSecondary: !coloredButton,
+              text: isPurchased ? "Current Plan" : "Choose Plan",
+              leading: isPurchased ? AppIcons.tickCircle : null,
+              isSecondary: isPurchased,
               onTap: onTap,
             ),
           ),

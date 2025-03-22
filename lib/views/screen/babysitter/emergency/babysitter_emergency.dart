@@ -12,9 +12,6 @@ class BabysitterEmergency extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<ContactModel> contacts = [
-      ContactModel("Albert Flores", "012345678911"),
-      ContactModel("Darrell Steward", "012345678911"),
-      ContactModel("Jerome Bell", "012345678911"),
     ];
     return Scaffold(
       appBar: homeAppBar(),

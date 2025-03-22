@@ -13,7 +13,6 @@ import 'package:baby_watcher/views/screen/auth/role_select.dart';
 import 'package:baby_watcher/views/screen/init/splash.dart';
 import 'package:baby_watcher/views/screen/init/welcome.dart';
 import 'package:baby_watcher/views/screen/parent/emergency/parent_add_contact.dart';
-import 'package:baby_watcher/views/screen/parent/emergency/parent_edit_contact.dart';
 import 'package:baby_watcher/views/screen/parent/log/add_log.dart';
 import 'package:baby_watcher/views/screen/parent/parent_app.dart';
 import 'package:baby_watcher/views/screen/parent/profile/parent_card_details.dart';
@@ -48,7 +47,7 @@ class AppRoutes {
   static String parentNotConnected = '/parent_not_connected';
 
   static String parentAddContact = '/parent_add_contact';
-  static String parentEditContact = '/parent_edit_contact';
+  // static String parentEditContact = '/parent_edit_contact';
 
   static String addLog = '/add_log';
 
@@ -77,7 +76,7 @@ class AppRoutes {
     parentNotConnected: ParentNotConnected(),
     connections: Connections(),
     parentAddContact: ParentAddContact(),
-    parentEditContact: ParentEditContact(),
+    // parentEditContact: ParentEditContact(),
   };
 
   static List<GetPage> pages = [

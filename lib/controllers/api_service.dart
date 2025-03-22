@@ -123,19 +123,6 @@ class ApiService extends GetxService {
         }
 
         var streamedResponse = await request.send();
-        
-        int totalBytes = request.files.fold(0, (prev, file) => prev + file.length);
-        int uploadedBytes = 0;
-
-        streamedResponse.stream.listen(
-          (chunk) {
-            uploadedBytes += chunk.length;
-            double progress = (uploadedBytes / totalBytes) * 100;
-            debugPrint('Upload progress: ${progress.toStringAsFixed(2)}%');
-          },
-          onDone: () => debugPrint('Upload complete'),
-          onError: (error) => debugPrint('Upload error: $error'),
-        );
 
         response = await http.Response.fromStream(streamedResponse);
       } else {

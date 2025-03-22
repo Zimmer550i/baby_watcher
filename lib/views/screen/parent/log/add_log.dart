@@ -212,18 +212,19 @@ class _AddLogState extends State<AddLog> {
   }
 
   updateLog() async {
+    bool sameTime = widget.log!.time.isAtSameTimeAs(time??TimeOfDay.now());
     widget.log!.activity = activity;
     widget.log!.date = date ?? DateTime.now();
     widget.log!.time = time ?? TimeOfDay.now();
     widget.log!.name = nameController.text;
-    final response = await logController.updateLog(widget.log!);
+    final response = await logController.updateLog(widget.log!, !sameTime);
     if (response == "Success") {
       Get.back();
       Get.back();
       showSnackBar("Log Updated", isError: false);
       Future.delayed(
         const Duration(seconds: 1),
-        () => logController.getLogs(widget.log!.date),
+        () => logController.getLogs(widget.log!.date.add(const Duration(days: 1))),
       );
     } else {
       Get.back();

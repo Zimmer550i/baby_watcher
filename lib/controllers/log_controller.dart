@@ -77,10 +77,14 @@ class LogController extends GetxController {
     }
   }
 
-  Future<String> updateLog(LogModel log) async {
+  Future<String> updateLog(LogModel log, bool sendTime) async {
+    var data = log.toJson();
+    if (!sendTime) {
+      data.remove('time');
+    }
     final response = await api.updateRequest(
       "/log/update/${log.id}",
-      log.toJson(),
+      data,
       authRequired: true,
     );
     if (response == null) {

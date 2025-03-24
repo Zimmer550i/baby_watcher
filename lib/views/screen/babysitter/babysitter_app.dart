@@ -23,6 +23,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
   List<Widget> pages = [
     // BabysitterLog(),
     BabysitterMonitor(),
+    BabysitterMonitor(),
     BabysitterEmergency(),
     Messages(),
     Profile(),

@@ -1,7 +1,9 @@
 import 'package:baby_watcher/controllers/auth_controller.dart';
+import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:baby_watcher/views/base/custom_text_field.dart';
@@ -9,8 +11,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
-class ConnectMothersAccount extends StatelessWidget {
+class ConnectMothersAccount extends StatefulWidget {
   const ConnectMothersAccount({super.key});
+
+  @override
+  State<ConnectMothersAccount> createState() => _ConnectMothersAccountState();
+}
+
+class _ConnectMothersAccountState extends State<ConnectMothersAccount> {
+  final TextEditingController keyController = TextEditingController();
+  final user = Get.find<UserController>();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -115,12 +126,32 @@ class ConnectMothersAccount extends StatelessWidget {
                 CustomTextField(
                   leading: AppIcons.key,
                   hintText: "Enter Unique Key",
+                  controller: keyController,
                 ),
                 const SizedBox(height: 24),
                 CustomButton(
                   text: "Connect",
-                  onTap: () {
-                    Get.offAllNamed(AppRoutes.babysitterApp);
+                  isLoading: isLoading,
+                  onTap: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    final message = await user.connectToMother(
+                      keyController.text.trim(),
+                    );
+
+                    if (message == "Success") {
+                      showSnackBar(
+                        "Connected to mother's account successfully",
+                        isError: false,
+                      );
+                      Get.offNamed(AppRoutes.babysitterApp);
+                    } else {
+                      showSnackBar(message);
+                    }
+                    setState(() {
+                      isLoading = false;
+                    });
                   },
                 ),
                 const SizedBox(height: 80),

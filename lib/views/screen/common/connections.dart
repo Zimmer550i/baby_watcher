@@ -1,6 +1,8 @@
 import 'package:baby_watcher/controllers/user_controller.dart';
+import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/overlay_confirmation.dart';
 import 'package:baby_watcher/views/screen/common/profile.dart';
@@ -42,10 +44,7 @@ class Connections extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  ProfilePicture(
-                    size: 52,
-                    image: user.connectionImage,
-                  ),
+                  ProfilePicture(size: 52, image: user.getImageUrl(forConn: true)),
                   const SizedBox(width: 12),
                   Text(
                     user.connectionName ?? "Unnamed",
@@ -68,7 +67,17 @@ class Connections extends StatelessWidget {
                               buttonTextLeft: "Cancel",
                               buttonCallBackLeft: () => Get.back(),
                               buttonTextRight: "Confirm",
-                              buttonCallBackRight: () => Get.back(),
+                              buttonCallBackRight: () async {
+                                final message = await user.deleteConnection();
+
+                                if (message == "Success") {
+                                  showSnackBar("Connection Removed");
+                                  Get.back();
+                                  Get.offNamed(AppRoutes.connections);
+                                } else {
+                                  showSnackBar(message);
+                                }
+                              },
                               leftButtonIsSecondary: false,
                             );
                           },

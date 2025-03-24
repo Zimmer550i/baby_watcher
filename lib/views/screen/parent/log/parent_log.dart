@@ -1,8 +1,8 @@
 import 'package:baby_watcher/controllers/log_controller.dart';
-import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/models/log_model.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/formatter.dart';
 import 'package:baby_watcher/views/base/home_app_bar.dart';
 import 'package:baby_watcher/views/screen/parent/log/add_log.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class _ParentLogState extends State<ParentLog> {
       appBar: homeAppBar(),
       floatingActionButton: GestureDetector(
         onTap: () {
-          Get.toNamed(AppRoutes.addLog);
+          Get.to(() => AddLog(date: days[selected]));
         },
         child: Container(
           height: 50,
@@ -74,7 +74,7 @@ class _ParentLogState extends State<ParentLog> {
             Padding(
               padding: const EdgeInsets.only(top: 12.0),
               child: Text(
-                "February, 2025",
+                "${Formatter.monthName(DateTime.now().month)}, ${DateTime.now().year}",
                 style: TextStyle(
                   fontVariations: [FontVariation("wght", 500)],
                   fontSize: 18,
@@ -135,7 +135,11 @@ class _ParentLogState extends State<ParentLog> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 10, top: 20, bottom: 4),
+                          padding: const EdgeInsets.only(
+                            right: 10,
+                            top: 20,
+                            bottom: 4,
+                          ),
                           child: SvgPicture.asset(AppIcons.arrowCurve),
                         ),
                       ),

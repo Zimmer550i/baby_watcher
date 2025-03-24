@@ -80,7 +80,7 @@ class AppRoutes {
   };
 
   static List<GetPage> pages = [
-    ...routeWidgets.entries.map(
+    ...routeWidgets.entries.map( 
       (e) => GetPage(name: e.key, page: () => e.value),
     ),
   ];

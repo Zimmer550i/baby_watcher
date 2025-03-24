@@ -14,7 +14,8 @@ import 'package:get/instance_manager.dart';
 
 class AddLog extends StatefulWidget {
   final LogModel? log;
-  const AddLog({super.key, this.log});
+  final DateTime? date;
+  const AddLog({super.key, this.log, this.date});
 
   @override
   State<AddLog> createState() => _AddLogState();
@@ -49,10 +50,12 @@ class _AddLogState extends State<AddLog> {
           timeController.text = "${timeController.text} PM";
         }
       }
-      if (date != null) {
-        dateController.text =
-            "${(date!.day).toString().padLeft(2, "0")}/${(date!.month).toString().padLeft(2, "0")}/${date!.year}";
-      }
+    } else {
+      date = widget.date;
+    }
+    if (date != null) {
+      dateController.text =
+          "${(date!.day).toString().padLeft(2, "0")}/${(date!.month).toString().padLeft(2, "0")}/${date!.year}";
     }
   }
 
@@ -212,7 +215,7 @@ class _AddLogState extends State<AddLog> {
   }
 
   updateLog() async {
-    bool sameTime = widget.log!.time.isAtSameTimeAs(time??TimeOfDay.now());
+    bool sameTime = widget.log!.time.isAtSameTimeAs(time ?? TimeOfDay.now());
     widget.log!.activity = activity;
     widget.log!.date = date ?? DateTime.now();
     widget.log!.time = time ?? TimeOfDay.now();
@@ -224,7 +227,9 @@ class _AddLogState extends State<AddLog> {
       showSnackBar("Log Updated", isError: false);
       Future.delayed(
         const Duration(seconds: 1),
-        () => logController.getLogs(widget.log!.date.add(const Duration(days: 1))),
+        () => logController.getLogs(
+          widget.log!.date.add(const Duration(days: 1)),
+        ),
       );
     } else {
       Get.back();

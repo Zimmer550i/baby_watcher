@@ -28,12 +28,8 @@ class AuthController extends GetxController {
 
       await TokenService.saveTokens(accessToken, refreshToken);
 
-      Map<String, dynamic> user = data['user'];
-      Map<String, dynamic>? connection = data['connection'];
-
-      user['connection'] = connection;
-      userInfo.value = user;
-      userController.setUserData(user);
+      userInfo.value = data;
+      userController.setUserData(data);
       isLoggedIn.value = true;
 
       return "Success";

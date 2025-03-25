@@ -1,9 +1,12 @@
+import 'package:baby_watcher/controllers/message_controller.dart';
+import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/utils/formatter.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class Messages extends StatefulWidget {
   const Messages({super.key});
@@ -14,54 +17,56 @@ class Messages extends StatefulWidget {
 
 class _MessagesState extends State<Messages> {
   final messageController = TextEditingController();
-  List<Message> data = [
-    Message(
-      text:
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      timeStamp: DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-        10,
-        45,
-      ),
-      isSent: false,
-    ),
-    Message(
-      text: "Lorem Ipsum is",
-      timeStamp: DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-        11,
-        45,
-      ),
-    ),
-    Message(
-      text: "Lorem Ipsum is simply dummy",
-      timeStamp: DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-        11,
-        45,
-      ),
-    ),
-  ];
+  final FocusNode messageFocusNode = FocusNode();
+  final user = Get.find<UserController>();
+  final controller = Get.find<MessageController>();
+
+  @override
+  void initState() {
+    super.initState();
+    if (user.connectionId != null) {
+      controller.initialize();
+    }
+  }
+
+  @override
+  void dispose() {
+    messageController.dispose();
+    messageFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (user.connectionId == null) {
+      return Center(child: Text("No Connection Added"));
+    }
     return Scaffold(
-      appBar: customAppBar("BabySitter/Parrent Name", showBackButton: false),
+      appBar: customAppBar(
+        controller.inboxId ?? user.connectionName ?? "Connecting...",
+        showBackButton: false,
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(children: [...renderMessages(data)]),
-              ),
-            ),
+            Obx(() {
+              if (controller.isLoading.value) {
+                return Align(
+                  alignment: Alignment.topCenter,
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return Expanded(
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Column(
+                    children: [...renderMessages(controller.messages)],
+                  ),
+                ),
+              );
+            }),
+            const SizedBox(height: 8),
             Row(
               spacing: 8,
               children: [
@@ -76,7 +81,15 @@ class _MessagesState extends State<Messages> {
                     child: Center(
                       child: TextField(
                         controller: messageController,
-                        onTapOutside: (event) {},
+                        focusNode: messageFocusNode,
+                        onTapOutside: (event) {
+                          messageFocusNode.unfocus();
+                        },
+                        onSubmitted: (value) {
+                          controller.sendMessage(messageController.text.trim());
+                          messageController.text = "";
+                          messageFocusNode.requestFocus();
+                        },
                         decoration: InputDecoration(
                           isDense: true,
                           contentPadding: EdgeInsets.all(0),
@@ -96,14 +109,7 @@ class _MessagesState extends State<Messages> {
                 InkWell(
                   borderRadius: BorderRadius.circular(99),
                   onTap: () {
-                    setState(() {
-                      data.add(
-                        Message(
-                          text: messageController.text,
-                          timeStamp: DateTime.now(),
-                        ),
-                      );
-                    });
+                    controller.sendMessage(messageController.text.trim());
                     messageController.text = "";
                   },
                   child: Container(
@@ -121,7 +127,7 @@ class _MessagesState extends State<Messages> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
           ],
         ),
       ),

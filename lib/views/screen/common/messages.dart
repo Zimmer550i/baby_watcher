@@ -4,6 +4,7 @@ import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/utils/formatter.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
+import 'package:baby_watcher/views/screen/common/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -20,7 +21,7 @@ class _MessagesState extends State<Messages> {
   final FocusNode messageFocusNode = FocusNode();
   final user = Get.find<UserController>();
   final controller = Get.find<MessageController>();
-
+ 
   @override
   void initState() {
     super.initState();
@@ -43,7 +44,7 @@ class _MessagesState extends State<Messages> {
     }
     return Scaffold(
       appBar: customAppBar(
-        controller.inboxId ?? user.connectionName ?? "Connecting...",
+        user.connectionName ?? "Connecting...",
         showBackButton: false,
       ),
       body: Padding(
@@ -137,14 +138,13 @@ class _MessagesState extends State<Messages> {
 
 List<Widget> renderMessages(List<Message> messages) {
   List<Widget> rtn = [];
+  final user = Get.find<UserController>();
 
   for (int i = 0; i != messages.length; i++) {
     Message current = messages[i];
-    // bool showTime = false;
     bool showAvatar = true;
 
     if (i == 0) {
-      // showTime = true;
       rtn.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -176,9 +176,15 @@ List<Widget> renderMessages(List<Message> messages) {
 
     */
 
+    if (i != 0 &&
+        !messages[i - 1].isSent &&
+        messages[i - 1].timeStamp.difference(messages[i].timeStamp) <
+            const Duration(hours: 1)) {
+      showAvatar = false;
+    }
+
     // Print Message
     if (current.isSent) {
-      // User's Message
       rtn.add(
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 1),
@@ -190,9 +196,11 @@ List<Widget> renderMessages(List<Message> messages) {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                      8,
-                    ).copyWith(topRight: Radius.circular(0)),
+                    borderRadius: getRadius(
+                      i == 0 ? null : messages[i - 1],
+                      messages[i],
+                      i == messages.length - 1 ? null : messages[i + 1],
+                    ),
                     color: AppColors.indigo,
                   ),
                   child: Text(
@@ -213,31 +221,25 @@ List<Widget> renderMessages(List<Message> messages) {
       // Sender's Message
       rtn.add(
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 0),
+          padding: const EdgeInsets.symmetric(vertical: 1),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 12,
             children: [
               showAvatar
-                  ? ClipOval(
-                    child: Image.asset(
-                      "assets/images/baby_1.png",
-                      height: 40,
-                      width: 40,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                  // ignore: dead_code
+                  ? ProfilePicture(image: user.connectionImage, size: 40)
                   : const SizedBox(width: 40),
               Flexible(
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: AppColors.gray[100],
-                    borderRadius: BorderRadius.circular(
-                      8,
-                    ).copyWith(topLeft: Radius.circular(0)),
+                    borderRadius: getRadius(
+                      i == 0 ? null : messages[i - 1],
+                      messages[i],
+                      i == messages.length - 1 ? null : messages[i + 1],
+                    ),
                   ),
                   child: Text(
                     current.text,
@@ -294,6 +296,43 @@ List<Widget> renderMessages(List<Message> messages) {
           ],
         ),
       );
+    }
+  }
+
+  return rtn;
+}
+
+BorderRadius getRadius(Message? prev, Message current, Message? next) {
+  BorderRadius rtn = BorderRadius.circular(8);
+
+  if (prev == null) {
+    if (current.isSent) {
+      rtn = rtn.copyWith(topRight: Radius.circular(0));
+    }
+    if (!current.isSent) {
+      rtn = rtn.copyWith(topLeft: Radius.circular(0));
+    }
+  }
+  if (prev != null) {
+    if (current.isSent && prev.isSent) {
+      rtn = rtn.copyWith(topRight: Radius.circular(0));
+    }
+    if (current.isSent && !prev.isSent) {
+      rtn = rtn.copyWith(topRight: Radius.circular(0));
+    }
+    if (!current.isSent && prev.isSent) {
+      rtn = rtn.copyWith(topLeft: Radius.circular(0));
+    }
+    if (!current.isSent && !prev.isSent) {
+      rtn = rtn.copyWith(topLeft: Radius.circular(0));
+    }
+  }
+  if (next != null) {
+    if (current.isSent && next.isSent) {
+      rtn = rtn.copyWith(bottomRight: Radius.circular(0));
+    }
+    if (!current.isSent && !next.isSent) {
+      rtn = rtn.copyWith(bottomLeft: Radius.circular(0));
     }
   }
 

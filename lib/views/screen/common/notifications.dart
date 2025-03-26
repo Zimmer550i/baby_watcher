@@ -1,94 +1,72 @@
-import 'package:baby_watcher/models/notification_model.dart';
+import 'package:baby_watcher/controllers/socket_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
-class Notifications extends StatelessWidget {
+class Notifications extends StatefulWidget {
   const Notifications({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Map<DateTime, List<NotificationModel>> data = {
-      DateTime.now(): [
-        NotificationModel(
-          title: "Activity Completed: Nap",
-          subTitle:
-              "Your babysitter confirmed that the Nap was completd at 2:00 PM",
-          time: DateTime.now(),
-          isUnseen: true,
-        ),
-      ],
-      DateTime.now().subtract(const Duration(days: 1)): [
-        NotificationModel(
-          title: "Activity Completed: Nap",
-          subTitle:
-              "Your babysitter confirmed that the activity was completd at 2:00 PM",
-          time: DateTime.now(),
-        ),
-        NotificationModel(
-          title: "Missed Activity: Medicine",
-          subTitle:
-              "The scheduled medicine at 3:00 PM was not confirmed by the Babysitter",
-          time: DateTime.now(),
-        ),
-      ],
-      DateTime.now().subtract(const Duration(days: 2)): [
-        NotificationModel(
-          title: "New Video Recieved",
-          subTitle: "Your babysitter shared a new video update",
-          time: DateTime.now(),
-        ),
-        NotificationModel(
-          title: "Activity Completed: Nap",
-          subTitle:
-              "Your babysitter confirmed that the activity was completd at 2:00 PM",
-          time: DateTime.now(),
-        ),
-        NotificationModel(
-          title: "Activity Completed: Nap",
-          subTitle:
-              "Your babysitter confirmed that the activity was completd at 2:00 PM",
-          time: DateTime.now(),
-        ),
-      ],
-      DateTime.now().subtract(const Duration(days: 2)): [
-        NotificationModel(
-          title: "New Video Recieved",
-          subTitle: "Your babysitter shared a new video update",
-          time: DateTime.now(),
-        ),
-        NotificationModel(
-          title: "Activity Completed: Nap",
-          subTitle:
-              "Your babysitter confirmed that the activity was completd at 2:00 PM",
-          time: DateTime.now(),
-        ),
-        NotificationModel(
-          title: "Activity Completed: Nap",
-          subTitle:
-              "Your babysitter confirmed that the activity was completd at 2:00 PM",
-          time: DateTime.now(),
-        ),
-      ],
-    };
+  State<Notifications> createState() => _NotificationsState();
+}
 
+class _NotificationsState extends State<Notifications> {
+  final socketController = Get.find<SocketController>();
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent * 1) {
+        socketController.getMoreNotification();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    socketController.readNotifications();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar("Notifications"),
       body: Align(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
+          controller: scrollController,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: SafeArea(child: Column(children: getNotifications(data))),
+            child: SafeArea(
+              child: Obx(
+                () => Column(
+                  children: [
+                    ...getNotifications(socketController.notifications),
+                    if (socketController.loadingNotifications)
+                      Padding(
+                        padding: const EdgeInsets.all(80.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  List<Widget> getNotifications(Map<DateTime, List<NotificationModel>> data) {
+  List<Widget> getNotifications(
+    Map<DateTime, List<Map<String, dynamic>>> data,
+  ) {
     List<Widget> rtn = [];
 
     for (var i in data.keys) {
@@ -148,16 +126,14 @@ class Notifications extends StatelessWidget {
     }
   }
 
-  Widget notificationWidget(NotificationModel item, bool showBoarder) {
+  Widget notificationWidget(Map<String, dynamic> item, bool showBoarder) {
     return GestureDetector(
-      onTap: () {
-        
-      },
+      onTap: () {},
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: item.isUnseen ? AppColors.indigo : null,
-          borderRadius: BorderRadius.circular(item.isUnseen ? 8 : 0),
+          color: item['read'] ? AppColors.indigo : null,
+          borderRadius: BorderRadius.circular(item['read'] ? 8 : 0),
           border: Border(
             bottom:
                 showBoarder
@@ -166,14 +142,14 @@ class Notifications extends StatelessWidget {
           ),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               height: 50,
               width: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.indigo[item.isUnseen ? 25 : 50],
+                color: AppColors.indigo[item['read'] ? 25 : 50],
               ),
               child: Center(
                 child: SvgPicture.asset(
@@ -191,24 +167,25 @@ class Notifications extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.title,
+                    item['text'],
                     style: TextStyle(
                       fontVariations: [FontVariation("wght", 600)],
                       fontSize: 14,
-                      color: item.isUnseen ? Colors.white : Color(0xff3a3a3a),
+                      color: item['read'] ? Colors.white : Color(0xff3a3a3a),
                     ),
                   ),
-                  Text(
-                    item.subTitle,
-                    style: TextStyle(
-                      fontVariations: [FontVariation("wght", 400)],
-                      fontSize: 12,
-                      color: item.isUnseen ? Colors.white : Color(0xff525252),
-                    ),
-                  ),
+                  // Text(
+                  //   item.subTitle,
+                  //   style: TextStyle(
+                  //     fontVariations: [FontVariation("wght", 400)],
+                  //     fontSize: 12,
+                  //     color: item.isUnseen ? Colors.white : Color(0xff525252),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
+            const SizedBox(width: 30),
           ],
         ),
       ),

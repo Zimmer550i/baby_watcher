@@ -15,55 +15,12 @@ class MessageController extends GetxController {
   RxBool isLoading = false.obs;
 
   void initialize() {
-    _initializeSocket();
+    if (inboxId == null) {
+      fetchOrCreateInbox();
+    }
   }
 
-  void _initializeSocket() {
-    socket = IO.io(
-      api.baseUrl.replaceAll("/api/v1", ""),
-      IO.OptionBuilder()
-          .setTransports(['websocket'])
-          .disableAutoConnect()
-          .setReconnectionAttempts(5)
-          .setReconnectionDelay(2000) 
-          .build(),
-    );
-
-    socket?.onConnect((_) async {
-      debugPrint("Connected to Socket.IO");
-      await _fetchOrCreateInbox();
-
-      socket!.on('receive-message:$inboxId', (data) {
-        debugPrint(data.toString());
-        messages.add(
-          Message(
-            text: data['message'],
-            timeStamp: DateTime.parse(data['createdAt']),
-            isSent: data['senderId'] == user.userId,
-          ),
-        );
-      });
-      debugPrint("Listening to receive-message:$inboxId");
-    });
-
-    socket?.onDisconnect((_) {
-      debugPrint('Disconnected from Socket.IO server');
-    });
-
-    socket?.on('connect_error', (_) {
-      debugPrint('Connection error, trying to reconnect...');
-      socket?.connect();
-    });
-
-    socket?.on('connect_timeout', (_) {
-      debugPrint('Connection timeout, trying to reconnect...');
-      socket?.connect();
-    });
-
-    socket?.connect();
-  }
-
-  Future<void> _fetchOrCreateInbox() async {
+  Future<void> fetchOrCreateInbox() async {
     try {
       isLoading.value = true;
       final response = await api.getRequest(
@@ -82,7 +39,7 @@ class MessageController extends GetxController {
         }
 
         if (inboxId == null) {
-          await _createInbox();
+          await createInbox();
         }
 
         await getPrevMessage();
@@ -94,7 +51,7 @@ class MessageController extends GetxController {
     }
   }
 
-  Future<void> _createInbox() async {
+  Future<void> createInbox() async {
     try {
       final response = await api.postRequest(
         "/inbox/send-message/${user.connectionId}",

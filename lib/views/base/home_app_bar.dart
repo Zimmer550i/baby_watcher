@@ -1,3 +1,4 @@
+import 'package:baby_watcher/controllers/socket_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 AppBar homeAppBar() {
+  final controller = Get.find<SocketController>();
   return AppBar(
     backgroundColor: AppColors.indigo[25],
     elevation: 0,
@@ -36,24 +38,26 @@ AppBar homeAppBar() {
             alignment: Alignment.topRight,
             children: [
               SvgPicture.asset(AppIcons.notification),
-              // if (notifications[pos] != 0)
-              Container(
-                height: 14,
-                width: 14,
-                decoration: BoxDecoration(
-                  color: AppColors.indigo,
-                  shape: BoxShape.circle,
-                ),
-                child: FittedBox(
-                  child: Text(
-                    "1",
-                    style: TextStyle(
-                      fontVariations: [FontVariation("wght", 500)],
-                      color: Colors.white,
+              if (controller.unreadNotifications > 0)
+                Container(
+                  height: 14,
+                  width: 14,
+                  decoration: BoxDecoration(
+                    color: AppColors.indigo,
+                    shape: BoxShape.circle,
+                  ),
+                  child: FittedBox(
+                    child: Obx(
+                      () => Text(
+                        controller.unreadNotifications.string,
+                        style: TextStyle(
+                          fontVariations: [FontVariation("wght", 500)],
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

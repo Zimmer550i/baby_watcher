@@ -1,3 +1,4 @@
+import 'package:baby_watcher/controllers/socket_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/views/screen/common/messages.dart';
@@ -7,6 +8,7 @@ import 'package:baby_watcher/views/screen/parent/log/parent_log.dart';
 import 'package:baby_watcher/views/screen/parent/monitor/parent_monitor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 class ParentApp extends StatefulWidget {
   const ParentApp({super.key});
@@ -40,6 +42,12 @@ class _ParentAppState extends State<ParentApp> {
     AppIcons.profile,
   ];
   List<int> notifications = [0, 0, 1, 2, 0];
+
+  @override
+  void initState() {
+    super.initState();
+    Get.find<SocketController>().initialize();
+  }
 
   @override
   Widget build(BuildContext context) {

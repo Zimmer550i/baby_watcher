@@ -1,4 +1,5 @@
 import 'package:baby_watcher/controllers/emergency_controller.dart';
+import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/models/contact_model.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
@@ -142,7 +143,12 @@ class _ParentEmergencyState extends State<ParentEmergency> {
                       leading: AppIcons.phone,
                       width: null,
                       onTap: () {
-                        launchUrl(Uri.parse("tel:023421"));
+                        final phone =
+                            Get.find<UserController>().connectionPhone;
+
+                        if (phone != null) {
+                          launchUrl(Uri.parse("tel:$phone"));
+                        }
                       },
                     ),
 

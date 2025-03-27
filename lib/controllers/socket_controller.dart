@@ -28,9 +28,9 @@ class SocketController extends GetxController {
       api.baseUrl.replaceAll("/api/v1", ""),
       IO.OptionBuilder()
           .setTransports(['websocket'])
-          .disableAutoConnect()
-          .setReconnectionAttempts(5)
-          .setReconnectionDelay(2000)
+          // .disableAutoConnect()
+          // .setReconnectionAttempts(5)
+          // .setReconnectionDelay(2000)
           .build(),
     );
 
@@ -129,10 +129,14 @@ class SocketController extends GetxController {
   }
 
   void readNotifications() async {
-    await api.updateRequest(
-      "/notification/read-notification",
+    final message = await api.updateRequest(
+      "/notification/read-notification", 
       {},
       authRequired: true,
     );
+
+    if (message?['success'] == true) {
+      unreadNotifications.value = 0;
+    }
   }
 }

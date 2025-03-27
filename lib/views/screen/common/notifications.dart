@@ -132,8 +132,8 @@ class _NotificationsState extends State<Notifications> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: item['read'] ? AppColors.indigo : null,
-          borderRadius: BorderRadius.circular(item['read'] ? 8 : 0),
+          color: !item['read'] ? AppColors.indigo : null,
+          borderRadius: BorderRadius.circular(!item['read'] ? 8 : 0),
           border: Border(
             bottom:
                 showBoarder
@@ -149,7 +149,7 @@ class _NotificationsState extends State<Notifications> {
               width: 50,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.indigo[item['read'] ? 25 : 50],
+                color: AppColors.indigo[!item['read'] ? 25 : 50],
               ),
               child: Center(
                 child: SvgPicture.asset(
@@ -171,7 +171,7 @@ class _NotificationsState extends State<Notifications> {
                     style: TextStyle(
                       fontVariations: [FontVariation("wght", 600)],
                       fontSize: 14,
-                      color: item['read'] ? Colors.white : Color(0xff3a3a3a),
+                      color: !item['read'] ? Colors.white : Color(0xff3a3a3a),
                     ),
                   ),
                   // Text(

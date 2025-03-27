@@ -24,9 +24,9 @@ class _ParentLogState extends State<ParentLog> {
   @override
   void initState() {
     super.initState();
-    var temp = DateTime(DateTime.now().year, DateTime.now().month, 1);
+    var temp = DateTime.now().subtract(const Duration(days: 7));
     int count = 0;
-    while (temp.month == DateTime.now().month) {
+    for (;temp.isBefore(DateTime.now().add(const Duration(days: 13)));) {
       days.add(temp);
       temp = temp.add(const Duration(days: 1));
       if (temp.day == DateTime.now().day) {
@@ -74,7 +74,7 @@ class _ParentLogState extends State<ParentLog> {
             Padding(
               padding: const EdgeInsets.only(top: 12.0),
               child: Text(
-                "${Formatter.monthName(DateTime.now().month)}, ${DateTime.now().year}",
+                "${DateTime.now().day} ${Formatter.monthName(DateTime.now().month)}, ${DateTime.now().year}",
                 style: TextStyle(
                   fontVariations: [FontVariation("wght", 500)],
                   fontSize: 18,

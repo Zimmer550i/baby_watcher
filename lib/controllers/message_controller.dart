@@ -1,13 +1,11 @@
 import 'package:baby_watcher/controllers/api_service.dart';
+import 'package:baby_watcher/controllers/socket_controller.dart';
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/views/screen/common/messages.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-// ignore: library_prefixes
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class MessageController extends GetxController {
-  IO.Socket? socket;
   String? inboxId;
   final user = Get.find<UserController>();
   final api = Get.find<ApiService>();
@@ -69,7 +67,7 @@ class MessageController extends GetxController {
 
   void sendMessage(String text) {
     if (inboxId != null) {
-      socket!.emit('send-message', {
+      Get.find<SocketController>().socket!.emit('send-message', {
         'inboxId': inboxId,
         'message': text,
         'senderId': user.userId,

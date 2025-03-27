@@ -63,7 +63,7 @@ class Connections extends StatelessWidget {
                           builder: (context) {
                             return OverlayConfirmation(
                               title: "Are you sure you want to remove",
-                              highlight: "Jenny Wilson?",
+                              highlight: "${user.connectionName}?",
                               buttonTextLeft: "Cancel",
                               buttonCallBackLeft: () => Get.back(),
                               buttonTextRight: "Confirm",

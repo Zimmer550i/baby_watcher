@@ -1,4 +1,5 @@
 import 'package:baby_watcher/controllers/api_service.dart';
+import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/models/log_model.dart';
 import 'package:get/get.dart';
 
@@ -12,7 +13,9 @@ class LogController extends GetxController {
     isLoading.value = true;
 
     final response = await api.getRequest(
-      "/log/get-my-logs",
+      Get.find<UserController>().userRole == Role.parent
+          ? "/log/get-my-logs"
+          : "/acceptLog/get",
       params: {"date": "${date.year}-${date.month}-${date.day}"},
       authRequired: true,
     );
@@ -85,6 +88,22 @@ class LogController extends GetxController {
     final response = await api.updateRequest(
       "/log/update/${log.id}",
       data,
+      authRequired: true,
+    );
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response["success"] == true) {
+      return "Success";
+    } else {
+      return response["message"] ?? "Unknown Error";
+    }
+  }
+
+  Future<String> acceptLog(LogModel log) async {
+    final response = await api.updateRequest(
+      "/acceptLog/accept/${log.id}",
+      {},
       authRequired: true,
     );
     if (response == null) {

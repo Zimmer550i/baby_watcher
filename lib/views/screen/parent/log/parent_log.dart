@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:baby_watcher/controllers/log_controller.dart';
 import 'package:baby_watcher/models/log_model.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
@@ -20,13 +22,14 @@ class _ParentLogState extends State<ParentLog> {
   List<DateTime> days = [];
   int selected = 0;
   final logController = Get.find<LogController>();
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
     var temp = DateTime.now().subtract(const Duration(days: 7));
     int count = 0;
-    for (;temp.isBefore(DateTime.now().add(const Duration(days: 13)));) {
+    for (; temp.isBefore(DateTime.now().add(const Duration(days: 13)));) {
       days.add(temp);
       temp = temp.add(const Duration(days: 1));
       if (temp.day == DateTime.now().day) {
@@ -37,6 +40,16 @@ class _ParentLogState extends State<ParentLog> {
       }
     }
     logController.getLogs(DateTime.now());
+    _timer = Timer.periodic(
+      const Duration(seconds: 10),
+      (val) => logController.getLogs(DateTime.now()),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
   }
 
   @override

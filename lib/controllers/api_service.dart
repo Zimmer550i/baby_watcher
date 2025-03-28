@@ -142,10 +142,10 @@ class ApiService extends GetxService {
 
   Map<String, dynamic> _handleResponse(http.Response response) {
     if (response.statusCode == 200 || response.statusCode == 201) {
-      debugPrint('API Called [${response.statusCode}]: ${response.body}');
+      // debugPrint('API Called [${response.statusCode}]: ${response.body}');
       return jsonDecode(response.body);
     } else {
-      debugPrint('API Error [${response.statusCode}]: ${response.body}');
+      // debugPrint('API Error [${response.statusCode}]: ${response.body}');
       return jsonDecode(response.body);
     }
   }

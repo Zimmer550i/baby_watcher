@@ -48,8 +48,9 @@ class SocketController extends GetxController {
           ),
         );
       });
+      debugPrint("Listening to receive-message:${messageController.inboxId}");
 
-      socket!.on('get-notification:${user.userId}', (data) {
+      socket!.on('get-notification::${user.userId}', (data) {
         print("GOT NOTIFICATION => ${data['text']}");
         final date = DateTime.parse(data['createdAt']);
         final dateKey = DateTime(
@@ -63,8 +64,9 @@ class SocketController extends GetxController {
           notifications[dateKey] = []; // Update to use dateKey
           notifications[dateKey]!.add(data); // Update to use dateKey
         }
+        unreadNotifications += 1;
       });
-      debugPrint("Listening to receive-message:${messageController.inboxId}");
+      debugPrint("Listening to get-notification::${user.userId}");
     });
 
     socket?.onDisconnect((_) {
@@ -130,10 +132,16 @@ class SocketController extends GetxController {
 
   void readNotifications() async {
     final message = await api.updateRequest(
-      "/notification/read-notification", 
+      "/notification/read-notification",
       {},
       authRequired: true,
     );
+
+    for (var i in notifications.entries) {
+      for (var j in i.value) {
+        j['read'] = true;
+      }
+    }
 
     if (message?['success'] == true) {
       unreadNotifications.value = 0;

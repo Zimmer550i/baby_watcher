@@ -34,7 +34,7 @@ class _ProfileState extends State<Profile> {
             child: Column(
               children: [
                 const SizedBox(height: 44),
-                ProfilePicture(image: user.getImageUrl()),
+                ProfilePicture(image: user.image),
                 SizedBox(height: 29),
                 Text(
                   user.userName,
@@ -233,7 +233,11 @@ class ProfilePicture extends StatelessWidget {
                   if (loadingProgress == null) {
                     return child;
                   } else {
-                    return Center(child: CircularProgressIndicator());
+                    return SizedBox(
+                      width: size,
+                      height: size,
+                      child: Center(child: CircularProgressIndicator()),
+                    );
                   }
                 },
                 width: size,

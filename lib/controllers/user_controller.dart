@@ -57,7 +57,7 @@ class UserController extends GetxController {
         connectionName = responseData['connection']['parentId']['name'];
         connectionEmail = responseData['connection']['parentId']['email'];
         connectionPhone = responseData['connection']['parentId']['phone'];
-        connectionImage = responseData['connection']['babySitterId']['image'];
+        connectionImage = responseData['connection']['parentId']['image'];
       }
       debugPrint("""
       Connection Info =>
@@ -108,17 +108,17 @@ class UserController extends GetxController {
     }
   }
 
-  String? getImageUrl({bool forConn = false}) {
-    if (image != null && !forConn) {
-      var s = api.baseUrl + image!;
-      return s.replaceAll("/api/v1", "");
-    } else if (connectionImage != null && forConn) {
-      var s = api.baseUrl + connectionImage!;
-      return s.replaceAll("/api/v1", "");
-    } else {
-      return null;
-    }
-  }
+  // String? getImageUrl({bool forConn = false}) {
+  //   if (image != null && !forConn) {
+  //     var s = api.baseUrl + image!;
+  //     return s.replaceAll("/api/v1", "");
+  //   } else if (connectionImage != null && forConn) {
+  //     var s = api.baseUrl + connectionImage!;
+  //     return s.replaceAll("/api/v1", "");
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   Future<String> updateInfo(Map<String, dynamic> data) async {
     final response = await api.updateRequest(

@@ -28,17 +28,15 @@ class SocketController extends GetxController {
       api.baseUrl.replaceAll("/api/v1", ""),
       IO.OptionBuilder()
           .setTransports(['websocket'])
-          // .disableAutoConnect()
-          // .setReconnectionAttempts(5)
-          // .setReconnectionDelay(2000)
           .build(),
     );
 
-    socket?.onConnect((_) async {
+    socket?.onConnect((_) async { 
       debugPrint("Connected to Socket.IO");
       await messageController.fetchOrCreateInbox();
 
-      socket!.on('receive-message:${messageController.inboxId}', (data) {
+      socket!.off('receive-message:${messageController.inboxId}');
+    socket!.on('receive-message:${messageController.inboxId}', (data) {
         debugPrint(data.toString());
         messageController.messages.add(
           Message(
@@ -50,7 +48,8 @@ class SocketController extends GetxController {
       });
       debugPrint("Listening to receive-message:${messageController.inboxId}");
 
-      socket!.on('get-notification::${user.userId}', (data) {
+      socket!.off('get-notification::${user.userId}');
+    socket!.on('get-notification::${user.userId}', (data) {
         print("GOT NOTIFICATION => ${data['text']}");
         final date = DateTime.parse(data['createdAt']);
         final dateKey = DateTime(

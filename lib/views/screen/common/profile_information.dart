@@ -83,7 +83,7 @@ class _ProfileInformationState extends State<ProfileInformation> {
                                   fit: BoxFit.cover,
                                 )
                                 : ProfilePicture(
-                                  image: user.getImageUrl(),
+                                  image: user.image,
                                   size: 96,
                                 ),
                       ),

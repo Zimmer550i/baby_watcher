@@ -44,7 +44,7 @@ class Connections extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  ProfilePicture(size: 52, image: user.getImageUrl(forConn: true)),
+                  ProfilePicture(size: 52, image: user.connectionImage),
                   const SizedBox(width: 12),
                   Text(
                     user.connectionName ?? "Unnamed",

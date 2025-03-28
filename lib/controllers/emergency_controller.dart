@@ -1,4 +1,5 @@
 import 'package:baby_watcher/controllers/api_service.dart';
+import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/models/contact_model.dart';
 import 'package:get/get.dart';
 
@@ -66,7 +67,9 @@ class EmergencyController extends GetxController {
   Future<String> getParentContact() async {
     isLoading.value = true;
     final response = await api.getRequest(
-      "/emergancy-contact/get-my-contacts",
+      Get.find<UserController>().userRole == Role.parent
+          ? "/emergancy-contact/get-my-contacts"
+          : "/emergancy-contact/get-contact",
       authRequired: true,
     );
 
@@ -109,6 +112,9 @@ class EmergencyController extends GetxController {
         alertsId.add(i['_id']);
       }
 
+      alerts.value = alerts.reversed.toList();
+      alertsId = alertsId.reversed.toList();
+
       return "Success";
     } else {
       isLoading.value = false;
@@ -127,6 +133,20 @@ class EmergencyController extends GetxController {
     } else if (response['success'] == true) {
       alertsId.removeAt(index);
       alerts.removeAt(index);
+      return "Success";
+    } else {
+      return response['message'] ?? "Unknown error";
+    }
+  }
+
+  Future<String> sendEmergencyAlert(String message) async {
+    final response = await api.postRequest("/emergancy-alert/send", {
+      "message": message,
+    }, authRequired: true);
+
+    if (response == null) {
+      return "No response from API";
+    } else if (response['success'] == true) {
       return "Success";
     } else {
       return response['message'] ?? "Unknown error";

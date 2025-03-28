@@ -13,6 +13,10 @@ class MessageController extends GetxController {
   RxBool isLoading = false.obs;
 
   void initialize() {
+    final socket = Get.find<SocketController>();
+    if (socket.socket!.disconnected) {
+      socket.initialize();
+    }
     if (inboxId == null) {
       fetchOrCreateInbox();
     }

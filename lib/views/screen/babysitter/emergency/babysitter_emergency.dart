@@ -1,18 +1,35 @@
-import 'package:baby_watcher/models/contact_model.dart';
+import 'package:baby_watcher/controllers/emergency_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/formatter.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class BabysitterEmergency extends StatelessWidget {
+class BabysitterEmergency extends StatefulWidget {
   const BabysitterEmergency({super.key});
 
   @override
+  State<BabysitterEmergency> createState() => _BabysitterEmergencyState();
+}
+
+class _BabysitterEmergencyState extends State<BabysitterEmergency> {
+  final emergencyController = Get.find<EmergencyController>();
+  TextEditingController textController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    emergencyController.getParentContact().then((onValue) {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<ContactModel> contacts = [
-    ];
     return Scaffold(
       appBar: homeAppBar(),
       body: Align(
@@ -83,13 +100,13 @@ class BabysitterEmergency extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      ...contacts.map((e) {
+                      ...emergencyController.contacts.map((e) {
                         return GestureDetector(
                           child: Container(
                             height: 78,
                             decoration: BoxDecoration(
                               border:
-                                  contacts.last != e
+                                  emergencyController.contacts.last != e
                                       ? Border(
                                         bottom: BorderSide(
                                           width: 0.5,
@@ -141,7 +158,7 @@ class BabysitterEmergency extends StatelessWidget {
                                 const Spacer(),
                                 GestureDetector(
                                   onTap: () {
-                                    // launchUrl(Uri.parse("tel:923423423"));
+                                    launchUrl(Uri.parse("tel:${e.phone}"));
                                   },
                                   child: SvgPicture.asset(
                                     AppIcons.phone,
@@ -222,29 +239,48 @@ class BabysitterEmergency extends StatelessWidget {
                   "Child in Distress",
                   "Injury",
                 ].map((e) {
-                  return Container(
-                    height: 56,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 0.5,
-                          color: AppColors.indigo[200]!,
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          e,
-                          style: TextStyle(
-                            fontVariations: [FontVariation("wght", 400)],
-                            fontSize: 16,
-                            color: AppColors.gray,
+                  return GestureDetector(
+                    onTap: () async {
+                      String alert =
+                          "Baby Sitter has reported a${['a', 'e', 'i', 'o', 'u'].contains(e[0].toLowerCase()) ? "n" : ""} $e at ${Formatter.timeFormatter(dateTime: DateTime.now())}";
+                      final message = await emergencyController
+                          .sendEmergencyAlert(alert);
+
+                      if (message == "Success") {
+                        showSnackBar(
+                          "Emergency alert sent to Parent",
+                          isError: false,
+                        );
+                        Get.back();
+                      } else {
+                        showSnackBar(message);
+                        Get.back();
+                      }
+                    },
+                    child: Container(
+                      height: 56,
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 0.5,
+                            color: AppColors.indigo[200]!,
                           ),
                         ),
-                        const Spacer(),
-                        SvgPicture.asset(AppIcons.sendRight),
-                      ],
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            e,
+                            style: TextStyle(
+                              fontVariations: [FontVariation("wght", 400)],
+                              fontSize: 16,
+                              color: AppColors.gray,
+                            ),
+                          ),
+                          const Spacer(),
+                          SvgPicture.asset(AppIcons.sendRight),
+                        ],
+                      ),
                     ),
                   );
                 }),
@@ -260,6 +296,7 @@ class BabysitterEmergency extends StatelessWidget {
                           ),
                           padding: EdgeInsets.only(left: 8, top: 4, bottom: 8),
                           child: TextField(
+                            controller: textController,
                             decoration: InputDecoration(
                               isDense: true,
                               border: InputBorder.none,
@@ -276,7 +313,26 @@ class BabysitterEmergency extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      SvgPicture.asset(AppIcons.sendRight),
+                      GestureDetector(
+                        onTap: () async {
+                          String alert =
+                              "Baby Sitter has reported a${['a', 'e', 'i', 'o', 'u'].contains(textController.text[0].toLowerCase()) ? "n" : ""} ${textController.text} at ${Formatter.timeFormatter(dateTime: DateTime.now())}";
+                          final message = await emergencyController
+                              .sendEmergencyAlert(alert);
+
+                          if (message == "Success") {
+                            showSnackBar(
+                              "Emergency alert sent to Parent",
+                              isError: false,
+                            );
+                            Get.back();
+                          } else {
+                            showSnackBar(message);
+                            Get.back();
+                          }
+                        },
+                        child: SvgPicture.asset(AppIcons.sendRight),
+                      ),
                     ],
                   ),
                 ),

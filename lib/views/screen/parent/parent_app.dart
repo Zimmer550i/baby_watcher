@@ -1,3 +1,4 @@
+import 'package:baby_watcher/controllers/emergency_controller.dart';
 import 'package:baby_watcher/controllers/socket_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
@@ -41,7 +42,13 @@ class _ParentAppState extends State<ParentApp> {
     AppIcons.message,
     AppIcons.profile,
   ];
-  List<int> notifications = [0, 0, 1, 2, 0];
+  List<int> notifications = [
+    0,
+    0,
+    Get.find<EmergencyController>().alerts.length,
+    2,
+    0,
+  ];
 
   @override
   void initState() {

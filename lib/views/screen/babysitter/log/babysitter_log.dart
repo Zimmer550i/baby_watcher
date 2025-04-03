@@ -20,22 +20,11 @@ class BabysitterLog extends StatefulWidget {
 class _BabysitterLogState extends State<BabysitterLog> {
   var now = DateTime.now();
   final logController = Get.find<LogController>();
-  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
     logController.getLogs(DateTime.now());
-    _timer = Timer.periodic(
-      const Duration(seconds: 10),
-      (val) => logController.getLogs(DateTime.now()),
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _timer.cancel();
   }
 
   @override
@@ -68,8 +57,7 @@ class _BabysitterLogState extends State<BabysitterLog> {
                         DateTime.now().add(const Duration(days: 1)),
                       ),
                   child:
-                      // logController.isLoading.value
-                      false
+                      logController.isLoading.value
                           ? Align(
                             alignment: Alignment.topCenter,
                             child: CircularProgressIndicator(),

@@ -78,4 +78,27 @@ class Formatter {
 
     return rtn;
   }
+
+  static String durationFormatter(Duration duration) {
+    String rtn = "";
+
+    if (duration.inDays != 0) {
+      rtn += duration.inDays.toString();
+      rtn += "d ";
+      duration -= Duration(days: duration.inDays);
+    }
+
+    if (duration.inHours != 0) {
+      rtn += duration.inHours.toString();
+      rtn += "h ";
+      duration -= Duration(hours: duration.inHours);
+    }
+
+    if (duration.inMinutes >= 0) {
+      rtn += duration.inMinutes.toString();
+      rtn += "m";
+    }
+
+    return rtn;
+  }
 }

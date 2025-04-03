@@ -1,5 +1,7 @@
 import 'package:baby_watcher/controllers/api_service.dart';
+import 'package:baby_watcher/controllers/log_controller.dart';
 import 'package:baby_watcher/controllers/message_controller.dart';
+import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/views/screen/common/messages.dart';
 import 'package:flutter/material.dart';
@@ -15,28 +17,39 @@ class SocketController extends GetxController {
   bool reachedEnd = false;
   final api = Get.find<ApiService>();
   final user = Get.find<UserController>();
+  final log = Get.find<LogController>();
+  final monitor = Get.find<MonitorController>();
   final notifications = <DateTime, List<Map<String, dynamic>>>{}.obs;
   final messageController = Get.find<MessageController>();
+
+  final callBackTriggers = [
+    ["You have a new video request"],
+    ["You have a new log"],
+  ];
+  List<Future<String> Function()> callBackMethods = [];
 
   void initialize() {
     _initializeSocket();
     getPrevNotifications(page: page);
+
+    callBackMethods = [
+      () => monitor.getRequest(),
+      () => log.getLogs(DateTime.now()),
+    ];
   }
 
   void _initializeSocket() {
     socket = IO.io(
       api.baseUrl.replaceAll("/api/v1", ""),
-      IO.OptionBuilder()
-          .setTransports(['websocket'])
-          .build(),
+      IO.OptionBuilder().setTransports(['websocket']).build(),
     );
 
-    socket?.onConnect((_) async { 
+    socket?.onConnect((_) async {
       debugPrint("Connected to Socket.IO");
       await messageController.fetchOrCreateInbox();
 
       socket!.off('receive-message:${messageController.inboxId}');
-    socket!.on('receive-message:${messageController.inboxId}', (data) {
+      socket!.on('receive-message:${messageController.inboxId}', (data) {
         debugPrint(data.toString());
         messageController.messages.add(
           Message(
@@ -49,8 +62,19 @@ class SocketController extends GetxController {
       debugPrint("Listening to receive-message:${messageController.inboxId}");
 
       socket!.off('get-notification::${user.userId}');
-    socket!.on('get-notification::${user.userId}', (data) {
+      socket!.on('get-notification::${user.userId}', (data) {
         print("GOT NOTIFICATION => ${data['text']}");
+
+        for (int i = 0; i < callBackTriggers.length; i++) {
+          if (callBackTriggers[i].any(
+            (trigger) => data['text'].contains(trigger),
+          )) {
+            callBackMethods[i]().then((val) {
+              print(val);
+            });
+          }
+        }
+
         final date = DateTime.parse(data['createdAt']);
         final dateKey = DateTime(
           date.year,

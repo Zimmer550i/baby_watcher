@@ -1,15 +1,15 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 import 'dart:io';
-
+import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/utils/formatter.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:baby_watcher/views/base/home_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vibration/vibration.dart';
 
@@ -21,6 +21,7 @@ class BabysitterMonitor extends StatefulWidget {
 }
 
 class _BabysitterMonitorState extends State<BabysitterMonitor> {
+  final monitor = Get.find<MonitorController>();
   bool runTimer = false;
   bool missed = false;
   bool babySleeping = false;
@@ -48,134 +49,133 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
-                Text(
-                  runTimer
-                      ? "New Video Request!"
-                      : missed
-                      ? "You've missed a video request\nSend it now!"
-                      : "No video request at\nthis moment",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontVariations: [FontVariation("wght", 500)],
-                    fontSize: 24,
-                    color: AppColors.indigo[700],
-                  ),
-                ),
-                if (runTimer)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: CustomTimerWidget(
-                      initialTime: Duration(seconds: 5),
-                      onComplete: () {
-                        setState(() {
-                          runTimer = false;
-                        });
+            child: Obx(() {
+              babySleeping = monitor.sleepingSince.value != null;
+              DateTime? lastTime = monitor.lastTime.value;
+              runTimer =
+                  lastTime != null &&
+                  DateTime.now().isBefore(
+                    lastTime.add(const Duration(minutes: 5)),
+                  );
+              missed =
+                  lastTime != null &&
+                  DateTime.now().isAfter(
+                    lastTime.add(const Duration(minutes: 5)),
+                  );
 
-                        if (_videoFile == null) {
-                          setState(() {
-                            missed = true;
-                          });
-                        } else {
-                          _videoFile = null;
-                        }
-                      },
+              return Column(
+                children: [
+                  const SizedBox(height: 24),
+                  Text(
+                    runTimer
+                        ? "New Video Request!"
+                        : missed
+                        ? "You've missed a video request\nSend it now!"
+                        : "No video request at\nthis moment",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: AppColors.indigo[700],
+                      fontVariations: [FontVariation("wght", 500)],
                     ),
                   ),
-                const SizedBox(height: 28),
-                CustomButton(
-                  text: "Start Recording",
-                  leading: AppIcons.video,
-                  radius: 8,
-                  isDisabled: (!runTimer && !missed),
-                  onTap: () async {
-                    if (runTimer || missed) {
-                      await _pickVideo();
-                      if (_videoFile != null) {
-                        final snackBar = SnackBar(
-                          content: const Text(
-                            "📤 Video Sent to Parents",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          duration: const Duration(seconds: 3),
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: Colors.green,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top + 10,
-                            left: 20,
-                            right: 20,
-                          ),
-                        );
+                  if (runTimer)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: CustomTimerWidget(
+                        initialTime: Duration(minutes: 5),
+                        timeRemaining: lastTime
+                            ?.add(const Duration(minutes: 5, seconds: 30))
+                            .difference(DateTime.now()),
+                        onComplete: () {
+                          setState(() {
+                            runTimer = false;
+                          });
+                        },
+                      ),
+                    ),
+                  const SizedBox(height: 28),
+                  CustomButton(
+                    text: "Start Recording",
+                    leading: AppIcons.video,
+                    radius: 8,
+                    isDisabled: (!runTimer && !missed),
+                    onTap: () async {
+                      if (runTimer || missed) {
+                        await _pickVideo();
+                        if (_videoFile != null) {
+                          showSnackBar("Uploading Video...", isError: false);
+                          final message = await Get.find<MonitorController>()
+                              .sendVideo(_videoFile!, needCompression: true);
 
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          if (message == "Success") {
+                            await monitor.getRequest();
+                            showSnackBar("Video uploaded successfully");
+                          } else {
+                            showSnackBar(message);
+                          }
+                        }
+                      } else {
                         setState(() {
-                          runTimer = false;
-                          missed = false;
+                          runTimer = !runTimer;
                         });
                       }
-                    } else {
-                      setState(() {
-                        runTimer = !runTimer;
-                      });
-                    }
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 24, bottom: 16),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Track Sleep",
-                        style: TextStyle(
-                          fontVariations: [FontVariation("wght", 400)],
-                          fontSize: 14,
-                          color: AppColors.gray,
+                    },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24, bottom: 16),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Track Sleep",
+                          style: TextStyle(
+                            fontVariations: [FontVariation("wght", 400)],
+                            fontSize: 14,
+                            color: AppColors.gray,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 16),
-                SleepButton(
-                  isAwake: !babySleeping,
-                  timeText: "2h 35m",
-                  onChange: (p0) async {
-                    if (await Vibration.hasVibrator()) {
-                      Vibration.vibrate(duration: 500);
-                    }
-                    setState(() {
-                      babySleeping = !p0;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  babySleeping
-                      ? "Hold to deactivate sleep tracking"
-                      : "Hold to activate sleep tracking",
-                  style: TextStyle(
-                    fontVariations: [FontVariation("wght", 600)],
-                    fontSize: 20,
-                    color: AppColors.indigo[700],
+                  const SizedBox(height: 16),
+                  SleepButton(
+                    isAwake: !babySleeping,
+                    timeText: monitor.getTotalSleep(),
+                    onChange: (p0) async {
+                      if (await Vibration.hasVibrator()) {
+                        Vibration.vibrate(duration: 500);
+                      }
+                      final message = await monitor.trackSleep();
+
+                      if (message != "Success") {
+                        showSnackBar(message);
+                      }
+                    },
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "Total: 4h 21m",
-                  style: TextStyle(
-                    fontVariations: [FontVariation("wght", 600)],
-                    fontSize: 20,
-                    color: AppColors.indigo[700],
+                  const SizedBox(height: 16),
+                  Text(
+                    babySleeping
+                        ? "Hold to deactivate sleep tracking"
+                        : "Hold to activate sleep tracking",
+                    style: TextStyle(
+                      fontVariations: [FontVariation("wght", 600)],
+                      fontSize: 20,
+                      color: AppColors.indigo[700],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Total: ${monitor.getTotalSleep()}",
+                    style: TextStyle(
+                      fontVariations: [FontVariation("wght", 600)],
+                      fontSize: 20,
+                      color: AppColors.indigo[700],
+                    ),
+                  ),
+                ],
+              );
+            }),
           ),
         ),
       ),
@@ -297,10 +297,12 @@ class _SleepButtonState extends State<SleepButton> {
 
 class CustomTimerWidget extends StatefulWidget {
   final Duration initialTime;
+  final Duration? timeRemaining;
   final void Function()? onComplete;
   const CustomTimerWidget({
     super.key,
     required this.initialTime,
+    this.timeRemaining,
     this.onComplete,
   });
 
@@ -316,6 +318,9 @@ class _CustomTimerWidgetState extends State<CustomTimerWidget> {
   void initState() {
     super.initState();
     time = widget.initialTime;
+    if (widget.timeRemaining != null) {
+      time = widget.timeRemaining!;
+    }
     timer = Timer.periodic(const Duration(seconds: 1), (val) {
       if (time > Duration()) {
         setState(() {

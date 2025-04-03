@@ -1,3 +1,4 @@
+import 'package:baby_watcher/controllers/emergency_controller.dart';
 import 'package:baby_watcher/controllers/socket_controller.dart';
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
@@ -24,7 +25,6 @@ class _BabysitterAppState extends State<BabysitterApp> {
   PageController controller = PageController(initialPage: 0);
   List<Widget> pages = [
     BabysitterLog(),
-    // BabysitterMonitor(),
     BabysitterMonitor(),
     BabysitterEmergency(),
     Messages(),
@@ -44,7 +44,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
     AppIcons.message,
     AppIcons.profile,
   ];
-  List<int> notifications = [0, 0, 1, 2, 0];
+  List<int> notifications = [0, 0, Get.find<EmergencyController>().alerts.length, 2, 0];
 
   @override
   void initState() {

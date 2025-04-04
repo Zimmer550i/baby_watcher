@@ -231,8 +231,16 @@ class _ParentLogState extends State<ParentLog> {
   }
 
   Widget logWidget(LogModel item) {
-    // return Text(item.id);
-    bool isPast = item.time.isBefore(TimeOfDay.now());
+    bool isSameDay = item.date.year == days[selected].year &&
+                     item.date.month == days[selected].month &&
+                     item.date.day == days[selected].day;
+
+    bool isBeforeSelectedDay = item.date.isBefore(days[selected]);
+
+    bool isPast = isBeforeSelectedDay ||
+        (isSameDay && item.time.hour < TimeOfDay.now().hour) ||
+        (isSameDay && item.time.hour == TimeOfDay.now().hour && item.time.minute <= TimeOfDay.now().minute);
+
     bool notConfirmed = !item.isCompleted && isPast;
 
     return Padding(

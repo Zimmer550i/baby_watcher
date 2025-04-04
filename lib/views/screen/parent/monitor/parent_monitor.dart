@@ -1,6 +1,7 @@
 import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/formatter.dart';
 import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:baby_watcher/views/base/home_app_bar.dart';
@@ -22,6 +23,12 @@ class _ParentMonitorState extends State<ParentMonitor> {
   bool reqSent = false;
 
   @override
+  void initState() {
+    super.initState();
+    monitorController.getVideos();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: homeAppBar(),
@@ -33,52 +40,53 @@ class _ParentMonitorState extends State<ParentMonitor> {
             child: Column(
               children: [
                 const SizedBox(height: 24),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          babySleeping ? "Baby is sleeping" : "Baby is awake",
-                          style: TextStyle(
-                            fontVariations: [FontVariation("wght", 600)],
-                            fontSize: 20,
-                            color: AppColors.indigo[700],
+                Obx(
+                  () => Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            monitorController.sleepingSince.value != null
+                                ? "Baby is sleeping"
+                                : "Baby is awake",
+                            style: TextStyle(
+                              fontVariations: [FontVariation("wght", 600)],
+                              fontSize: 20,
+                              color: AppColors.indigo[700],
+                            ),
                           ),
-                        ),
-                        Text(
-                          babySleeping
-                              ? "Since 3:10 PM"
-                              : "Awake since 3:10 PM",
-                          style: TextStyle(
-                            fontVariations: [FontVariation("wght", 400)],
-                            fontSize: 14,
-                            color: AppColors.gray,
+                          Text(
+                            monitorController.sleepingSince.value != null
+                                ? "Since ${Formatter.timeFormatter(dateTime: monitorController.sleepingSince.value)}"
+                                : "",
+                            style: TextStyle(
+                              fontVariations: [FontVariation("wght", 400)],
+                              fontSize: 14,
+                              color: AppColors.gray,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Text(
-                      "Total: 7h 21m",
-                      style: TextStyle(
-                        fontVariations: [FontVariation("wght", 400)],
-                        fontSize: 12,
-                        color: AppColors.indigo,
+                        ],
                       ),
-                    ),
-                  ],
+                      const Spacer(),
+                      Text(
+                        "Total: ${monitorController.getTotalSleep()}",
+                        style: TextStyle(
+                          fontVariations: [FontVariation("wght", 400)],
+                          fontSize: 12,
+                          color: AppColors.indigo,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 16),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      babySleeping = !babySleeping;
-                    });
-                  },
-                  child: SvgPicture.asset(
-                    babySleeping ? AppIcons.babyAsleep : AppIcons.babyAwake,
+                Obx(
+                  () => SvgPicture.asset(
+                    monitorController.sleepingSince.value != null
+                        ? AppIcons.babyAsleep
+                        : AppIcons.babyAwake,
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -120,7 +128,7 @@ class _ParentMonitorState extends State<ParentMonitor> {
                         ),
                         child: Center(
                           child: Text(
-                            "1",
+                            monitorController.unseenVideos.value.toString(),
                             style: TextStyle(
                               fontVariations: [FontVariation("wght", 600)],
                               fontSize: 12,
@@ -133,11 +141,15 @@ class _ParentMonitorState extends State<ParentMonitor> {
                   ),
                 ),
 
-                VideoWidget(
-                  url:
-                      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-                  thumbnail: "assets/images/baby_1.png",
-                ),
+                for (var i in monitorController.videos)
+                  if (!i.isSeen)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: VideoWidget(
+                        url: i.video,
+                        thumbnail: "assets/images/baby_1.png",
+                      ),
+                    ),
                 Padding(
                   padding: const EdgeInsets.only(top: 24, bottom: 16),
                   child: Row(
@@ -164,31 +176,12 @@ class _ParentMonitorState extends State<ParentMonitor> {
                     childAspectRatio: 1,
                   ),
                   children: [
-                    VideoWidget(
-                      url:
-                          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-                      thumbnail: "assets/images/baby_2.png",
-                    ),
-                    VideoWidget(
-                      url:
-                          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-                      thumbnail: "assets/images/baby_3.png",
-                    ),
-                    VideoWidget(
-                      url:
-                          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-                      thumbnail: "assets/images/baby_4.png",
-                    ),
-                    VideoWidget(
-                      url:
-                          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-                      thumbnail: "assets/images/baby_5.png",
-                    ),
-                    VideoWidget(
-                      url:
-                          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
-                      thumbnail: "assets/images/baby_6.png",
-                    ),
+                    for (var i in monitorController.videos)
+                      if (i.isSeen)
+                        VideoWidget(
+                          url: i.video,
+                          thumbnail: "assets/images/baby_1.png",
+                        ),
                   ],
                 ),
                 const SizedBox(height: 24),

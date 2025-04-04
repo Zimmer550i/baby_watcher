@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:baby_watcher/controllers/api_service.dart';
+import 'package:baby_watcher/models/video_model.dart';
 import 'package:baby_watcher/utils/formatter.dart';
 import 'package:get/get.dart';
 import 'package:video_compress/video_compress.dart';
@@ -7,8 +8,10 @@ import 'package:video_compress/video_compress.dart';
 class MonitorController extends GetxController {
   final api = Get.find<ApiService>();
   var requestsCount = 0.obs;
+  RxInt unseenVideos = 0.obs;
   Rxn<DateTime> lastTime = Rxn();
   Rxn<DateTime> sleepingSince = Rxn();
+  RxList<VideoModel> videos = RxList();
   Duration totalSleep = Duration();
 
   @override
@@ -174,5 +177,27 @@ class MonitorController extends GetxController {
     }
 
     return Formatter.durationFormatter(duration);
+  }
+
+  Future<String> getVideos() async {
+    final response = await api.getRequest(
+      "/video/get-my-video",
+      authRequired: true,
+    );
+
+    if (response != null && response["success"] == true) {
+      final result = response['data']['result'];
+      unseenVideos.value = 0;
+      for (var i in result) {
+        videos.add(VideoModel.fromJson(i));
+        if (!VideoModel.fromJson(i).isSeen) {
+          unseenVideos.value += 1;
+        }
+      }
+
+      return "Success";
+    } else {
+      return response?["message"] ?? "Unknown Error";
+    }
   }
 }

@@ -28,8 +28,9 @@ class SocketController extends GetxController {
     ["You have a new video request"],
     ["You have a new log"],
     ["reported"],
+    ["sleeping"],
   ];
-  List<Future<String> Function()> callBackMethods = [];
+  List<Future Function()> callBackMethods = [];
 
   void initialize() {
     _initializeSocket();
@@ -39,6 +40,7 @@ class SocketController extends GetxController {
       () => monitor.getRequest(),
       () => log.getLogs(DateTime.now()),
       () => emergency.getAlerts(),
+      () => monitor.getSleepData(),
     ];
   }
 

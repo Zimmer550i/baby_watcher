@@ -1,4 +1,5 @@
 import 'package:baby_watcher/controllers/api_service.dart';
+import 'package:baby_watcher/controllers/emergency_controller.dart';
 import 'package:baby_watcher/controllers/log_controller.dart';
 import 'package:baby_watcher/controllers/message_controller.dart';
 import 'package:baby_watcher/controllers/monitor_controller.dart';
@@ -18,6 +19,7 @@ class SocketController extends GetxController {
   final api = Get.find<ApiService>();
   final user = Get.find<UserController>();
   final log = Get.find<LogController>();
+  final emergency = Get.find<EmergencyController>();
   final monitor = Get.find<MonitorController>();
   final notifications = <DateTime, List<Map<String, dynamic>>>{}.obs;
   final messageController = Get.find<MessageController>();
@@ -25,6 +27,7 @@ class SocketController extends GetxController {
   final callBackTriggers = [
     ["You have a new video request"],
     ["You have a new log"],
+    ["reported"]
   ];
   List<Future<String> Function()> callBackMethods = [];
 
@@ -35,6 +38,7 @@ class SocketController extends GetxController {
     callBackMethods = [
       () => monitor.getRequest(),
       () => log.getLogs(DateTime.now()),
+      () => emergency.getAlerts()
     ];
   }
 
@@ -67,7 +71,7 @@ class SocketController extends GetxController {
 
         for (int i = 0; i < callBackTriggers.length; i++) {
           if (callBackTriggers[i].any(
-            (trigger) => data['text'].contains(trigger),
+            (trigger) => data['text'].toLowerCase().contains(trigger.toLowerCase()),
           )) {
             callBackMethods[i]().then((val) {
               print(val);

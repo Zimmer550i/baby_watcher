@@ -161,8 +161,11 @@ class _ParentLogState extends State<ParentLog> {
                   );
                 } else {
                   return ListView.builder(
-                    itemCount: logController.logs.length,
+                    itemCount: logController.logs.length + 1,
                     itemBuilder: (context, index) {
+                      if (index == logController.logs.length) {
+                        return SizedBox(height: 55);
+                      }
                       return logWidget(logController.logs[index]);
                     },
                   );

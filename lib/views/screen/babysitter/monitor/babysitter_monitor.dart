@@ -224,6 +224,12 @@ class _SleepButtonState extends State<SleepButton> {
           remTime = reqTime;
         });
       },
+      onTapCancel: () {
+        timer.cancel();
+        setState(() {
+          remTime = reqTime;
+        });
+      },
       child: SizedBox(
         width: MediaQuery.of(context).size.width / 2,
         height: MediaQuery.of(context).size.width / 2,

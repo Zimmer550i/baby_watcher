@@ -27,7 +27,7 @@ class SocketController extends GetxController {
   final callBackTriggers = [
     ["You have a new video request"],
     ["You have a new log"],
-    ["reported"]
+    ["reported"],
   ];
   List<Future<String> Function()> callBackMethods = [];
 
@@ -38,7 +38,7 @@ class SocketController extends GetxController {
     callBackMethods = [
       () => monitor.getRequest(),
       () => log.getLogs(DateTime.now()),
-      () => emergency.getAlerts()
+      () => emergency.getAlerts(),
     ];
   }
 
@@ -71,7 +71,8 @@ class SocketController extends GetxController {
 
         for (int i = 0; i < callBackTriggers.length; i++) {
           if (callBackTriggers[i].any(
-            (trigger) => data['text'].toLowerCase().contains(trigger.toLowerCase()),
+            (trigger) =>
+                data['text'].toLowerCase().contains(trigger.toLowerCase()),
           )) {
             callBackMethods[i]().then((val) {
               print(val);
@@ -86,10 +87,10 @@ class SocketController extends GetxController {
           date.day,
         ); // Format date for key
         if (notifications.containsKey(dateKey)) {
-          notifications[dateKey]!.add(data); // Update to use dateKey
+          notifications[dateKey]!.insert(0, data); // Update to use dateKey
         } else {
           notifications[dateKey] = []; // Update to use dateKey
-          notifications[dateKey]!.add(data); // Update to use dateKey
+          notifications[dateKey]!.insert(0, data); // Update to use dateKey
         }
         unreadNotifications += 1;
       });
@@ -140,10 +141,10 @@ class SocketController extends GetxController {
           date.day,
         ); // Format date for key
         if (notifications.containsKey(dateKey)) {
-          notifications[dateKey]!.add(data); // Update to use dateKey
+          notifications[dateKey]!.insert(0, data); // Update to use dateKey
         } else {
           notifications[dateKey] = []; // Update to use dateKey
-          notifications[dateKey]!.add(data); // Update to use dateKey
+          notifications[dateKey]!.insert(0, data); // Update to use dateKey
         }
       }
     }

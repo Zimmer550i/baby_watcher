@@ -69,7 +69,9 @@ class _NotificationsState extends State<Notifications> {
   ) {
     List<Widget> rtn = [];
 
-    for (var i in data.keys) {
+    final sortedKeys = data.keys.toList()..sort((a, b) => b.compareTo(a));
+
+    for (var i in sortedKeys) {
       rtn.add(
         Container(
           padding: EdgeInsets.symmetric(vertical: 16),

@@ -87,6 +87,8 @@ class MessageController extends GetxController {
 
     List data = response!['data']['result'];
 
+    messages.clear();
+
     for (int i = 0; i < data.length; i++) {
       final each = data[i];
 

@@ -21,7 +21,7 @@ class _MessagesState extends State<Messages> {
   final FocusNode messageFocusNode = FocusNode();
   final user = Get.find<UserController>();
   final controller = Get.find<MessageController>();
- 
+
   @override
   void initState() {
     super.initState();
@@ -144,16 +144,14 @@ List<Widget> renderMessages(List<Message> messages) {
     Message current = messages[i];
     bool showAvatar = true;
 
-    if (i == 0) {
+    if (i == 0 ||
+        current.timeStamp.difference(messages[i - 1].timeStamp) >
+            const Duration(hours: 1)) {
       rtn.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              current.timeStamp.difference(DateTime.now()) <
-                      const Duration(days: 1)
-                  ? "Today"
-                  : current.timeStamp.year.toString(),
+            Text(Formatter.timeFormatter(dateTime: current.timeStamp, showDate: true),
 
               style: TextStyle(
                 fontVariations: [FontVariation("wght", 400)],
@@ -165,16 +163,6 @@ List<Widget> renderMessages(List<Message> messages) {
         ),
       );
     }
-
-    /*
-
-    Implement ShowAvatar Logic Here:
-
-    1. If the previous message is "isSent" then showAvatar is true.
-    2. If previous message is not "isSent" and if time difference is 
-       more than 1 hour then showAvatar is true.
-
-    */
 
     if (i != 0 &&
         !messages[i - 1].isSent &&
@@ -228,7 +216,11 @@ List<Widget> renderMessages(List<Message> messages) {
             spacing: 12,
             children: [
               showAvatar
-                  ? ProfilePicture(image: user.connectionImage, size: 40, showLoading: false,)
+                  ? ProfilePicture(
+                    image: user.connectionImage,
+                    size: 40,
+                    showLoading: false,
+                  )
                   : const SizedBox(width: 40),
               Flexible(
                 child: Container(
@@ -254,46 +246,6 @@ List<Widget> renderMessages(List<Message> messages) {
               const SizedBox(width: 24),
             ],
           ),
-        ),
-      );
-    }
-
-    if (i < messages.length - 1) {
-      if (current.timeStamp.difference(messages[i + 1].timeStamp).abs() >=
-          const Duration(hours: 1)) {
-        rtn.add(
-          Padding(
-            padding: const EdgeInsets.only(top: 2, bottom: 4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  Formatter.timeFormatter(dateTime: current.timeStamp),
-                  style: TextStyle(
-                    fontVariations: [FontVariation("wght", 400)],
-                    fontSize: 10,
-                    color: Color(0xff797C7B),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    } else {
-      rtn.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              Formatter.timeFormatter(dateTime: current.timeStamp),
-              style: TextStyle(
-                fontVariations: [FontVariation("wght", 400)],
-                fontSize: 10,
-                color: Color(0xff797C7B),
-              ),
-            ),
-          ],
         ),
       );
     }

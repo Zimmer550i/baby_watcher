@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Formatter {
-  static String timeFormatter({TimeOfDay? time, DateTime? dateTime}) {
+  static String timeFormatter({TimeOfDay? time, DateTime? dateTime, bool showDate = false}) {
+    String rtn = "";
+
     if (time == null && dateTime != null) {
       time = TimeOfDay.fromDateTime(dateTime);
     }
@@ -10,7 +12,18 @@ class Formatter {
       return "null";
     }
 
-    String rtn = "";
+    if (showDate && dateTime != null) {
+      final now = DateTime.now();
+      final yesterday = DateTime(now.year, now.month, now.day - 1);
+
+      final dateOnly = DateTime(dateTime.year, dateTime.month, dateTime.day);
+
+      if (dateOnly == yesterday) {
+        rtn += "Yesterday at ";
+      } else {
+        rtn += "${dateTime.day} ${monthName(dateTime.month)} at ";
+      }
+    }
 
     rtn += time.hourOfPeriod.toString();
     rtn += ":";

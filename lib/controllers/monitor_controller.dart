@@ -64,7 +64,7 @@ class MonitorController extends GetxController {
   Future<String> trackSleep() async {
     bool isSleeping = sleepingSince.value != null;
 
-    var response;
+    Map<String, dynamic>? response;
 
     if (isSleeping) {
       Duration newSleep = DateTime.now().difference(sleepingSince.value!);
@@ -72,13 +72,13 @@ class MonitorController extends GetxController {
       totalSleep += newSleep;
 
       response = await api.postRequest("/sleep-alert/save", {
-        "time": sleepingSince.value.toString() ?? "null",
+        "time": sleepingSince.value.toString(),
         "duration": totalSleep.toString(),
       }, authRequired: true);
     } else {
       sleepingSince.value = DateTime.now();
       response = await api.postRequest("/sleep-alert/save", {
-        "time": sleepingSince.value.toString() ?? "null",
+        "time": sleepingSince.value.toString(),
         "duration": totalSleep.toString(),
       }, authRequired: true);
       await api.postRequest("/sleep-alert/send", {

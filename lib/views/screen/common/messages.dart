@@ -4,7 +4,7 @@ import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/utils/formatter.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
-import 'package:baby_watcher/views/screen/common/profile.dart';
+import 'package:baby_watcher/views/base/profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -228,7 +228,7 @@ List<Widget> renderMessages(List<Message> messages) {
             spacing: 12,
             children: [
               showAvatar
-                  ? ProfilePicture(image: user.connectionImage, size: 40)
+                  ? ProfilePicture(image: user.connectionImage, size: 40, showLoading: false,)
                   : const SizedBox(width: 40),
               Flexible(
                 child: Container(

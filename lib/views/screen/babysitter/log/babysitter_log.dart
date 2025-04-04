@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:baby_watcher/controllers/log_controller.dart';
 import 'package:baby_watcher/models/log_model.dart';
 import 'package:baby_watcher/utils/app_colors.dart';

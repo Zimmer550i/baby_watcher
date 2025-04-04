@@ -5,7 +5,7 @@ import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/overlay_confirmation.dart';
-import 'package:baby_watcher/views/screen/common/profile.dart';
+import 'package:baby_watcher/views/base/profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';

@@ -92,7 +92,7 @@ class Formatter {
     return rtn;
   }
 
-  static String durationFormatter(Duration duration) {
+  static String durationFormatter(Duration duration, {bool showSeconds = false}) {
     String rtn = "";
 
     if (duration.inDays != 0) {
@@ -110,6 +110,13 @@ class Formatter {
     if (duration.inMinutes >= 0) {
       rtn += duration.inMinutes.toString();
       rtn += "m";
+      duration -= Duration(hours: duration.inMinutes);
+    }
+
+    if(showSeconds){
+      rtn += " ";
+      rtn += duration.inSeconds.toString();
+      rtn += "s";
     }
 
     return rtn;

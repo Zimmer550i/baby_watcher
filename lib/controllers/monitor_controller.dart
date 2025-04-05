@@ -11,6 +11,7 @@ class MonitorController extends GetxController {
   RxInt unseenVideos = 0.obs;
   Rxn<DateTime> lastTime = Rxn();
   Rxn<DateTime> sleepingSince = Rxn();
+  Rx<bool> isAwake = RxBool(false);
   RxList<VideoModel> videos = RxList();
   Duration totalSleep = Duration();
 
@@ -65,31 +66,39 @@ class MonitorController extends GetxController {
   }
 
   Future<String> trackSleep() async {
-    bool isSleeping = sleepingSince.value != null;
-
     Map<String, dynamic>? response;
 
-    if (isSleeping) {
-      Duration newSleep = DateTime.now().difference(sleepingSince.value!);
-      sleepingSince.value = null;
-      totalSleep += newSleep;
+    if (isAwake.value) {
+      sleepingSince.value = DateTime.now();
 
       response = await api.postRequest("/sleep-alert/save", {
         "time": sleepingSince.value.toString(),
         "duration": totalSleep.toString(),
+        'type': "sleep",
+      }, authRequired: true);
+      await api.postRequest("/sleep-alert/send", {
+        "time": Formatter.timeFormatter(dateTime: DateTime.now()),
+        "type": "sleeping",
       }, authRequired: true);
     } else {
+      if (sleepingSince.value != null) {
+        Duration newSleep = DateTime.now().difference(sleepingSince.value!);
+        totalSleep += newSleep;
+      }
       sleepingSince.value = DateTime.now();
       response = await api.postRequest("/sleep-alert/save", {
         "time": sleepingSince.value.toString(),
         "duration": totalSleep.toString(),
+        'type': "awake",
       }, authRequired: true);
       await api.postRequest("/sleep-alert/send", {
         "time": Formatter.timeFormatter(dateTime: DateTime.now()),
+        "type": "awake",
       }, authRequired: true);
     }
 
     if (response != null && response["success"] == true) {
+      isAwake.value = !isAwake.value;
       return "Success";
     } else {
       return response?["message"] ?? "Unknown Error";
@@ -106,6 +115,7 @@ class MonitorController extends GetxController {
       final time = DateTime.tryParse(response['data']['time']);
       final updatedAt = DateTime.tryParse(response['data']['updatedAt']);
       final durationString = response['data']['duration'];
+      final type = response['data']['type'];
 
       Duration? duration;
 
@@ -125,6 +135,12 @@ class MonitorController extends GetxController {
           updatedAt.month != DateTime.now().month &&
           updatedAt.year != DateTime.now().year) {
         duration = Duration.zero;
+      }
+
+      if (type != "sleep") {
+        isAwake.value = true;
+      } else {
+        isAwake.value = false;
       }
 
       totalSleep = duration ?? Duration.zero;

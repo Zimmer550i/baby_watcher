@@ -28,7 +28,7 @@ class SocketController extends GetxController {
     ["You have a new video request"],
     ["You have a new log", "Your log has been accepted"],
     ["reported"],
-    ["sleeping"],
+    ["Your baby has been "],
   ];
   List<Future Function()> callBackMethods = [];
 

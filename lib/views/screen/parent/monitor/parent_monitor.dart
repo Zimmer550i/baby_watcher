@@ -48,9 +48,9 @@ class _ParentMonitorState extends State<ParentMonitor> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            monitorController.sleepingSince.value != null
-                                ? "Baby is sleeping"
-                                : "Baby is awake",
+                            monitorController.isAwake.value
+                                ? "Baby is awake"
+                                : "Baby is sleeping",
                             style: TextStyle(
                               fontVariations: [FontVariation("wght", 600)],
                               fontSize: 20,
@@ -58,9 +58,7 @@ class _ParentMonitorState extends State<ParentMonitor> {
                             ),
                           ),
                           Text(
-                            monitorController.sleepingSince.value != null
-                                ? "Since ${Formatter.timeFormatter(dateTime: monitorController.sleepingSince.value)}"
-                                : "",
+                            "Since ${Formatter.timeFormatter(dateTime: monitorController.sleepingSince.value)}",
                             style: TextStyle(
                               fontVariations: [FontVariation("wght", 400)],
                               fontSize: 14,
@@ -84,9 +82,9 @@ class _ParentMonitorState extends State<ParentMonitor> {
                 const SizedBox(height: 16),
                 Obx(
                   () => SvgPicture.asset(
-                    monitorController.sleepingSince.value != null
-                        ? AppIcons.babyAsleep
-                        : AppIcons.babyAwake,
+                    monitorController.isAwake.value
+                        ? AppIcons.babyAwake
+                        : AppIcons.babyAsleep,
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -96,6 +94,9 @@ class _ParentMonitorState extends State<ParentMonitor> {
                   radius: 8,
                   isSecondary: reqSent,
                   onTap: () async {
+                    if (reqSent) {
+                      return;
+                    }
                     final response = await monitorController.sendRequest();
                     if (response == "Success") {
                       setState(() {

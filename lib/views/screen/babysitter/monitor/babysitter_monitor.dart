@@ -50,7 +50,7 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Obx(() {
-              babySleeping = monitor.sleepingSince.value != null;
+              babySleeping = !monitor.isAwake.value;
               DateTime? lastTime = monitor.lastTime.value;
               runTimer =
                   lastTime != null &&
@@ -85,12 +85,10 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
                       child: CustomTimerWidget(
                         initialTime: Duration(minutes: 5),
                         timeRemaining: lastTime
-                            ?.add(const Duration(minutes: 5, seconds: 30))
+                            ?.add(const Duration(minutes: 1, seconds: 30))
                             .difference(DateTime.now()),
                         onComplete: () {
-                          setState(() {
-                            runTimer = false;
-                          });
+                          runTimer = false;
                         },
                       ),
                     ),
@@ -144,6 +142,7 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
                   const SizedBox(height: 16),
                   SleepButton(
                     isAwake: !babySleeping,
+                    startTime: monitor.sleepingSince.value,
                     timeText: monitor.getTotalSleep(),
                     onChange: (p0) async {
                       if (await Vibration.hasVibrator()) {
@@ -188,6 +187,7 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
 
 class SleepButton extends StatefulWidget {
   final bool isAwake;
+  final DateTime? startTime;
   final String timeText;
   final void Function(bool) onChange;
   const SleepButton({
@@ -195,6 +195,7 @@ class SleepButton extends StatefulWidget {
     this.isAwake = true,
     required this.timeText,
     required this.onChange,
+    required this.startTime,
   });
 
   @override
@@ -264,7 +265,14 @@ class _SleepButtonState extends State<SleepButton> {
                       children: [
                         const SizedBox(height: 12),
                         Text(
-                          widget.isAwake ? "Awake" : widget.timeText,
+                          widget.isAwake
+                              ? "Awake"
+                              : widget.startTime != null
+                              ? Formatter.durationFormatter(
+                                DateTime.now().difference(widget.startTime!),
+                                // showSeconds: true
+                              )
+                              : widget.timeText,
                           style: TextStyle(
                             fontVariations: [FontVariation("wght", 500)],
                             fontSize: 24,
@@ -331,7 +339,7 @@ class _CustomTimerWidgetState extends State<CustomTimerWidget> {
       time = widget.timeRemaining!;
     }
     timer = Timer.periodic(const Duration(seconds: 1), (val) {
-      if (time > Duration()) {
+      if (time >= Duration()) {
         setState(() {
           time -= Duration(seconds: 1);
         });

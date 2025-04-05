@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:baby_watcher/controllers/auth_controller.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -170,6 +171,11 @@ class ApiService extends GetxService {
   }
 
   Map<String, dynamic> _handleResponse(http.Response response) {
+    if (response.statusCode == 401) {
+      Get.find<AuthController>().logout();
+      return jsonDecode(response.body);
+    }
+
     if (response.statusCode == 200 || response.statusCode == 201) {
       debugPrint('API Called [${response.statusCode}]: ${response.body}');
       return jsonDecode(response.body);

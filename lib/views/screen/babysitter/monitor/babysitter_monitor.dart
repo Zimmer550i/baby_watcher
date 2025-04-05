@@ -110,7 +110,10 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
 
                           if (message == "Success") {
                             await monitor.getRequest();
-                            showSnackBar("Video uploaded successfully");
+                            showSnackBar(
+                              "Video uploaded successfully",
+                              isError: false,
+                            );
                           } else {
                             showSnackBar(message);
                           }

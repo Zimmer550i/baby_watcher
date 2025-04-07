@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final videoModel = videoModelFromJson(jsonString);
-
 import 'dart:convert';
 
 VideoModel videoModelFromJson(String str) => VideoModel.fromJson(json.decode(str));
@@ -19,6 +15,7 @@ class VideoModel {
     DateTime createdAt;
     DateTime updatedAt;
     int v;
+    String? thumbnail;
 
     VideoModel({
         required this.id,
@@ -31,6 +28,7 @@ class VideoModel {
         required this.createdAt,
         required this.updatedAt,
         required this.v,
+        this.thumbnail,
     });
 
     VideoModel copyWith({
@@ -44,6 +42,7 @@ class VideoModel {
         DateTime? createdAt,
         DateTime? updatedAt,
         int? v,
+        String? thumbnail,
     }) => 
         VideoModel(
             id: id ?? this.id,
@@ -56,6 +55,7 @@ class VideoModel {
             createdAt: createdAt ?? this.createdAt,
             updatedAt: updatedAt ?? this.updatedAt,
             v: v ?? this.v,
+            thumbnail: thumbnail ?? this.thumbnail,
         );
 
     factory VideoModel.fromJson(Map<String, dynamic> json) => VideoModel(
@@ -69,6 +69,7 @@ class VideoModel {
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
         v: json["__v"],
+        thumbnail: json["thumbnail"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -82,5 +83,6 @@ class VideoModel {
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
         "__v": v,
+        "thumbnail": thumbnail,
     };
 }

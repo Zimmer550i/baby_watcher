@@ -13,6 +13,8 @@ class MonitorController extends GetxController {
   Rxn<DateTime> sleepingSince = Rxn();
   Rx<bool> isAwake = RxBool(false);
   RxList<VideoModel> videos = RxList();
+  int page = 1;
+  bool loadMoreVideo = true;
   Duration totalSleep = Duration();
 
   @override
@@ -153,6 +155,7 @@ class MonitorController extends GetxController {
     bool needCompression = true,
   }) async {
     File fileToUpload = videoFile;
+    File? thumbnailFile;
 
     if (needCompression) {
       try {
@@ -171,9 +174,18 @@ class MonitorController extends GetxController {
       }
     }
 
+    try {
+      thumbnailFile = await VideoCompress.getFileThumbnail(
+        videoFile.path,
+        quality: 50,
+      );
+    } catch (e) {
+      return "Thumbnail generation failed: ${e.toString()}";
+    }
+
     final response = await api.postRequest(
       "/video/send",
-      {"media": fileToUpload},
+      {"media": fileToUpload, "image": thumbnailFile},
       isMultiPart: true,
       authRequired: true,
     );
@@ -198,6 +210,7 @@ class MonitorController extends GetxController {
   Future<String> getVideos() async {
     final response = await api.getRequest(
       "/video/get-my-video",
+      params: {"page": page.toString()},
       authRequired: true,
     );
 
@@ -209,6 +222,12 @@ class MonitorController extends GetxController {
         if (!VideoModel.fromJson(i).isSeen) {
           unseenVideos.value += 1;
         }
+      }
+
+      if (response['data']['meta']['total'] != videos.length) {
+        page++;
+      } else {
+        loadMoreVideo = false;
       }
 
       return "Success";

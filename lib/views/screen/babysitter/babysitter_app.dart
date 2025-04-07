@@ -1,4 +1,3 @@
-import 'package:baby_watcher/controllers/emergency_controller.dart';
 import 'package:baby_watcher/controllers/socket_controller.dart';
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
@@ -44,7 +43,6 @@ class _BabysitterAppState extends State<BabysitterApp> {
     AppIcons.message,
     AppIcons.profile,
   ];
-  List<int> notifications = [0, 0, Get.find<EmergencyController>().alerts.length, 2, 0];
 
   @override
   void initState() {
@@ -66,7 +64,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
         physics: NeverScrollableScrollPhysics(),
         children: pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: Obx(() => BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         showUnselectedLabels: false,
@@ -86,7 +84,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
           });
         },
         items: [items(0), items(1), items(2), items(3), items(4)],
-      ),
+      )),
     );
   }
 
@@ -96,7 +94,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
         alignment: Alignment.topRight,
         children: [
           SvgPicture.asset(pageAssets[pos]),
-          if (notifications[pos] != 0)
+          if (Get.find<SocketController>().navBarAlertBabySitter[pos] != 0)
             Container(
               height: 14,
               width: 14,
@@ -106,7 +104,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
               ),
               child: FittedBox(
                 child: Text(
-                  notifications[pos].toString(),
+                  Get.find<SocketController>().navBarAlertBabySitter[pos].toString(),
                   style: TextStyle(
                     fontVariations: [FontVariation("wght", 500)],
                     color: Colors.white,
@@ -123,7 +121,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
             "${pageAssets[pos].substring(0, pageAssets[pos].length - 4)}_bold.svg",
             colorFilter: ColorFilter.mode(AppColors.indigo, BlendMode.srcIn),
           ),
-          if (notifications[pos] != 0)
+          if (Get.find<SocketController>().navBarAlertBabySitter[pos] != 0)
             Container(
               height: 14,
               width: 14,
@@ -133,7 +131,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
               ),
               child: FittedBox(
                 child: Text(
-                  notifications[pos].toString(),
+                  Get.find<SocketController>().navBarAlertBabySitter[pos].toString(),
                   style: TextStyle(
                     fontVariations: [FontVariation("wght", 500)],
                     color: AppColors.indigo,

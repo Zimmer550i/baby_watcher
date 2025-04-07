@@ -18,6 +18,7 @@ class ParentMonitor extends StatefulWidget {
 }
 
 class _ParentMonitorState extends State<ParentMonitor> {
+  final scrollController = ScrollController();
   final monitorController = Get.find<MonitorController>();
   bool babySleeping = true;
   bool reqSent = false;
@@ -26,6 +27,13 @@ class _ParentMonitorState extends State<ParentMonitor> {
   void initState() {
     super.initState();
     monitorController.getVideos();
+    // scrollController.addListener(() {
+    //   if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 50) {
+    //     if (monitorController.loadMoreVideo) {
+    //       monitorController.getVideos();
+    //     }
+    //   }
+    // });
   }
 
   @override
@@ -35,6 +43,7 @@ class _ParentMonitorState extends State<ParentMonitor> {
       body: Align(
         alignment: Alignment.topCenter,
         child: SingleChildScrollView(
+          controller: scrollController,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -142,15 +151,22 @@ class _ParentMonitorState extends State<ParentMonitor> {
                   ),
                 ),
 
-                for (var i in monitorController.videos)
-                  if (!i.isSeen)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: VideoWidget(
-                        url: i.video,
-                        thumbnail: "assets/images/baby_1.png",
-                      ),
-                    ),
+                Obx(
+                  () => Column(
+                    children: [
+                      for (var i in monitorController.videos)
+                        if (!i.isSeen)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: VideoWidget(
+                              url: i.video,
+                              thumbnail: i.thumbnail,
+                              // thumbnail: "assets/images/baby_1.png",
+                            ),
+                          ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 24, bottom: 16),
                   child: Row(
@@ -167,23 +183,26 @@ class _ParentMonitorState extends State<ParentMonitor> {
                   ),
                 ),
 
-                GridView(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 1,
+                Obx(
+                  () => GridView(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: 1,
+                    ),
+                    children: [
+                      for (var i in monitorController.videos)
+                        if (i.isSeen)
+                          VideoWidget(
+                            url: i.video,
+                            thumbnail: i.thumbnail,
+                            // thumbnail: "assets/images/baby_1.png",
+                          ),
+                    ],
                   ),
-                  children: [
-                    for (var i in monitorController.videos)
-                      if (i.isSeen)
-                        VideoWidget(
-                          url: i.video,
-                          thumbnail: "assets/images/baby_1.png",
-                        ),
-                  ],
                 ),
                 const SizedBox(height: 24),
               ],

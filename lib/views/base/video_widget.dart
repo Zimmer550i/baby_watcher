@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
@@ -6,8 +8,8 @@ import 'package:flutter_svg/svg.dart';
 
 class VideoWidget extends StatefulWidget {
   final String url;
-  final String thumbnail;
-  const VideoWidget({super.key, required this.url, required this.thumbnail});
+  final String? thumbnail;
+  const VideoWidget({super.key, required this.url, this.thumbnail});
 
   @override
   State<VideoWidget> createState() => _VideoWidgetState();
@@ -17,17 +19,11 @@ class _VideoWidgetState extends State<VideoWidget> {
   late VideoPlayerController _videoPlayerController;
   late CustomVideoPlayerController controller;
 
-  @override
-  void initState() {
-    super.initState();
-
+  Future<void> _initializeVideoPlayer() async {
     _videoPlayerController = VideoPlayerController.networkUrl(
-        Uri.parse(widget.url),
-      )
-      ..initialize().then((val) {
-        setState(() {});
-        _videoPlayerController.play();
-      });
+      Uri.parse(widget.url),
+    );
+    await _videoPlayerController.initialize();
     controller = CustomVideoPlayerController(
       context: context,
       videoPlayerController: _videoPlayerController,
@@ -37,8 +33,11 @@ class _VideoWidgetState extends State<VideoWidget> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Image.asset(widget.thumbnail),
-              CircularProgressIndicator()
+              if (widget.thumbnail != null)
+                Image.asset(widget.thumbnail!)
+              else
+                Container(color: AppColors.gray[300]),
+              CircularProgressIndicator(),
             ],
           ),
         ),
@@ -74,8 +73,6 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
-    _videoPlayerController.dispose();
   }
 
   @override
@@ -90,10 +87,14 @@ class _VideoWidgetState extends State<VideoWidget> {
             constraints: BoxConstraints(minHeight: constraint.maxWidth / 2),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              image: DecorationImage(
-                image: AssetImage(widget.thumbnail),
-                fit: BoxFit.cover,
-              ),
+              color: widget.thumbnail == null ? AppColors.gray[300] : null,
+              image:
+                  widget.thumbnail != null
+                      ? DecorationImage(
+                        image: NetworkImage(widget.thumbnail!),
+                        fit: BoxFit.cover,
+                      )
+                      : null,
             ),
             child: Center(child: SvgPicture.asset(AppIcons.play)),
           );
@@ -102,59 +103,96 @@ class _VideoWidgetState extends State<VideoWidget> {
     );
   }
 
-  Future<dynamic> playVideo(BuildContext context) {
-    return showDialog(
+  Future<void> playVideo(BuildContext context) async {
+    showDialog(
       context: context,
+      barrierDismissible: true,
       barrierColor: AppColors.gray[800]!.withAlpha(230),
       builder: (context) {
-        return Dialog(
-          insetPadding: EdgeInsets.all(16),
-          insetAnimationDuration: Duration(milliseconds: 300),
-          child: Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CustomVideoPlayer(
-                  customVideoPlayerController: controller,
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.gray[300],
+                  image:
+                      widget.thumbnail != null
+                          ? DecorationImage(
+                            image: NetworkImage(widget.thumbnail!),
+                            fit: BoxFit.cover,
+                          )
+                          : null,
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                child: Center(child: CircularProgressIndicator()),
               ),
-
-              ValueListenableBuilder(
-                valueListenable: controller.areControlsVisible,
-                builder: (context, isVisible, child) {
-                  return Positioned(
-                    top: 8,
-                    right: 8,
-                    child: GestureDetector(
-                      onTap: () {
-                      },
-                      child: AnimatedOpacity(
-                        duration: Duration(milliseconds: 300),
-                        opacity: isVisible ? 1 : 0,
-                        child: Container(
-                          height: 30,
-                          width: 30,
-                          decoration: BoxDecoration(
-                            color: AppColors.gray.withAlpha(100),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: SvgPicture.asset(
-                              AppIcons.download,
-                              height: 24,
-                              width: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
+            ),
           ),
         );
       },
     );
+
+    await _initializeVideoPlayer();
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+
+      showDialog(
+        context: context,
+        barrierColor: AppColors.gray[800]!.withAlpha(230),
+        builder: (context) {
+          return Dialog(
+            insetPadding: EdgeInsets.all(16),
+            insetAnimationDuration: Duration(milliseconds: 300),
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: CustomVideoPlayer(
+                    customVideoPlayerController: controller,
+                  ),
+                ),
+                ValueListenableBuilder(
+                  valueListenable: controller.areControlsVisible,
+                  builder: (context, isVisible, child) {
+                    return Positioned(
+                      top: 8,
+                      right: 8,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          controller.dispose();
+                          _videoPlayerController.dispose();
+                        },
+                        child: AnimatedOpacity(
+                          duration: Duration(milliseconds: 300),
+                          opacity: isVisible ? 1 : 0,
+                          child: Container(
+                            height: 30,
+                            width: 30,
+                            decoration: BoxDecoration(
+                              color: AppColors.gray.withAlpha(100),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                AppIcons.download,
+                                height: 24,
+                                width: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
   }
 }

@@ -1,15 +1,18 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:appinio_video_player/appinio_video_player.dart';
+import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/instance_manager.dart';
 
 class VideoWidget extends StatefulWidget {
   final String url;
   final String? thumbnail;
-  const VideoWidget({super.key, required this.url, this.thumbnail});
+  final String? id;
+  const VideoWidget({super.key, required this.url, this.thumbnail, this.id});
 
   @override
   State<VideoWidget> createState() => _VideoWidgetState();
@@ -104,6 +107,10 @@ class _VideoWidgetState extends State<VideoWidget> {
   }
 
   Future<void> playVideo(BuildContext context) async {
+    if (widget.id != null) {
+      Get.find<MonitorController>().videoViewed(widget.id!);
+    }
+
     showDialog(
       context: context,
       barrierDismissible: true,

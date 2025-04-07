@@ -26,14 +26,32 @@ class _ParentMonitorState extends State<ParentMonitor> {
   @override
   void initState() {
     super.initState();
-    monitorController.getVideos();
-    // scrollController.addListener(() {
-    //   if (scrollController.position.pixels >= scrollController.position.maxScrollExtent - 50) {
-    //     if (monitorController.loadMoreVideo) {
-    //       monitorController.getVideos();
-    //     }
-    //   }
-    // });
+    // Set up scroll listener for refresh logic
+    scrollController.addListener(() {
+      if (monitorController.loadingVideos.value ||
+          !monitorController.loadMoreVideo) {
+        return;
+      }
+      final position = scrollController.position;
+      final maxScroll = position.maxScrollExtent;
+      final currentScroll = position.pixels;
+
+      // Trigger load more if near the bottom
+      if (!position.hasPixels ||
+          maxScroll == 0 ||
+          currentScroll >= maxScroll - 50) {
+        monitorController.getMoreVideos();
+      }
+    });
+
+    // Check after the first frame if the content is not scrollable
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await monitorController.getVideos();
+      final position = scrollController.position;
+      if (position.maxScrollExtent == 0 && monitorController.loadMoreVideo) {
+        monitorController.getMoreVideos();
+      }
+    });
   }
 
   @override
@@ -116,40 +134,45 @@ class _ParentMonitorState extends State<ParentMonitor> {
                     }
                   },
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 24, bottom: 16),
-                  child: Row(
-                    children: [
-                      Text(
-                        "New Video",
-                        style: TextStyle(
-                          fontVariations: [FontVariation("wght", 400)],
-                          fontSize: 14,
-                          color: AppColors.gray,
+                Obx(() {
+                  if (monitorController.unseenVideos.value == 0) {
+                    return Container();
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 24, bottom: 16),
+                    child: Row(
+                      children: [
+                        Text(
+                          "New Video",
+                          style: TextStyle(
+                            fontVariations: [FontVariation("wght", 400)],
+                            fontSize: 14,
+                            color: AppColors.gray,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      Container(
-                        height: 16,
-                        width: 16,
-                        decoration: BoxDecoration(
-                          color: AppColors.indigo[50],
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            monitorController.unseenVideos.value.toString(),
-                            style: TextStyle(
-                              fontVariations: [FontVariation("wght", 600)],
-                              fontSize: 12,
-                              color: AppColors.indigo,
+                        const SizedBox(width: 4),
+                        Container(
+                          height: 16,
+                          width: 16,
+                          decoration: BoxDecoration(
+                            color: AppColors.indigo[50],
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              monitorController.unseenVideos.value.toString(),
+                              style: TextStyle(
+                                fontVariations: [FontVariation("wght", 600)],
+                                fontSize: 12,
+                                color: AppColors.indigo,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
+                  );
+                }),
 
                 Obx(
                   () => Column(
@@ -161,27 +184,33 @@ class _ParentMonitorState extends State<ParentMonitor> {
                             child: VideoWidget(
                               url: i.video,
                               thumbnail: i.thumbnail,
-                              // thumbnail: "assets/images/baby_1.png",
+                              id: i.id,
                             ),
                           ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 24, bottom: 16),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Previous Videos",
-                        style: TextStyle(
-                          fontVariations: [FontVariation("wght", 400)],
-                          fontSize: 14,
-                          color: AppColors.gray,
+                Obx(() {
+                  if (monitorController.videos.length ==
+                      monitorController.unseenVideos.value) {
+                    return Container();
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 24, bottom: 16),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Previous Videos",
+                          style: TextStyle(
+                            fontVariations: [FontVariation("wght", 400)],
+                            fontSize: 14,
+                            color: AppColors.gray,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
+                  );
+                }),
 
                 Obx(
                   () => GridView(
@@ -199,11 +228,16 @@ class _ParentMonitorState extends State<ParentMonitor> {
                           VideoWidget(
                             url: i.video,
                             thumbnail: i.thumbnail,
-                            // thumbnail: "assets/images/baby_1.png",
+                            id: i.id,
                           ),
                     ],
                   ),
                 ),
+                if (monitorController.loadingVideos.value)
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
+                      ),
                 const SizedBox(height: 24),
               ],
             ),

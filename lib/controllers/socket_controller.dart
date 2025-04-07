@@ -47,7 +47,7 @@ class SocketController extends GetxController {
       () => log.getLogs(DateTime.now()),
       () => emergency.getAlerts(),
       () => monitor.getSleepData(),
-      () => monitor.getVideos(),
+      () => monitor.getVideos(n: 1),
     ];
   }
 

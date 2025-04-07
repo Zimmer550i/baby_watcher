@@ -16,6 +16,7 @@ class MonitorController extends GetxController {
   int page = 1;
   bool loadMoreVideo = true;
   Duration totalSleep = Duration();
+  RxBool loadingVideos = false.obs;
 
   @override
   void onInit() {
@@ -177,7 +178,7 @@ class MonitorController extends GetxController {
     try {
       thumbnailFile = await VideoCompress.getFileThumbnail(
         videoFile.path,
-        quality: 50,
+        quality: 90,
       );
     } catch (e) {
       return "Thumbnail generation failed: ${e.toString()}";
@@ -212,12 +213,14 @@ class MonitorController extends GetxController {
   }
 
   Future<String> getVideos({int n = 1}) async {
+    loadingVideos.value = true;
     final response = await api.getRequest(
       "/video/get-my-video",
       params: {"page": n.toString()},
       authRequired: true,
     );
 
+    loadingVideos.value = false;
     if (response != null && response["success"] == true) {
       final result = response['data']['result'];
       unseenVideos.value = 0;
@@ -242,7 +245,32 @@ class MonitorController extends GetxController {
 
       return "Success";
     } else {
+      loadingVideos.value = false;
       return response?["message"] ?? "Unknown Error";
+    }
+  }
+
+  Future<void> videoViewed(String id) async {
+    final response = await api.updateRequest(
+      "/video/update-video-seen-status/$id",
+      {},
+      authRequired: true,
+    );
+
+    if (response != null && response['success'] == true) {
+      int index = videos.indexWhere((i) => i.id == id);
+      if (index != -1) {
+        if (!videos[index].isSeen) {
+          unseenVideos.value -= 1;
+        }
+        videos[index] = videos[index].copyWith(isSeen: true);
+      }
+    }
+  }
+
+  void getMoreVideos() {
+    if (loadMoreVideo && page > 0) {
+      getVideos(n: page);
     }
   }
 }

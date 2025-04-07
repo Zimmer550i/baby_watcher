@@ -88,7 +88,6 @@ class UserController extends GetxController {
       uniqueKey = response['data']['uniqueKey'];
     } else {
       showSnackBar("Contact admin for an unique key");
-      //TODO: no way to find out what's the response of no key
     }
   }
 

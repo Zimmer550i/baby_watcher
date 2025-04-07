@@ -38,17 +38,17 @@ AppBar homeAppBar() {
             alignment: Alignment.topRight,
             children: [
               SvgPicture.asset(AppIcons.notification),
-              if (controller.unreadNotifications > 0)
-                Container(
-                  height: 14,
-                  width: 14,
-                  decoration: BoxDecoration(
-                    color: AppColors.indigo,
-                    shape: BoxShape.circle,
-                  ),
-                  child: FittedBox(
-                    child: Obx(
-                      () => Text(
+              Obx(() {
+                if (controller.unreadNotifications > 0) {
+                  return Container(
+                    height: 14,
+                    width: 14,
+                    decoration: BoxDecoration(
+                      color: AppColors.indigo,
+                      shape: BoxShape.circle,
+                    ),
+                    child: FittedBox(
+                      child: Text(
                         controller.unreadNotifications.string,
                         style: TextStyle(
                           fontVariations: [FontVariation("wght", 500)],
@@ -56,8 +56,11 @@ AppBar homeAppBar() {
                         ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
             ],
           ),
         ),

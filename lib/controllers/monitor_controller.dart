@@ -198,6 +198,10 @@ class MonitorController extends GetxController {
   }
 
   String getTotalSleep() {
+    if (isAwake.value) {
+      return Formatter.durationFormatter(totalSleep);
+    }
+
     var duration = totalSleep;
     if (sleepingSince.value != null) {
       Duration newSleep = DateTime.now().difference(sleepingSince.value!);
@@ -218,8 +222,14 @@ class MonitorController extends GetxController {
       final result = response['data']['result'];
       unseenVideos.value = 0;
       for (var i in result) {
-        videos.add(VideoModel.fromJson(i));
-        if (!VideoModel.fromJson(i).isSeen) {
+        var newVideo = VideoModel.fromJson(i);
+
+        // Check if the video is already in the list based on its unique ID
+        if (!videos.any((video) => video.id == newVideo.id)) {
+          videos.add(newVideo);
+        }
+
+        if (!newVideo.isSeen) {
           unseenVideos.value += 1;
         }
       }

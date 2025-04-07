@@ -33,6 +33,7 @@ class SocketController extends GetxController {
     ["You have a new log", "Your log has been accepted"],
     ["reported"],
     ["Your baby has been "],
+    ["You have a new video"],
   ];
   List<Future Function()> callBackMethods = [];
 
@@ -46,6 +47,7 @@ class SocketController extends GetxController {
       () => log.getLogs(DateTime.now()),
       () => emergency.getAlerts(),
       () => monitor.getSleepData(),
+      () => monitor.getVideos(),
     ];
   }
 
@@ -93,12 +95,17 @@ class SocketController extends GetxController {
           date.month,
           date.day,
         ); // Format date for key
-        if (notifications.containsKey(dateKey)) {
-          notifications[dateKey]!.insert(0, data); // Update to use dateKey
-        } else {
-          notifications[dateKey] = []; // Update to use dateKey
-          notifications[dateKey]!.insert(0, data); // Update to use dateKey
-        }
+        notifications.update(
+          dateKey,
+          (list) {
+            list.add(data);
+            return list;
+          },
+          ifAbsent: () {
+            return [data];
+          },
+        );
+        sortNotifications();
         unreadNotifications += 1;
       });
       debugPrint("Listening to get-notification::${user.userId}");
@@ -147,12 +154,17 @@ class SocketController extends GetxController {
           date.month,
           date.day,
         ); // Format date for key
-        if (notifications.containsKey(dateKey)) {
-          notifications[dateKey]!.insert(0, data); // Update to use dateKey
-        } else {
-          notifications[dateKey] = []; // Update to use dateKey
-          notifications[dateKey]!.insert(0, data); // Update to use dateKey
-        }
+        notifications.update(
+          dateKey,
+          (list) {
+            list.add(data);
+            return list;
+          },
+          ifAbsent: () {
+            return [data];
+          },
+        );
+        sortNotifications();
       }
     }
 
@@ -181,5 +193,23 @@ class SocketController extends GetxController {
     if (message?['success'] == true) {
       unreadNotifications.value = 0;
     }
+  }
+
+  void sortNotifications() {
+    final sortedKeys =
+        notifications.keys.toList()..sort((a, b) => b.compareTo(a));
+
+    final sortedNotifications = <DateTime, List<Map<String, dynamic>>>{};
+
+    for (var key in sortedKeys) {
+      sortedNotifications[key] =
+          notifications[key]!.toList()..sort(
+            (a, b) => DateTime.parse(
+              b['createdAt'],
+            ).compareTo(DateTime.parse(a['createdAt'])),
+          );
+    }
+
+    notifications.assignAll(sortedNotifications);
   }
 }

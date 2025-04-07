@@ -207,10 +207,10 @@ class MonitorController extends GetxController {
     return Formatter.durationFormatter(duration);
   }
 
-  Future<String> getVideos() async {
+  Future<String> getVideos({int n = 1}) async {
     final response = await api.getRequest(
       "/video/get-my-video",
-      params: {"page": page.toString()},
+      params: {"page": n.toString()},
       authRequired: true,
     );
 

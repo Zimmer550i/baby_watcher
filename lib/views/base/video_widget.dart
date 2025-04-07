@@ -87,7 +87,7 @@ class _VideoWidgetState extends State<VideoWidget> {
             constraints: BoxConstraints(minHeight: constraint.maxWidth / 2),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              color: widget.thumbnail == null ? AppColors.gray[300] : null,
+              color: AppColors.gray[300],
               image:
                   widget.thumbnail != null
                       ? DecorationImage(
@@ -161,9 +161,9 @@ class _VideoWidgetState extends State<VideoWidget> {
                       right: 8,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pop();
-                          controller.dispose();
-                          _videoPlayerController.dispose();
+                          if (Navigator.of(context).canPop()) {
+                            Navigator.of(context).pop();
+                          }
                         },
                         child: AnimatedOpacity(
                           duration: Duration(milliseconds: 300),

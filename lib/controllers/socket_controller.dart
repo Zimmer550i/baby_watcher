@@ -30,7 +30,7 @@ class SocketController extends GetxController {
 
   final callBackTriggers = [
     ["You have a new video request"],
-    ["You have a new log", "Your log has been accepted"],
+    ["You have a new log", "Your log has been completed"],
     ["reported"],
     ["Your baby has been "],
     ["You have a new video"],

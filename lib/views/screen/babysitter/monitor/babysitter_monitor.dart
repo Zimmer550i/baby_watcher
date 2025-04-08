@@ -52,16 +52,10 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
             child: Obx(() {
               babySleeping = !monitor.isAwake.value;
               DateTime? lastTime = monitor.lastTime.value;
+              DateTime? timeLimit = lastTime?.add(const Duration(minutes: 5, seconds: 50));
               runTimer =
-                  lastTime != null &&
-                  DateTime.now().isBefore(
-                    lastTime.add(const Duration(minutes: 5)),
-                  );
-              missed =
-                  lastTime != null &&
-                  DateTime.now().isAfter(
-                    lastTime.add(const Duration(minutes: 5)),
-                  );
+                  lastTime != null && DateTime.now().isBefore(timeLimit!);
+              missed = lastTime != null && DateTime.now().isAfter(timeLimit!);
 
               return Column(
                 children: [
@@ -84,11 +78,11 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
                       padding: const EdgeInsets.only(top: 20),
                       child: CustomTimerWidget(
                         initialTime: Duration(minutes: 5),
-                        timeRemaining: lastTime
-                            ?.add(const Duration(minutes: 1, seconds: 30))
-                            .difference(DateTime.now()),
+                        timeRemaining: timeLimit!.difference(DateTime.now()),
                         onComplete: () {
-                          runTimer = false;
+                          setState(() {
+                            runTimer = false;
+                          });
                         },
                       ),
                     ),

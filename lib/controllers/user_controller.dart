@@ -30,6 +30,7 @@ class UserController extends GetxController {
     userEmail = responseData['user']['email'];
     userPhone = responseData['user']['phone'];
     isVerified = responseData['user']['verified'];
+    uniqueKey = responseData['user']['uniqueKey'];
 
     switch (responseData['user']['role']) {
       case 'PARENT':
@@ -68,7 +69,6 @@ class UserController extends GetxController {
       Image: $connectionImage
       Email: $connectionEmail
 """);
-      uniqueKey = responseData['connection']['uniqueKey'];
     } else {
       if (userRole == Role.parent) {
         getUniqueKey();

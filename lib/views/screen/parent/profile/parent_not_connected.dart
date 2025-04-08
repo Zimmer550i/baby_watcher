@@ -1,5 +1,4 @@
 import 'package:baby_watcher/controllers/user_controller.dart';
-import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
@@ -35,7 +34,6 @@ class ParentNotConnected extends StatelessWidget {
             CustomTextField(
               isDisabled: true,
               trailing: AppIcons.copy,
-              onTap: () => Get.offNamed(AppRoutes.connections),
               controller: TextEditingController.fromValue(
                 TextEditingValue(text: Get.find<UserController>().uniqueKey ?? "Not Available"),
               ),

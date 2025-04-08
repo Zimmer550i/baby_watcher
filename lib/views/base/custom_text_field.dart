@@ -129,6 +129,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   child: TextField(
                     focusNode: focusNode,
                     controller: widget.controller,
+                    keyboardType: widget.leading == AppIcons.phone ? TextInputType.phone : null,
                     obscureText: isObscured,
                     enabled: !widget.isDisabled && widget.onTap == null,
                     onTapOutside: (event) {

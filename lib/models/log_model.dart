@@ -35,7 +35,7 @@ class LogModel {
   });
 
   factory LogModel.fromJson(Map<String, dynamic> json) => LogModel(
-    date: DateTime.parse(json["date"]),
+    date: DateTime.parse(json["date"]).add(Duration(days: 1)),
     time: _parseTime(json["time"]),
     activity: json["activity"],
     name: json["activity"] == "Others" ? json["otherAct"] : json["activity"],

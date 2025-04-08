@@ -10,6 +10,7 @@ class MessageController extends GetxController {
   final user = Get.find<UserController>();
   final api = Get.find<ApiService>();
   RxList<Message> messages = <Message>[].obs;
+  var unreadMessages = 0.obs;
   RxBool isLoading = false.obs;
 
   void initialize() {
@@ -36,6 +37,7 @@ class MessageController extends GetxController {
         for (var inbox in inboxList) {
           if (inbox['receiverId'] == user.connectionId) {
             inboxId = inbox['inboxId'];
+            unreadMessages.value = inbox['unreadCount'];
             break;
           }
         }
@@ -101,5 +103,9 @@ class MessageController extends GetxController {
       );
     }
     messages.sort((a, b) => a.timeStamp.compareTo(b.timeStamp));
+  }
+
+  void messageSeen() async {
+    unreadMessages.value = 0;
   }
 }

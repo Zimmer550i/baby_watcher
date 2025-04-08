@@ -55,7 +55,10 @@ class _MessagesState extends State<Messages> {
               if (controller.isLoading.value) {
                 return Align(
                   alignment: Alignment.topCenter,
-                  child: CircularProgressIndicator(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  ),
                 );
               }
               return Expanded(
@@ -151,7 +154,11 @@ List<Widget> renderMessages(List<Message> messages) {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(Formatter.timeFormatter(dateTime: current.timeStamp, showDate: true),
+            Text(
+              Formatter.timeFormatter(
+                dateTime: current.timeStamp,
+                showDate: true,
+              ),
 
               style: TextStyle(
                 fontVariations: [FontVariation("wght", 400)],

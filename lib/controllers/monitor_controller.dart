@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:baby_watcher/controllers/api_service.dart';
 import 'package:baby_watcher/models/video_model.dart';
 import 'package:baby_watcher/utils/formatter.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:get/get.dart';
 import 'package:video_compress/video_compress.dart';
 
@@ -181,7 +182,7 @@ class MonitorController extends GetxController {
         quality: 90,
       );
     } catch (e) {
-      return "Thumbnail generation failed: ${e.toString()}";
+      showSnackBar(e.toString());
     }
 
     final response = await api.postRequest(
@@ -192,6 +193,7 @@ class MonitorController extends GetxController {
     );
 
     if (response != null && response["success"] == true) {
+      requestsCount.value = 0;
       return "Success";
     } else {
       return response?["message"] ?? "Unknown Error";

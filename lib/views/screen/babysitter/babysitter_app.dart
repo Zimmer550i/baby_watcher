@@ -1,3 +1,5 @@
+import 'package:baby_watcher/controllers/message_controller.dart';
+import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/controllers/socket_controller.dart';
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
@@ -94,7 +96,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
         alignment: Alignment.topRight,
         children: [
           SvgPicture.asset(pageAssets[pos]),
-          if (Get.find<SocketController>().navBarAlertBabySitter[pos] != 0)
+          if (getAlertCount(pos) != 0)
             Container(
               height: 14,
               width: 14,
@@ -104,7 +106,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
               ),
               child: FittedBox(
                 child: Text(
-                  Get.find<SocketController>().navBarAlertBabySitter[pos].toString(),
+                  getAlertCount(pos).toString(),
                   style: TextStyle(
                     fontVariations: [FontVariation("wght", 500)],
                     color: Colors.white,
@@ -121,7 +123,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
             "${pageAssets[pos].substring(0, pageAssets[pos].length - 4)}_bold.svg",
             colorFilter: ColorFilter.mode(AppColors.indigo, BlendMode.srcIn),
           ),
-          if (Get.find<SocketController>().navBarAlertBabySitter[pos] != 0)
+          if (getAlertCount(pos) != 0)
             Container(
               height: 14,
               width: 14,
@@ -131,7 +133,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
               ),
               child: FittedBox(
                 child: Text(
-                  Get.find<SocketController>().navBarAlertBabySitter[pos].toString(),
+                  getAlertCount(pos).toString(),
                   style: TextStyle(
                     fontVariations: [FontVariation("wght", 500)],
                     color: AppColors.indigo,
@@ -143,5 +145,12 @@ class _BabysitterAppState extends State<BabysitterApp> {
       ),
       label: pageNames[pos],
     );
+  }
+
+    int getAlertCount(int pos) {
+    if (pos == 1) return Get.find<MonitorController>().requestsCount.value;
+    if (pos == 3) return Get.find<MessageController>().unreadMessages.value;
+
+    return 0;
   }
 }

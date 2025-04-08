@@ -24,10 +24,6 @@ class SocketController extends GetxController {
   final notifications = <DateTime, List<Map<String, dynamic>>>{}.obs;
   final messageController = Get.find<MessageController>();
 
-  RxList<int> navBarAlertBabySitter = [0, 0, 0, 0, 0].obs;
-
-  RxList<int> navBarAlertParent = [0, 0, 0, 0, 0].obs;
-
   final callBackTriggers = [
     ["You have a new video request"],
     ["You have a new log", "Your log has been completed"],
@@ -38,7 +34,6 @@ class SocketController extends GetxController {
   List<Future Function()> callBackMethods = [];
 
   void initialize() {
-    navBarAlertBabySitter = [0, monitor.requestsCount.value, 0, 0, 0].obs;
     _initializeSocket();
     getPrevNotifications(page: page);
 
@@ -64,6 +59,8 @@ class SocketController extends GetxController {
       socket!.off('receive-message:${messageController.inboxId}');
       socket!.on('receive-message:${messageController.inboxId}', (data) {
         debugPrint(data.toString());
+        messageController.unreadMessages += 1;
+        print(messageController.unreadMessages);
         messageController.messages.add(
           Message(
             text: data['message'],

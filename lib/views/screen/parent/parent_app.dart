@@ -1,4 +1,6 @@
 import 'package:baby_watcher/controllers/emergency_controller.dart';
+import 'package:baby_watcher/controllers/message_controller.dart';
+import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/controllers/socket_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
@@ -42,13 +44,6 @@ class _ParentAppState extends State<ParentApp> {
     AppIcons.message,
     AppIcons.profile,
   ];
-  List<int> notifications = [
-    0,
-    0,
-    Get.find<EmergencyController>().alerts.length,
-    2,
-    0,
-  ];
 
   @override
   void initState() {
@@ -64,26 +59,28 @@ class _ParentAppState extends State<ParentApp> {
         physics: NeverScrollableScrollPhysics(),
         children: pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        showUnselectedLabels: false,
-        currentIndex: index,
-        useLegacyColorScheme: false,
-        unselectedLabelStyle: TextStyle(color: Colors.amber),
-        selectedFontSize: 12,
-        selectedLabelStyle: TextStyle(
-          fontFamily: "Roboto",
-          fontWeight: FontWeight.w400,
-          color: Color(0xff222222),
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          showUnselectedLabels: false,
+          currentIndex: index,
+          useLegacyColorScheme: false,
+          unselectedLabelStyle: TextStyle(color: Colors.amber),
+          selectedFontSize: 12,
+          selectedLabelStyle: TextStyle(
+            fontFamily: "Roboto",
+            fontWeight: FontWeight.w400,
+            color: Color(0xff222222),
+          ),
+          onTap: (value) {
+            setState(() {
+              index = value;
+              controller.jumpToPage(index);
+            });
+          },
+          items: [items(0), items(1), items(2), items(3), items(4)],
         ),
-        onTap: (value) {
-          setState(() {
-            index = value;
-            controller.jumpToPage(index);
-          });
-        },
-        items: [items(0), items(1), items(2), items(3), items(4)],
       ),
     );
   }
@@ -94,7 +91,7 @@ class _ParentAppState extends State<ParentApp> {
         alignment: Alignment.topRight,
         children: [
           SvgPicture.asset(pageAssets[pos]),
-          if (notifications[pos] != 0)
+          if (getAlertCount(pos) != 0)
             Container(
               height: 14,
               width: 14,
@@ -104,7 +101,7 @@ class _ParentAppState extends State<ParentApp> {
               ),
               child: FittedBox(
                 child: Text(
-                  notifications[pos].toString(),
+                  getAlertCount(pos).toString(),
                   style: TextStyle(
                     fontVariations: [FontVariation("wght", 500)],
                     color: Colors.white,
@@ -121,7 +118,7 @@ class _ParentAppState extends State<ParentApp> {
             "${pageAssets[pos].substring(0, pageAssets[pos].length - 4)}_bold.svg",
             colorFilter: ColorFilter.mode(AppColors.indigo, BlendMode.srcIn),
           ),
-          if (notifications[pos] != 0)
+          if (getAlertCount(pos) != 0)
             Container(
               height: 14,
               width: 14,
@@ -131,7 +128,7 @@ class _ParentAppState extends State<ParentApp> {
               ),
               child: FittedBox(
                 child: Text(
-                  notifications[pos].toString(),
+                  getAlertCount(pos).toString(),
                   style: TextStyle(
                     fontVariations: [FontVariation("wght", 500)],
                     color: AppColors.indigo,
@@ -144,4 +141,19 @@ class _ParentAppState extends State<ParentApp> {
       label: pageNames[pos],
     );
   }
+
+  int getAlertCount(int pos) {
+    if (pos == 1) return Get.find<MonitorController>().unseenVideos.value;
+    if (pos == 2) return Get.find<EmergencyController>().alerts.length;
+    if (pos == 3) return Get.find<MessageController>().unreadMessages.value;
+
+    return 0;
+  }
+
+  // int getAlerts(int n){
+  //   switch(n){
+  //     case 1:
+  //       return Get.find<>()
+  //   }
+  // }
 }

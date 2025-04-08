@@ -4,6 +4,7 @@ import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/instance_manager.dart';
@@ -171,6 +172,8 @@ class _VideoWidgetState extends State<VideoWidget> {
                           if (Navigator.of(context).canPop()) {
                             Navigator.of(context).pop();
                           }
+
+                          downloadVideo(widget.url);
                         },
                         child: AnimatedOpacity(
                           duration: Duration(milliseconds: 300),
@@ -201,5 +204,9 @@ class _VideoWidgetState extends State<VideoWidget> {
         },
       );
     }
+  }
+
+  void downloadVideo(String url) {
+    showSnackBar("This feature has not been implemented");
   }
 }

@@ -66,27 +66,32 @@ class _BabysitterAppState extends State<BabysitterApp> {
         physics: NeverScrollableScrollPhysics(),
         children: pages,
       ),
-      bottomNavigationBar: Obx(() => BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        showUnselectedLabels: false,
-        currentIndex: index,
-        useLegacyColorScheme: false,
-        unselectedLabelStyle: TextStyle(color: Colors.amber),
-        selectedFontSize: 12,
-        selectedLabelStyle: TextStyle(
-          fontFamily: "Roboto",
-          fontWeight: FontWeight.w400,
-          color: Color(0xff222222),
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.white,
+          showUnselectedLabels: false,
+          currentIndex: index,
+          useLegacyColorScheme: false,
+          unselectedLabelStyle: TextStyle(color: Colors.amber),
+          selectedFontSize: 12,
+          selectedLabelStyle: TextStyle(
+            fontFamily: "Roboto",
+            fontWeight: FontWeight.w400,
+            color: Color(0xff222222),
+          ),
+          onTap: (value) {
+            setState(() {
+              index = value;
+              if (index == 3) {
+                Get.find<MessageController>().messageSeen();
+              }
+              controller.jumpToPage(index);
+            });
+          },
+          items: [items(0), items(1), items(2), items(3), items(4)],
         ),
-        onTap: (value) {
-          setState(() {
-            index = value;
-            controller.jumpToPage(index);
-          });
-        },
-        items: [items(0), items(1), items(2), items(3), items(4)],
-      )),
+      ),
     );
   }
 
@@ -147,7 +152,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
     );
   }
 
-    int getAlertCount(int pos) {
+  int getAlertCount(int pos) {
     if (pos == 1) return Get.find<MonitorController>().requestsCount.value;
     if (pos == 3) return Get.find<MessageController>().unreadMessages.value;
 

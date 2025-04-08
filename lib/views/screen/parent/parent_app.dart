@@ -76,6 +76,9 @@ class _ParentAppState extends State<ParentApp> {
           onTap: (value) {
             setState(() {
               index = value;
+              if (index == 3) {
+                Get.find<MessageController>().messageSeen();
+              }
               controller.jumpToPage(index);
             });
           },

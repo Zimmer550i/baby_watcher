@@ -256,7 +256,7 @@ class _AddLogState extends State<AddLog> {
       showSnackBar("Log Created", isError: false);
       Future.delayed(
         const Duration(seconds: 1),
-        () => logController.getLogs(date ?? DateTime.now()),
+        () => logController.getLogs(widget.date ?? DateTime.now()),
       );
     } else {
       Get.back();

@@ -22,7 +22,9 @@ class ParentApp extends StatefulWidget {
 
 class _ParentAppState extends State<ParentApp> {
   int index = 0;
-  PageController controller = PageController(initialPage: 0);
+  bool isDisabled = false;
+  late PageController controller;
+  var socket = Get.find<SocketController>();
   List<Widget> pages = [
     ParentLog(key: PageStorageKey("parentLog")),
     ParentMonitor(key: PageStorageKey("parentMonitor")),
@@ -48,7 +50,12 @@ class _ParentAppState extends State<ParentApp> {
   @override
   void initState() {
     super.initState();
-    Get.find<SocketController>().initialize();
+    if (socket.user.connectionId == null) {
+      isDisabled = true;
+      index = 4;
+      controller = PageController(initialPage: index);
+    }
+    socket.initialize();
   }
 
   @override
@@ -74,6 +81,9 @@ class _ParentAppState extends State<ParentApp> {
             color: Color(0xff222222),
           ),
           onTap: (value) {
+            if (isDisabled) {
+              return;
+            }
             setState(() {
               index = value;
               if (index == 3) {
@@ -82,18 +92,33 @@ class _ParentAppState extends State<ParentApp> {
               controller.jumpToPage(index);
             });
           },
-          items: [items(0), items(1), items(2), items(3), items(4)],
+          items: [
+            items(0, isDisabled: isDisabled),
+            items(1, isDisabled: isDisabled),
+            items(2, isDisabled: isDisabled),
+            items(3, isDisabled: isDisabled),
+            items(4),
+          ],
         ),
       ),
     );
   }
 
-  BottomNavigationBarItem items(int pos) {
+  BottomNavigationBarItem items(int pos, {bool isDisabled = false}) {
     return BottomNavigationBarItem(
       icon: Stack(
         alignment: Alignment.topRight,
         children: [
-          SvgPicture.asset(pageAssets[pos]),
+          SvgPicture.asset(
+            pageAssets[pos],
+            colorFilter:
+                isDisabled
+                    ? ColorFilter.mode(
+                      Colors.grey.withAlpha(150),
+                      BlendMode.srcIn,
+                    )
+                    : null,
+          ),
           if (getAlertCount(pos) != 0)
             Container(
               height: 14,

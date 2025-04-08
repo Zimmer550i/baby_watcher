@@ -65,9 +65,10 @@ class _ParentSubscriptionState extends State<ParentSubscription> {
             child: Column(
               spacing: 24,
               children: [
-                data
-                    .firstWhere((val) => val.title == user.packageName)
-                    .copyWith(isPurchased: true),
+                if (user.packageName != null)
+                  data
+                      .firstWhere((val) => val.title == user.packageName)
+                      .copyWith(isPurchased: true),
                 ...data.where((val) => val.title != user.packageName),
               ],
             ),

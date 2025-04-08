@@ -160,6 +160,20 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
+
+                if (user.userRole == Role.parent && user.connectionId == null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32),
+                    child: Text(
+                      "To access all the features connect to a Babysitter from Manage Connection",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontVariations: [FontVariation("wght", 400)],
+                        fontSize: 20,
+                        color: AppColors.indigo,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

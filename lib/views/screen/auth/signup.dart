@@ -36,8 +36,8 @@ class _SignupState extends State<Signup> {
     setState(() {
       isValidEmail = emailPattern.hasMatch(emailCntrl.text);
       isValidPassword =
-          passwordPattern.hasMatch(passCntrl.text) &&
-          passCntrl.text == confirmPassCntrl.text;
+          passwordPattern.hasMatch(passCntrl.text.trim()) &&
+          passCntrl.text.trim() == confirmPassCntrl.text.trim();
     });
   }
 

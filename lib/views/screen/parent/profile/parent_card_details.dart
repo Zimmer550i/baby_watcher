@@ -1,4 +1,6 @@
+import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/helpers/route.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/custom_button.dart';
 import 'package:baby_watcher/views/base/custom_text_field.dart';
@@ -13,6 +15,7 @@ class ParentCardDetails extends StatefulWidget {
 }
 
 class _ParentCardDetailsState extends State<ParentCardDetails> {
+  bool isLoading = false;
   TextEditingController hnController = TextEditingController(
     text: "Esther Howard",
   );
@@ -62,8 +65,21 @@ class _ParentCardDetailsState extends State<ParentCardDetails> {
               const SizedBox(),
               CustomButton(
                 text: "Confirm Purchase",
-                onTap: () {
+                isLoading: isLoading,
+                onTap: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
+
+                  final message =
+                      await Get.find<UserController>().subscribeDemo();
+
+                  showSnackBar(message);
+
                   Get.toNamed(AppRoutes.parentConfirmation);
+                  setState(() {
+                    isLoading = false;
+                  });
                 },
               ),
             ],

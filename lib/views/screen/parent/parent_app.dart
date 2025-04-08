@@ -54,6 +54,8 @@ class _ParentAppState extends State<ParentApp> {
       isDisabled = true;
       index = 4;
       controller = PageController(initialPage: index);
+    } else {
+      controller = PageController(initialPage: index);
     }
     socket.initialize();
   }

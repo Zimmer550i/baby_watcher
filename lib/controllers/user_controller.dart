@@ -107,18 +107,6 @@ class UserController extends GetxController {
     }
   }
 
-  // String? getImageUrl({bool forConn = false}) {
-  //   if (image != null && !forConn) {
-  //     var s = api.baseUrl + image!;
-  //     return s.replaceAll("/api/v1", "");
-  //   } else if (connectionImage != null && forConn) {
-  //     var s = api.baseUrl + connectionImage!;
-  //     return s.replaceAll("/api/v1", "");
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
   Future<String> updateInfo(Map<String, dynamic> data) async {
     final response = await api.updateRequest(
       "/user/update-profile",
@@ -126,6 +114,28 @@ class UserController extends GetxController {
       isMultiPart: true,
       authRequired: true,
     );
+
+    if (response == null) {
+      return "No response from API";
+    }
+    if (response["success"] == true) {
+      return "Success";
+    } else {
+      return response["message"] ?? "Unknown Error";
+    }
+  }
+
+  Future<String> subscribeDemo() async {
+    Map<String, dynamic> data = {
+      "productId": "com.example.premium",
+      "purchaseId": "1234567890abcdef",
+      "expiryDate": DateTime.now().add(Duration(days: 30)).toIso8601String(),
+      "purchaseDate": DateTime.now().toIso8601String(),
+      "packageName": "Premium Plan",
+      "purchaseToken": "abcdef1234567890",
+      "packagePrice": 4,
+    };
+    final response = await api.postRequest("/subscription/create", data, authRequired: true);
 
     if (response == null) {
       return "No response from API";

@@ -129,6 +129,8 @@ class _ParentMonitorState extends State<ParentMonitor> {
                       setState(() {
                         reqSent = !reqSent;
                       });
+                    } else if (response == "Subscription not found") {
+                      showSnackBar("Need subscription for this feature");
                     } else {
                       showSnackBar(response);
                     }
@@ -234,10 +236,10 @@ class _ParentMonitorState extends State<ParentMonitor> {
                   ),
                 ),
                 if (monitorController.loadingVideos.value)
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: CircularProgressIndicator(),
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  ),
                 const SizedBox(height: 24),
               ],
             ),

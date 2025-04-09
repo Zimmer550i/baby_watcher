@@ -63,7 +63,7 @@ class UserController extends GetxController {
       debugPrint("""
       Connection Info =>
       Tracking ID: $connectionTrackingId
-      ID: $connectionId
+      ID: ${connectionId.value}
       Name: $connectionName
       Phone: $connectionPhone
       Image: $connectionImage

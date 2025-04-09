@@ -35,7 +35,7 @@ class MessageController extends GetxController {
         List<dynamic> inboxList = response['data']['data'];
 
         for (var inbox in inboxList) {
-          if (inbox['receiverId'] == user.connectionId) {
+          if (inbox['receiverId'] == user.connectionId.value) {
             inboxId = inbox['inboxId'];
             unreadMessages.value = inbox['unreadCount'];
             break;
@@ -58,7 +58,7 @@ class MessageController extends GetxController {
   Future<void> createInbox() async {
     try {
       final response = await api.postRequest(
-        "/inbox/send-message/${user.connectionId}",
+        "/inbox/send-message/${user.connectionId.value}",
         {},
         authRequired: true,
       );

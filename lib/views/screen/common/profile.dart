@@ -35,6 +35,9 @@ class _ProfileState extends State<Profile> {
           elevation: 0,
           onRefresh: () async {
             await user.getInfo();
+            setState(() {
+              
+            });
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -42,7 +45,7 @@ class _ProfileState extends State<Profile> {
               
               children: [
                 const SizedBox(height: 44),
-                ProfilePicture(image: user.image),
+                Center(child: ProfilePicture(image: user.image)),
                 SizedBox(height: 29),
                 Align(
                   alignment: Alignment.center,

@@ -145,7 +145,7 @@ class _ConnectMothersAccountState extends State<ConnectMothersAccount> {
                         "Connected to mother's account successfully",
                         isError: false,
                       );
-                      Get.offNamed(AppRoutes.babysitterApp);
+                      Get.offNamed(AppRoutes.splashScreen);
                     } else {
                       showSnackBar(message);
                     }

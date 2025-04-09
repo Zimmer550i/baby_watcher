@@ -70,9 +70,9 @@ class UserController extends GetxController {
       Email: $connectionEmail
 """);
     } else {
-      if (userRole == Role.parent) {
-        getUniqueKey();
-      }
+      // if (userRole == Role.parent) {
+      //   getUniqueKey();
+      // }
     }
     image = responseData['user']['image'];
     getSub();

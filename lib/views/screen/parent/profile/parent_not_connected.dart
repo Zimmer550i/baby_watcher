@@ -1,9 +1,11 @@
 import 'package:baby_watcher/controllers/user_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
+import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:baby_watcher/views/base/custom_app_bar.dart';
 import 'package:baby_watcher/views/base/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +15,10 @@ class ParentNotConnected extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar("Manage Connections", callBack: () => Get.find<UserController>().getInfo(),),
+      appBar: customAppBar(
+        "Manage Connections",
+        callBack: () => Get.find<UserController>().getInfo(),
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -34,8 +39,17 @@ class ParentNotConnected extends StatelessWidget {
             CustomTextField(
               isDisabled: true,
               trailing: AppIcons.copy,
+              onTap: () {
+                final text =
+                    Get.find<UserController>().uniqueKey ?? "Not Available";
+                Clipboard.setData(ClipboardData(text: text));
+                // Optional: show a snackbar or toast
+                showSnackBar("Copied to clipboard", isError: false);
+              },
               controller: TextEditingController.fromValue(
-                TextEditingValue(text: Get.find<UserController>().uniqueKey ?? "Not Available"),
+                TextEditingValue(
+                  text: Get.find<UserController>().uniqueKey ?? "Not Available",
+                ),
               ),
             ),
             const SizedBox(height: 4),

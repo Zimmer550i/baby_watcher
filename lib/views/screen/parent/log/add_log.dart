@@ -151,39 +151,18 @@ class _AddLogState extends State<AddLog> {
                           onTap: () {
                             showDialog(
                               context: context,
-                              builder:
-                                  (context) => OverlayConfirmation(
-                                    title: "Are you sure you want to delete",
-                                    highlight: "${widget.log!.name}?",
-                                    buttonTextLeft: "No",
-                                    leftButtonIsSecondary: false,
-                                    buttonCallBackLeft: () => Get.back(),
-                                    buttonTextRight: "Yes",
-                                    buttonCallBackRight: () async {
-                                      final response = await logController
-                                          .deleteLog(widget.log!.id.toString());
-
-                                      if (response == "Success") {
-                                        Get.back();
-                                        Get.back();
-                                        showSnackBar(
-                                          "Log Deleted",
-                                          isError: false,
-                                        );
-                                        Future.delayed(
-                                          const Duration(seconds: 1),
-                                          () => logController.getLogs(
-                                            widget.log!.date.add(
-                                              const Duration(days: 1),
-                                            ),
-                                          ),
-                                        );
-                                      } else {
-                                        Get.back();
-                                        showSnackBar(response);
-                                      }
-                                    },
-                                  ),
+                              builder: (context) {
+                                var overlayConfirmation = OverlayConfirmation(
+                                  title: "Are you sure you want to delete",
+                                  highlight: "${widget.log!.name}?",
+                                  buttonTextLeft: "No",
+                                  leftButtonIsSecondary: false,
+                                  buttonCallBackLeft: () => Get.back(),
+                                  buttonTextRight: "Yes",
+                                  buttonCallBackRight: deleteLog(),
+                                );
+                                return overlayConfirmation;
+                              },
                             );
                           },
                           text: "Delete",
@@ -257,6 +236,23 @@ class _AddLogState extends State<AddLog> {
       Future.delayed(
         const Duration(seconds: 1),
         () => logController.getLogs(widget.date ?? DateTime.now()),
+      );
+    } else {
+      Get.back();
+      showSnackBar(response);
+    }
+  }
+
+  deleteLog() async {
+    final response = await logController.deleteLog(widget.log!.id.toString());
+
+    if (response == "Success") {
+      Get.back();
+      Get.back();
+      showSnackBar("Log Deleted", isError: false);
+      Future.delayed(
+        const Duration(seconds: 1),
+        () => logController.getLogs(widget.log!.date),
       );
     } else {
       Get.back();

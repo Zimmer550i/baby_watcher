@@ -115,6 +115,7 @@ class _MessagesState extends State<Messages> {
                   onTap: () {
                     controller.sendMessage(messageController.text.trim());
                     messageController.text = "";
+                    messageFocusNode.requestFocus();
                   },
                   child: Container(
                     height: 42,

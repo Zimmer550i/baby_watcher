@@ -9,6 +9,7 @@ class CustomTextField extends StatefulWidget {
   final String? errorText;
   final String? leading;
   final String? trailing;
+  final TextInputType? textInputType;
   final bool isDisabled;
   final double radius;
   final TextEditingController? controller;
@@ -23,6 +24,7 @@ class CustomTextField extends StatefulWidget {
     this.isPassword = false,
     this.isDisabled = false,
     this.radius = 50,
+    this.textInputType,
     this.controller,
     this.onTap,
     this.errorText,
@@ -129,7 +131,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   child: TextField(
                     focusNode: focusNode,
                     controller: widget.controller,
-                    keyboardType: widget.leading == AppIcons.phone ? TextInputType.phone : null,
+                    keyboardType:
+                        widget.leading == AppIcons.phone
+                            ? TextInputType.phone
+                            : widget.textInputType,
                     obscureText: isObscured,
                     enabled: !widget.isDisabled && widget.onTap == null,
                     onTapOutside: (event) {

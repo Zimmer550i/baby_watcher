@@ -12,7 +12,7 @@ class MonitorController extends GetxController {
   RxInt unseenVideos = 0.obs;
   Rxn<DateTime> lastTime = Rxn();
   Rxn<DateTime> sleepingSince = Rxn();
-  Rx<bool> isAwake = RxBool(false);
+  Rx<bool> isAwake = RxBool(true);
   RxList<VideoModel> videos = RxList();
   int page = 1;
   bool loadMoreVideo = true;

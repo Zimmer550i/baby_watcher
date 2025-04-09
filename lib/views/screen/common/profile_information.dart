@@ -123,6 +123,7 @@ class _ProfileInformationState extends State<ProfileInformation> {
                 CustomTextField(
                   title: "Phone Number",
                   isDisabled: !isEditing,
+                  textInputType: TextInputType.phone,
                   controller: phoneController,
                 ),
                 const SizedBox(height: 0),

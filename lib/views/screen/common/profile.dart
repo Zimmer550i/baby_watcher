@@ -29,20 +29,30 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: RefreshIndicator(
+          color: AppColors.indigo,
+          backgroundColor: AppColors.indigo[25],
+          elevation: 0,
+          onRefresh: () async {
+            await user.getInfo();
+          },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
+            child: ListView(
+              
               children: [
                 const SizedBox(height: 44),
                 ProfilePicture(image: user.image),
                 SizedBox(height: 29),
-                Text(
-                  user.userName,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Color(0xff3a3a3a),
-                    fontVariations: [FontVariation("wght", 600)],
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    user.userName,
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Color(0xff3a3a3a),
+                      fontVariations: [FontVariation("wght", 600)],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -57,7 +67,8 @@ class _ProfileState extends State<Profile> {
                       profileOptions(
                         iconPath: AppIcons.profileInfo,
                         title: "Profile Information",
-                        onTap: () => Get.toNamed(AppRoutes.profileInformation),
+                        onTap:
+                            () => Get.toNamed(AppRoutes.profileInformation),
                       ),
                       if (user.userRole == Role.parent)
                         profileOptions(
@@ -160,8 +171,9 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
-
-                if (user.userRole == Role.parent && user.connectionId.value == null)
+          
+                if (user.userRole == Role.parent &&
+                    user.connectionId.value == null)
                   Padding(
                     padding: const EdgeInsets.only(top: 32),
                     child: Text(

@@ -85,7 +85,9 @@ class _ParentMonitorState extends State<ParentMonitor> {
                             ),
                           ),
                           Text(
-                            "Since ${Formatter.timeFormatter(dateTime: monitorController.sleepingSince.value)}",
+                            monitorController.sleepingSince.value == null
+                                ? ""
+                                : "Since ${Formatter.timeFormatter(dateTime: monitorController.sleepingSince.value)}",
                             style: TextStyle(
                               fontVariations: [FontVariation("wght", 400)],
                               fontSize: 14,

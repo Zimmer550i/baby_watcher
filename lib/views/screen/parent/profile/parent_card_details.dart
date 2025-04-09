@@ -74,7 +74,11 @@ class _ParentCardDetailsState extends State<ParentCardDetails> {
                   final message =
                       await Get.find<UserController>().subscribeDemo();
 
-                  showSnackBar(message);
+                  if (message == "Success") {
+                    showSnackBar("You have been Subscribed", isError: false);
+                  } else {
+                    showSnackBar(message);
+                  }
 
                   Get.toNamed(AppRoutes.parentConfirmation);
                   setState(() {

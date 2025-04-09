@@ -13,7 +13,7 @@ class UserController extends GetxController {
   String userPhone = '';
   String? image;
   String? connectionTrackingId;
-  String? connectionId;
+  RxnString connectionId = RxnString();
   String? connectionName;
   String? connectionImage;
   String? connectionPhone;
@@ -47,14 +47,14 @@ class UserController extends GetxController {
       connectionTrackingId = responseData['connection']['_id'];
       if (userRole == Role.parent &&
           responseData['connection']['babySitterId'] != null) {
-        connectionId = responseData['connection']['babySitterId']['_id'];
+        connectionId.value = responseData['connection']['babySitterId']['_id'];
         connectionName = responseData['connection']['babySitterId']['name'];
         connectionEmail = responseData['connection']['babySitterId']['email'];
         connectionPhone = responseData['connection']['babySitterId']['phone'];
         connectionImage = responseData['connection']['babySitterId']['image'];
       } else if (userRole == Role.babySitter &&
           responseData['connection']['parentId'] != null) {
-        connectionId = responseData['connection']['parentId']['_id'];
+        connectionId.value = responseData['connection']['parentId']['_id'];
         connectionName = responseData['connection']['parentId']['name'];
         connectionEmail = responseData['connection']['parentId']['email'];
         connectionPhone = responseData['connection']['parentId']['phone'];
@@ -188,7 +188,7 @@ class UserController extends GetxController {
       return "No response from API";
     }
     if (response['success'] == true) {
-      connectionId = null;
+      connectionId.value = null;
       connectionEmail = null;
       connectionImage = null;
       connectionName = null;

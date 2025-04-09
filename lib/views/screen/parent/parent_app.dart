@@ -50,7 +50,7 @@ class _ParentAppState extends State<ParentApp> {
   @override
   void initState() {
     super.initState();
-    if (socket.user.connectionId == null) {
+    if (socket.user.connectionId.value == null) {
       isDisabled = true;
       index = 4;
       controller = PageController(initialPage: index);
@@ -58,6 +58,15 @@ class _ParentAppState extends State<ParentApp> {
       controller = PageController(initialPage: index);
     }
     socket.initialize();
+
+    ever(
+      socket.user.connectionId,
+      (newId) => setState(() {
+        index = 1;
+        isDisabled = false;
+        controller.jumpToPage(1);
+      }),
+    );
   }
 
   @override

@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'token_service.dart';
 
 class ApiService extends GetxService {
-  final String baseUrl = 'http://192.168.10.199:5002/api/v1';
+  final String baseUrl = 'http://69.62.70.69:5002/api/v1';
 
   Future<Map<String, dynamic>?> getRequest(
     String endpoint, {

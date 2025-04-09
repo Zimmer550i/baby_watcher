@@ -71,7 +71,7 @@ class _ProfileState extends State<Profile> {
                           iconPath: AppIcons.connection,
                           title: "Manage Connection",
                           onTap: () async {
-                            if (user.connectionId == null) {
+                            if (user.connectionId.value == null) {
                               Get.toNamed(AppRoutes.parentNotConnected);
                             } else {
                               Get.toNamed(AppRoutes.connections);
@@ -161,7 +161,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
 
-                if (user.userRole == Role.parent && user.connectionId == null)
+                if (user.userRole == Role.parent && user.connectionId.value == null)
                   Padding(
                     padding: const EdgeInsets.only(top: 32),
                     child: Text(

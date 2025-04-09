@@ -25,7 +25,7 @@ class _MessagesState extends State<Messages> {
   @override
   void initState() {
     super.initState();
-    if (user.connectionId != null) {
+    if (user.connectionId.value != null) {
       controller.initialize();
     }
   }
@@ -39,7 +39,7 @@ class _MessagesState extends State<Messages> {
 
   @override
   Widget build(BuildContext context) {
-    if (user.connectionId == null) {
+    if (user.connectionId.value == null) {
       return Center(child: Text("No Connection Added"));
     }
     return Scaffold(

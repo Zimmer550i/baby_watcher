@@ -51,7 +51,7 @@ class _BabysitterAppState extends State<BabysitterApp> {
     super.initState();
     Get.find<SocketController>().initialize();
     WidgetsBinding.instance.addPostFrameCallback((context) async {
-      if (Get.find<UserController>().connectionId == null) {
+      if (Get.find<UserController>().connectionId.value == null) {
         await Future.delayed(const Duration(milliseconds: 100));
         Get.offNamed(AppRoutes.connectMothersAccount);
       }

@@ -61,6 +61,8 @@ class MonitorController extends GetxController {
                   ? thisTime
                   : lastTime.value;
         }
+      } else {
+        lastTime.value = null;
       }
 
       return "Success";

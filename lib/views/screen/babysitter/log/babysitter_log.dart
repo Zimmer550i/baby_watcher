@@ -50,17 +50,9 @@ class _BabysitterLogState extends State<BabysitterLog> {
             Expanded(
               child: Obx(() {
                 return RefreshIndicator(
-                  onRefresh:
-                      () => logController.getLogs(
-                        DateTime.now().add(const Duration(days: 1)),
-                      ),
+                  onRefresh: () => logController.getLogs(DateTime.now()),
                   child:
-                      logController.isLoading.value
-                          ? Align(
-                            alignment: Alignment.topCenter,
-                            child: CircularProgressIndicator(),
-                          )
-                          : logController.logs.isEmpty
+                      logController.logs.isEmpty
                           ? Center(
                             child: Text(
                               "No logs added yet",

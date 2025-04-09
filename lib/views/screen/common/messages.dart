@@ -62,10 +62,15 @@ class _MessagesState extends State<Messages> {
                 );
               }
               return Expanded(
-                child: SingleChildScrollView(
-                  reverse: true,
-                  child: Column(
-                    children: [...renderMessages(controller.messages)],
+                child: GestureDetector(
+                onTap: () {
+                  messageFocusNode.unfocus();
+                },
+                  child: SingleChildScrollView(
+                    reverse: true,
+                    child: Column(
+                      children: [...renderMessages(controller.messages)],
+                    ),
                   ),
                 ),
               );
@@ -86,9 +91,6 @@ class _MessagesState extends State<Messages> {
                       child: TextField(
                         controller: messageController,
                         focusNode: messageFocusNode,
-                        onTapOutside: (event) {
-                          messageFocusNode.unfocus();
-                        },
                         onSubmitted: (value) {
                           controller.sendMessage(messageController.text.trim());
                           messageController.text = "";

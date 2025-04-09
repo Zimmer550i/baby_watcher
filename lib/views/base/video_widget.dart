@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
@@ -8,6 +10,8 @@ import 'package:baby_watcher/utils/show_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/instance_manager.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class VideoWidget extends StatefulWidget {
   final String url;
@@ -173,7 +177,8 @@ class _VideoWidgetState extends State<VideoWidget> {
                             Navigator.of(context).pop();
                           }
 
-                          downloadVideo(widget.url);
+                          // downloadVideo(widget.url);
+                          showSnackBar("This feature has not been initialized");
                         },
                         child: AnimatedOpacity(
                           duration: Duration(milliseconds: 300),
@@ -206,7 +211,36 @@ class _VideoWidgetState extends State<VideoWidget> {
     }
   }
 
-  void downloadVideo(String url) {
-    showSnackBar("This feature has not been implemented");
+  void downloadVideo(String url) async {
+    try {
+      final directory = await getExternalStorageDirectory();
+      if (directory == null) {
+        showSnackBar("Failed to get download directory.");
+        return;
+      }
+
+      final fileName = Uri.parse(url).pathSegments.last;
+      final filePath = '${directory.path}/$fileName';
+
+      final file = File(filePath);
+      if (await file.exists()) {
+        showSnackBar("Video already downloaded.");
+        return;
+      }
+
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        await file.writeAsBytes(response.bodyBytes);
+
+        showSnackBar("Video downloaded successfully.");
+      } else {
+        showSnackBar(
+          "Failed to download video. Status code: ${response.statusCode}",
+        );
+      }
+    } catch (e) {
+      showSnackBar("An error occurred: $e");
+    }
   }
 }

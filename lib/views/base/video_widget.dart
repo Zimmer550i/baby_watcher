@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
-
 import 'package:appinio_video_player/appinio_video_player.dart';
 import 'package:baby_watcher/controllers/monitor_controller.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
@@ -26,12 +24,22 @@ class VideoWidget extends StatefulWidget {
 class _VideoWidgetState extends State<VideoWidget> {
   late VideoPlayerController _videoPlayerController;
   late CustomVideoPlayerController controller;
+  late ValueNotifier<bool> _isBuffering;
+
+  @override
+  void initState() {
+    super.initState();
+    _isBuffering = ValueNotifier<bool>(false);
+  }
 
   Future<void> _initializeVideoPlayer() async {
     _videoPlayerController = VideoPlayerController.networkUrl(
       Uri.parse(widget.url),
     );
     await _videoPlayerController.initialize();
+    _videoPlayerController.addListener(() {
+      _isBuffering.value = _videoPlayerController.value.isBuffering;
+    });
     controller = CustomVideoPlayerController(
       context: context,
       videoPlayerController: _videoPlayerController,
@@ -158,6 +166,7 @@ class _VideoWidgetState extends State<VideoWidget> {
             child: Dialog(
               insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 64),
               insetAnimationDuration: Duration(milliseconds: 300),
+              backgroundColor: Colors.transparent,
               child: Stack(
                 children: [
                   ClipRRect(
@@ -165,6 +174,16 @@ class _VideoWidgetState extends State<VideoWidget> {
                     child: CustomVideoPlayer(
                       customVideoPlayerController: controller,
                     ),
+                  ),
+                  ValueListenableBuilder(
+                    valueListenable: _isBuffering,
+                    builder: (context, isBuffering, child) {
+                      return isBuffering
+                          ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                          : Container();
+                    },
                   ),
                   ValueListenableBuilder(
                     valueListenable: controller.areControlsVisible,
@@ -177,9 +196,11 @@ class _VideoWidgetState extends State<VideoWidget> {
                             if (Navigator.of(context).canPop()) {
                               Navigator.of(context).pop();
                             }
-            
+
                             // downloadVideo(widget.url);
-                            showSnackBar("This feature has not been initialized");
+                            showSnackBar(
+                              "This feature has not been initialized",
+                            );
                           },
                           child: AnimatedOpacity(
                             duration: Duration(milliseconds: 300),

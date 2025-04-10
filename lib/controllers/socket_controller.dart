@@ -60,7 +60,6 @@ class SocketController extends GetxController {
       socket!.on('receive-message:${messageController.inboxId}', (data) {
         debugPrint(data.toString());
         messageController.unreadMessages += 1;
-        print(messageController.unreadMessages);
         messageController.messages.add(
           Message(
             text: data['message'],
@@ -73,7 +72,6 @@ class SocketController extends GetxController {
 
       socket!.off('get-notification::${user.userId}');
       socket!.on('get-notification::${user.userId}', (data) {
-        print("GOT NOTIFICATION => ${data['text']}");
 
         for (int i = 0; i < callBackTriggers.length; i++) {
           if (callBackTriggers[i].any(
@@ -81,7 +79,6 @@ class SocketController extends GetxController {
                 data['text'].toLowerCase().contains(trigger.toLowerCase()),
           )) {
             callBackMethods[i]().then((val) {
-              print(val);
             });
           }
         }

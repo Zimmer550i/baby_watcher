@@ -159,7 +159,7 @@ class _AddLogState extends State<AddLog> {
                                   leftButtonIsSecondary: false,
                                   buttonCallBackLeft: () => Get.back(),
                                   buttonTextRight: "Yes",
-                                  buttonCallBackRight: deleteLog(),
+                                  buttonCallBackRight: () => deleteLog(),
                                 );
                                 return overlayConfirmation;
                               },

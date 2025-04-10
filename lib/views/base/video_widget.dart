@@ -58,7 +58,7 @@ class _VideoWidgetState extends State<VideoWidget> {
               backgroundColor: AppColors.indigo[25]!,
               progressBarHeight: 4,
             ),
-        customAspectRatio: 16 / 9,
+        // customAspectRatio: 16 / 9,
         durationPlayedTextStyle: TextStyle(
           fontVariations: [FontVariation("wght", 400)],
           fontSize: 12,
@@ -154,56 +154,58 @@ class _VideoWidgetState extends State<VideoWidget> {
         context: context,
         barrierColor: AppColors.gray[800]!.withAlpha(230),
         builder: (context) {
-          return Dialog(
-            insetPadding: EdgeInsets.all(16),
-            insetAnimationDuration: Duration(milliseconds: 300),
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: CustomVideoPlayer(
-                    customVideoPlayerController: controller,
+          return SafeArea(
+            child: Dialog(
+              insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 64),
+              insetAnimationDuration: Duration(milliseconds: 300),
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: CustomVideoPlayer(
+                      customVideoPlayerController: controller,
+                    ),
                   ),
-                ),
-                ValueListenableBuilder(
-                  valueListenable: controller.areControlsVisible,
-                  builder: (context, isVisible, child) {
-                    return Positioned(
-                      top: 8,
-                      right: 8,
-                      child: GestureDetector(
-                        onTap: () {
-                          if (Navigator.of(context).canPop()) {
-                            Navigator.of(context).pop();
-                          }
-
-                          // downloadVideo(widget.url);
-                          showSnackBar("This feature has not been initialized");
-                        },
-                        child: AnimatedOpacity(
-                          duration: Duration(milliseconds: 300),
-                          opacity: isVisible ? 1 : 0,
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                              color: AppColors.gray.withAlpha(100),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(
-                              child: SvgPicture.asset(
-                                AppIcons.download,
-                                height: 24,
-                                width: 24,
+                  ValueListenableBuilder(
+                    valueListenable: controller.areControlsVisible,
+                    builder: (context, isVisible, child) {
+                      return Positioned(
+                        top: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (Navigator.of(context).canPop()) {
+                              Navigator.of(context).pop();
+                            }
+            
+                            // downloadVideo(widget.url);
+                            showSnackBar("This feature has not been initialized");
+                          },
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 300),
+                            opacity: isVisible ? 1 : 0,
+                            child: Container(
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                color: AppColors.gray.withAlpha(100),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  AppIcons.download,
+                                  height: 24,
+                                  width: 24,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           );
         },

@@ -52,7 +52,6 @@ class AuthController extends GetxController {
 
       userInfo.value = user;
       userController.setUserData(user);
-      isLoggedIn.value = true;
 
       return "Success";
     } else {
@@ -169,12 +168,14 @@ class AuthController extends GetxController {
     String? token = await TokenService.getAccessToken();
     if (token != null) {
       debugPrint('🔍 Token found. Fetching user info...');
-      await getUserInfo();
-      return true;
-    } else {
-      isLoggedIn.value = false;
-      return false;
+      final message = await getUserInfo();
+      if (message == "Success") {
+        isLoggedIn.value = true;
+        return true;
+      }
     }
+    isLoggedIn.value = false;
+    return false;
   }
 
   Future<void> logout() async {

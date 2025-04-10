@@ -9,6 +9,7 @@ import 'package:baby_watcher/views/base/video_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ParentMonitor extends StatefulWidget {
   const ParentMonitor({super.key});
@@ -20,12 +21,12 @@ class ParentMonitor extends StatefulWidget {
 class _ParentMonitorState extends State<ParentMonitor> {
   final scrollController = ScrollController();
   final monitorController = Get.find<MonitorController>();
-  bool babySleeping = true;
-  bool reqSent = false;
+  DateTime? lastRequestTime;
 
   @override
   void initState() {
     super.initState();
+    _loadLastRequestTime();
     // Set up scroll listener for refresh logic
     scrollController.addListener(() {
       if (monitorController.loadingVideos.value ||
@@ -52,6 +53,21 @@ class _ParentMonitorState extends State<ParentMonitor> {
         monitorController.getMoreVideos();
       }
     });
+  }
+
+  void _loadLastRequestTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    final timestamp = prefs.getInt('lastRequestTime');
+    if (timestamp != null) {
+      setState(() {
+        lastRequestTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+      });
+    }
+  }
+
+  bool _canRequestNow() {
+    if (lastRequestTime == null) return true;
+    return DateTime.now().difference(lastRequestTime!).inMinutes >= 5;
   }
 
   @override
@@ -118,18 +134,27 @@ class _ParentMonitorState extends State<ParentMonitor> {
                 ),
                 const SizedBox(height: 32),
                 CustomButton(
-                  text: reqSent ? "Request Sent" : "Request Instant Video",
-                  leading: reqSent ? AppIcons.tickCircle : AppIcons.video,
+                  text:
+                      _canRequestNow()
+                          ? "Request Instant Video"
+                          : "Request Sent",
+                  leading:
+                      _canRequestNow() ? AppIcons.video : AppIcons.tickCircle,
                   radius: 8,
-                  isSecondary: reqSent,
+                  isSecondary: !_canRequestNow(),
                   onTap: () async {
-                    if (reqSent) {
-                      return;
-                    }
+                    if (!_canRequestNow()) return;
+
                     final response = await monitorController.sendRequest();
                     if (response == "Success") {
+                      final now = DateTime.now();
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setInt(
+                        'lastRequestTime',
+                        now.millisecondsSinceEpoch,
+                      );
                       setState(() {
-                        reqSent = !reqSent;
+                        lastRequestTime = now;
                       });
                     } else if (response == "Subscription not found") {
                       showSnackBar("Need subscription for this feature");
@@ -237,11 +262,15 @@ class _ParentMonitorState extends State<ParentMonitor> {
                     ],
                   ),
                 ),
-                if (monitorController.loadingVideos.value)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: CircularProgressIndicator(),
-                  ),
+                Obx(
+                  () =>
+                      monitorController.loadingVideos.value
+                          ? Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: CircularProgressIndicator(),
+                          )
+                          : Container(),
+                ),
                 const SizedBox(height: 24),
               ],
             ),

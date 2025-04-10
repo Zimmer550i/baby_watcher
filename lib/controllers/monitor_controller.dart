@@ -227,17 +227,12 @@ class MonitorController extends GetxController {
     loadingVideos.value = false;
     if (response != null && response["success"] == true) {
       final result = response['data']['result'];
-      unseenVideos.value = 0;
       for (var i in result) {
         var newVideo = VideoModel.fromJson(i);
 
         // Check if the video is already in the list based on its unique ID
         if (!videos.any((video) => video.id == newVideo.id)) {
           videos.add(newVideo);
-        }
-
-        if (!newVideo.isSeen) {
-          unseenVideos.value += 1;
         }
       }
 
@@ -246,6 +241,15 @@ class MonitorController extends GetxController {
       } else {
         loadMoreVideo = false;
       }
+      int unseenCount = 0;
+      for (var i in videos) {
+        if (!i.isSeen) {
+          unseenCount++;
+        }
+      }
+      unseenVideos.value = unseenCount;
+
+      videos.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
       return "Success";
     } else {

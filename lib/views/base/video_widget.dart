@@ -38,7 +38,10 @@ class _VideoWidgetState extends State<VideoWidget> {
     );
     await _videoPlayerController.initialize();
     _videoPlayerController.addListener(() {
-      _isBuffering.value = _videoPlayerController.value.isBuffering;
+      _isBuffering.value =
+          _videoPlayerController.value.isBuffering &&
+          !_videoPlayerController.value.isCompleted && 
+          _videoPlayerController.value.isInitialized;
     });
     controller = CustomVideoPlayerController(
       context: context,
@@ -168,6 +171,7 @@ class _VideoWidgetState extends State<VideoWidget> {
               insetAnimationDuration: Duration(milliseconds: 300),
               backgroundColor: Colors.transparent,
               child: Stack(
+                alignment: Alignment.center,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -179,9 +183,7 @@ class _VideoWidgetState extends State<VideoWidget> {
                     valueListenable: _isBuffering,
                     builder: (context, isBuffering, child) {
                       return isBuffering
-                          ? Center(
-                            child: CircularProgressIndicator(),
-                          )
+                          ? CircularProgressIndicator()
                           : Container();
                     },
                   ),

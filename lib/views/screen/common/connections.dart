@@ -1,5 +1,4 @@
 import 'package:baby_watcher/controllers/user_controller.dart';
-import 'package:baby_watcher/helpers/route.dart';
 import 'package:baby_watcher/utils/app_colors.dart';
 import 'package:baby_watcher/utils/app_icons.dart';
 import 'package:baby_watcher/utils/show_snackbar.dart';
@@ -72,8 +71,7 @@ class Connections extends StatelessWidget {
 
                                 if (message == "Success") {
                                   showSnackBar("Connection Removed");
-                                  Get.back();
-                                  Get.offNamed(AppRoutes.connections);
+                                  user.connectionId.value = null;
                                 } else {
                                   showSnackBar(message);
                                 }

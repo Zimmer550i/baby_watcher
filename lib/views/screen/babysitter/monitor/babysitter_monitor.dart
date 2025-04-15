@@ -52,7 +52,7 @@ class _BabysitterMonitorState extends State<BabysitterMonitor> {
             child: Obx(() {
               babySleeping = !monitor.isAwake.value;
               DateTime? lastTime = monitor.lastTime.value;
-              DateTime? timeLimit = lastTime?.add(const Duration(minutes: 0, seconds: 20));
+              DateTime? timeLimit = lastTime?.add(const Duration(minutes: 5, seconds: 00));
               runTimer =
                   lastTime != null && DateTime.now().isBefore(timeLimit!);
               missed = lastTime != null && DateTime.now().isAfter(timeLimit!);

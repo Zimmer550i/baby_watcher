@@ -62,9 +62,15 @@ class _ParentAppState extends State<ParentApp> {
     ever(
       socket.user.connectionId,
       (newId) => setState(() {
-        index = 1;
-        isDisabled = false;
-        controller.jumpToPage(1);
+        if (socket.user.connectionId.value != null) {
+          index = 1;
+          isDisabled = false;
+          controller.jumpToPage(1);
+        } else {
+          isDisabled = true;
+          index = 4;
+          controller.jumpToPage(index);
+        }
       }),
     );
   }
